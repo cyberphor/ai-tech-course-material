@@ -1,5 +1,5 @@
 # Sail() Projects
-Source code and notes relating to Sail()-based projects from the Army Artificial Intelligence (AI) Technician Cohort 4 program. 
+Vic's source code and notes relating to Sail()-based projects from the Army Artificial Intelligence (AI) Technician Cohort 4 program. 
 
 ## Set Up
 **How to Install the Azure CLI within a GitHub Codespace**  
