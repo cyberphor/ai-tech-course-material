@@ -51,7 +51,7 @@ curl -4 icanhazip.com
 **Step 2.** Add your public IP address to the `security.tf` file. For example, if your IP address is `13.92.118.23` the `security.tf` file will look like below. 
 ```t
 resource "azurerm_mssql_firewall_rule" "fw_rule_01" {
-  name             = "Allow Client IP Address"
+  name             = "Allow_Client_IP_Address"
   server_id        = azurerm_mssql_server.server.id
   start_ip_address = "13.92.118.23"
   end_ip_address   = "13.92.118.23"
@@ -63,4 +63,16 @@ resource "azurerm_mssql_firewall_rule" "fw_rule_01" {
 cd terraform
 terraform apply
 cd ..
+```
+
+**Step 4.** Test your firewall rule. 
+```bash
+# define environment variables
+export SQL_SERVER="sql-guided-sloth"
+export SQL_SERVER_DB="cloud-security-db"
+export SQL_SERVER_USER="clouduser"
+export SQL_SERVER_ENDPOINT="${SQL_SERVER}.database.windows.net"
+
+# run sqlcmd
+sqlcmd -S "${SQL_SERVER_ENDPOINT}" -d "${SQL_SERVER_DB}" -U "${SQL_SERVER_USER}"
 ```
