@@ -23,6 +23,9 @@ class TestGeometricShape(unittest.TestCase):
     def test_repr(self):
         self.assertEqual(self.geometric_shape.__repr__(), "GeometricShape(name=Square)")
 
+    def test_eq(self):
+        self.assertTrue(self.geometric_shape, GeometricShape("Square"))
+
 class TestRectangleClass(unittest.TestCase):
     """Test class for Rectangle class"""
     def setUp(self):
@@ -30,6 +33,9 @@ class TestRectangleClass(unittest.TestCase):
     
     def test_repr(self):
         self.assertEqual(self.rectangle.__repr__(), "Rectangle(a=5, b=3)")
+
+    def test_eq(self):
+        self.assertTrue(self.rectangle, Rectangle(5, 3))
 
 class TestEllipseClass(unittest.TestCase):
     """Test class for Ellipse class"""
@@ -53,12 +59,18 @@ class TestEllipseClass(unittest.TestCase):
     def test_repr(self):
         self.assertEqual(self.ellipse.__repr__(), "Ellipse(r1=5, r2=10)")
 
+    def test_eq(self):
+        self.assertTrue(self.ellipse, Ellipse(5, 10))
+
 class TestSquareClass(unittest.TestCase):
     def setUp(self):
         self.square = Square(5)
 
     def test_repr(self):
         self.assertEqual(self.square.__repr__(), "Square(a=5)")
+
+    def test_eq(self):
+        self.assertEqual(self.square, Square(5))
 
 class TestCircleClass(unittest.TestCase):
     """Test class for Circle class"""
@@ -102,6 +114,9 @@ class TestCircleClass(unittest.TestCase):
 
     def test_repr(self):
         self.assertEqual(self.circle.__repr__(), "Circle(r=10)")
+
+    def test_eq(self):
+        self.assertEqual(self.circle, Circle(10))
 
 class TestComplexShape(unittest.TestCase):
     """Test class for ComplexShape class"""
@@ -147,7 +162,7 @@ class TestComplexShape(unittest.TestCase):
 
     def test_remove_hole(self):
         """Test method for remove_hole method"""
-        hole = self.complex_shape.get_holes()[2]
+        hole = self.complex_shape.get_holes()[-1]
         self.complex_shape.remove_hole(hole)
         self.assertTrue(self.complex_shape.get_holes(), ComplexShape(Ellipse, [Square, Circle]))
 
