@@ -28,7 +28,7 @@ resource "azurerm_mssql_server" "server" {
   administrator_login           = var.admin_username
   administrator_login_password  = local.admin_password
   version                       = "12.0"
-  public_network_access_enabled = "false"
+  public_network_access_enabled = "true" # task 0: false, task 1: true
 }
 
 resource "azurerm_mssql_database" "db" {
