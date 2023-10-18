@@ -15,6 +15,9 @@ class GeometricShape():
     def get_name(self):
         """Getter method for geometric shape name"""
         return self.__name
+    
+    def __repr__(self):
+        return f"GeometricShape(name={self.get_name()})"
 
 class Rectangle(GeometricShape):
     """Rectangle class"""
@@ -48,6 +51,9 @@ class Rectangle(GeometricShape):
     def get_area(self):
         """Getter method for area of rectangle"""
         return self.get_length() * self.get_width()
+    
+    def __repr__(self):
+        return f"Rectangle(a={self.get_length()}, b={self.get_width()})"
 
 class Ellipse(GeometricShape):
     """Ellipse class"""
@@ -81,6 +87,9 @@ class Ellipse(GeometricShape):
     def get_area(self):
         """Getter method for area of ellipse"""
         return self.get_semi_major_axis() * self.get_semi_minor_axis() * pi
+    
+    def __repr__(self):
+        return f"Ellipse(r1={self.get_semi_major_axis()}, r2={self.get_semi_minor_axis()})"
 
 class Square(Rectangle):
     """Square class"""
@@ -98,6 +107,9 @@ class Square(Rectangle):
         """Getter method for side of square"""
         return super().get_length()
 
+    def __repr__(self):
+        return f"Square(a={self.get_side()})"
+
 class Circle(Ellipse):
     """Circle class"""
     def __init__(self, radius):
@@ -113,6 +125,9 @@ class Circle(Ellipse):
     def get_radius(self):
         """Getter method for radius of circle"""
         return super().get_semi_major_axis()
+    
+    def __repr__(self):
+        return f"Circle(r={self.get_radius()})"
    
 class ComplexShape(GeometricShape):
     """ComplexShape class"""
@@ -162,3 +177,6 @@ class ComplexShape(GeometricShape):
         for hole in self.get_holes():
             hole_edge_lengths.append(hole.get_perimeter())
         return base_edge_length + sum(hole_edge_lengths)
+    
+    def __repr__(self):
+        return f"ComplexShape({self.get_base().get_name()} with {len(self.get_holes())} holes)"

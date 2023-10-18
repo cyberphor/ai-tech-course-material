@@ -20,6 +20,46 @@ class TestGeometricShape(unittest.TestCase):
         with self.assertRaises(InvalidArgumentError):
             self.geometric_shape.set_name(5)
 
+    def test_repr(self):
+        self.assertEqual(self.geometric_shape.__repr__(), "GeometricShape(name=Square)")
+
+class TestRectangleClass(unittest.TestCase):
+    """Test class for Rectangle class"""
+    def setUp(self):
+        self.rectangle = Rectangle(5, 3)
+    
+    def test_repr(self):
+        self.assertEqual(self.rectangle.__repr__(), "Rectangle(a=5, b=3)")
+
+class TestEllipseClass(unittest.TestCase):
+    """Test class for Ellipse class"""
+    def setUp(self):
+        self.ellipse = Ellipse(5, 10)
+
+    def test_get_semi_major_axis(self):
+        self.assertEqual(self.ellipse.get_semi_major_axis(), 5)
+
+    def test_get_semi_minor_axis(self):
+        self.assertEqual(self.ellipse.get_semi_minor_axis(), 10)
+
+    def test_positive_semi_major_axis(self):
+        with self.assertRaises(InvalidArgumentError):
+            self.ellipse.set_semi_major_axis(-5)
+
+    def test_positive_semi_minor_axis(self):
+        with self.assertRaises(InvalidArgumentError):
+            self.ellipse.set_semi_major_axis(-10)
+    
+    def test_repr(self):
+        self.assertEqual(self.ellipse.__repr__(), "Ellipse(r1=5, r2=10)")
+
+class TestSquareClass(unittest.TestCase):
+    def setUp(self):
+        self.square = Square(5)
+
+    def test_repr(self):
+        self.assertEqual(self.square.__repr__(), "Square(a=5)")
+
 class TestCircleClass(unittest.TestCase):
     """Test class for Circle class"""
     def setUp(self):
@@ -60,24 +100,8 @@ class TestCircleClass(unittest.TestCase):
         self.circle.set_radius(20)
         self.assertEqual(self.circle.get_area(), 1256.6370614359173)
 
-class TestEllipseClass(unittest.TestCase):
-    """Test class for Ellipse class"""
-    def setUp(self):
-        self.ellipse = Ellipse(5, 10)
-
-    def test_get_semi_major_axis(self):
-        self.assertEqual(self.ellipse.get_semi_major_axis(), 5)
-
-    def test_get_semi_minor_axis(self):
-        self.assertEqual(self.ellipse.get_semi_minor_axis(), 10)
-
-    def test_positive_semi_major_axis(self):
-        with self.assertRaises(InvalidArgumentError):
-            self.ellipse.set_semi_major_axis(-5)
-
-    def test_positive_semi_minor_axis(self):
-        with self.assertRaises(InvalidArgumentError):
-            self.ellipse.set_semi_major_axis(-10)
+    def test_repr(self):
+        self.assertEqual(self.circle.__repr__(), "Circle(r=10)")
 
 class TestComplexShape(unittest.TestCase):
     """Test class for ComplexShape class"""
@@ -130,6 +154,9 @@ class TestComplexShape(unittest.TestCase):
     def test_get_area(self):
         """Test method for get_area method"""
         self.assertEqual(self.complex_shape.get_area(), 560.0441968356505)
+
+    def test_repr(self):
+        self.assertEqual(self.complex_shape.__repr__(), "ComplexShape(Ellipse with 3 holes)")
 
 if __name__ == "__main__":
     unittest.main()
