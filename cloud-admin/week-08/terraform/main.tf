@@ -35,7 +35,5 @@ resource "azurerm_mssql_database" "db" {
   name                        = var.sql_db_name
   server_id                   = azurerm_mssql_server.server.id
   max_size_gb                 = 2
-  sku_name                    = "GP_S_Gen5_2"
-  min_capacity                = 1
-  auto_pause_delay_in_minutes = 5 
+  sku_name                    = "Basic"
 }
