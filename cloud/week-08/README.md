@@ -4,10 +4,7 @@
 * Configure firewall rules for an Azure SQL server
 * Insert and select data from an Azure SQL database
 * Configure logging for an Azure SQL database
-
-* Describe security requirements for deploying apps to the cloud
-* Describe how a defense-in-depth strategy mitigates security incidents
-* Describe 3 ways access to an Azure SQL database can be controlled
+* Configure Defender for Cloud for an Azure SQL database
 
 ## Submitter
 ```bash
@@ -97,3 +94,6 @@ sqlcmd -S "${SQL_SERVER_ENDPOINT}" -U "${SQL_SERVER_USER}" -d "${SQL_SERVER_DB}"
 ```bash
 sqlcmd -S "${SQL_SERVER_ENDPOINT}" -U "${SQL_SERVER_USER}" -d "${SQL_SERVER_DB}" -i sql/select_data.sql
 ```
+
+## Configure Defender for Cloud for an Azure SQL Database
+Text goes here. 
