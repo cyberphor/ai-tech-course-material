@@ -51,7 +51,7 @@ terraform output admin_password
 curl -4 icanhazip.com
 ```
 
-**Step 2.** Add your public IP address to the `security.tf` file. For example, if your IP address is `13.92.118.23` the `security.tf` file will look like below. 
+**Step 2.** Add your public IP address to the `security.tf` file. For example, if your IP address is `13.92.118.23` the `security.tf` file would look like below. 
 ```t
 resource "azurerm_mssql_firewall_rule" "fw_rule_01" {
   name             = "Allow_Client_IP_Address"
