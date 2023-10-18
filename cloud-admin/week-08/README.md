@@ -1,10 +1,13 @@
 # Cloud Security
 ## Training Objectives
+* Create an Azure SQL server and database
+* Configure firewall rules for an Azure SQL server
+* Insert and select data from an Azure SQL database
+* Configure logging for an Azure SQL database
+
 * Describe security requirements for deploying apps to the cloud
 * Describe how a defense-in-depth strategy mitigates security incidents
 * Describe 3 ways access to an Azure SQL database can be controlled
-* Configure firewall rules for an Azure SQL database
-* Configure logging for an Azure SQL database
 
 ## Submitter
 ```bash
@@ -65,14 +68,27 @@ terraform apply
 cd ..
 ```
 
-**Step 4.** Test your firewall rule. 
+## Insert and Select Data From an Azure SQL Database
+**Step 1.** Define your SQL server details as environment variables. 
 ```bash
 # define environment variables
 export SQL_SERVER="sql-guided-sloth"
-export SQL_SERVER_DB="cloud-security-db"
 export SQL_SERVER_USER="clouduser"
 export SQL_SERVER_ENDPOINT="${SQL_SERVER}.database.windows.net"
+export SQL_SERVER_DB="SalesLT" # sample SQL database
+```
 
-# run sqlcmd
-sqlcmd -S "${SQL_SERVER_ENDPOINT}" -d "${SQL_SERVER_DB}" -U "${SQL_SERVER_USER}"
+**Step 2.** Create a sample SQL database. 
+```bash
+sqlcmd -S "${SQL_SERVER_ENDPOINT}" -U "${SQL_SERVER_USER}" -i sql/create_database.sql
+```
+
+**Step 3.** Insert data into the sample SQL database. 
+```bash
+sqlcmd -S "${SQL_SERVER_ENDPOINT}" -U "${SQL_SERVER_USER}" -d "${SQL_SERVER_DB}" -i sql/insert_data.sql 
+```
+
+**Step 4.** Select data from the sample SQL database. 
+```bash
+sqlcmd -S "${SQL_SERVER_ENDPOINT}" -U "${SQL_SERVER_USER}" -d "${SQL_SERVER_DB}" -i sql/select_data.sql
 ```
