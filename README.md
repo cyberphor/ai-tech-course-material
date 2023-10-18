@@ -1,8 +1,8 @@
 # Sail() Projects
 Vic's source code and notes relating to Sail()-based projects from the Army Artificial Intelligence (AI) Technician Cohort 4 program. 
 
-## Set Up
-**How to Install the Azure CLI within a GitHub Codespace**  
+## Getting Started
+### Install the Azure CLI within a GitHub Codespace
 **Step 1.** Enter the command below. 
 ```bash
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
@@ -23,6 +23,44 @@ az login --tenant "${TENANT_ID}" --use-device-code
 **Step 4.** Set your default subscription. 
 ```bash
 az account set --subscription "${SUBSCRIPTION_NAME}"
+```
+
+### Install Terraform within a GitHub Codespace
+**Step 1.** Install the following packages if not already done: `gnupg`, `software-properties-common`, and `curl`. They are required to verify the identity of HashiCorp's package repository. 
+```bash
+sudo apt-get update 
+sudo apt-get install -y gnupg software-properties-common
+```
+
+**Step 2.** Install HashiCorp's GPG key.
+```bash
+wget -O- https://apt.releases.hashicorp.com/gpg | \
+gpg --dearmor | \
+sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+```
+
+**Step 3.** Verify HashiCorp's GPG key fingerprint.
+```bash
+gpg --no-default-keyring \
+--keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+--fingerprint
+```
+
+**Step 4.** Add HashiCorp's package repository to your list of trusted package repositories. 
+```bash
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+sudo tee /etc/apt/sources.list.d/hashicorp.list
+```
+
+**Step 5.** Download package information from HashiCorp's package repository. 
+```bash
+sudo apt update
+```
+
+**Step 6.** Install Terraform. 
+```bash
+sudo apt install terraform
 ```
 
 ## Copyright
