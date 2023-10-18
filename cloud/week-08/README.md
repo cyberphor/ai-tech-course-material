@@ -28,19 +28,17 @@ terraform apply
 cd ..
 ``` 
 
-**Step 2.** Get the name of your Azure SQL Database Server. 
-```bash
-terraform output
-```
-
-Another option is using the Azure CLI. 
+**Step 2.** Save the name of your resource group and SQL server as environment variables. 
 ```bash
 export RESOURCE_GROUP="cloud-security"
-az sql server list \
-  --resource-group "${RESOURCE_GROUP}" --output tsv --query "[].name"
+export SQL_SERVER=$(az sql server list \
+  --resource-group "${RESOURCE_GROUP}" \
+  --output "tsv" \
+  --query "[].name"
+)
 ```
 
-To get the `admin_password` (a variable with sensitive/secret information), enter the command below. 
+To get the `admin_password` created by Terraform (a variable with sensitive/secret information), enter the command below. 
 ```bash
 terraform output admin_password
 ```
@@ -68,11 +66,18 @@ terraform apply
 cd ..
 ```
 
+**Step 4.** Verify the firewall rules were added. 
+```bash
+az sql server firewall-rule list \
+  --server "$SQL_SERVER" \
+  --resource-group "${RESOURCE_GROUP}" \
+  --output "table"
+```
+
 ## Insert and Select Data From an Azure SQL Database
-**Step 1.** Define your SQL server details as environment variables. 
+**Step 1.** Define your SQL server's other details as environment variables. 
 ```bash
 # define environment variables
-export SQL_SERVER="sql-guided-sloth"
 export SQL_SERVER_USER="clouduser"
 export SQL_SERVER_ENDPOINT="${SQL_SERVER}.database.windows.net"
 export SQL_SERVER_DB="SalesLT" # sample SQL database
