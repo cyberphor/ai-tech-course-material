@@ -17,7 +17,15 @@ class GeometricShape():
         return self.__name
     
     def __repr__(self):
+        """Representation method for GeometricShape class"""
         return f"GeometricShape(name={self.get_name()})"
+    
+    def __eq__(self, other):
+        """Equals method for GeometricShape class"""
+        if isinstance(other, GeometricShape):
+            if self.get_name() == other.get_name():
+                return True
+        return False
 
 class Rectangle(GeometricShape):
     """Rectangle class"""
@@ -54,6 +62,13 @@ class Rectangle(GeometricShape):
     
     def __repr__(self):
         return f"Rectangle(a={self.get_length()}, b={self.get_width()})"
+    
+    def __eq__(self, other):
+        if isinstance(other, Rectangle):
+            if other.get_length() == self.get_length():
+                if other.get_width() == self.get_width():
+                    return True
+        return False
 
 class Ellipse(GeometricShape):
     """Ellipse class"""
@@ -90,6 +105,13 @@ class Ellipse(GeometricShape):
     
     def __repr__(self):
         return f"Ellipse(r1={self.get_semi_major_axis()}, r2={self.get_semi_minor_axis()})"
+    
+    def __eq__(self, other):
+        if isinstance(other, Ellipse):
+            if other.get_semi_major_axis() == self.get_semi_major_axis():
+                if other.get_semi_minor_axis() == self.get_semi_minor_axis():
+                    return True
+        return False
 
 class Square(Rectangle):
     """Square class"""
@@ -109,6 +131,12 @@ class Square(Rectangle):
 
     def __repr__(self):
         return f"Square(a={self.get_side()})"
+    
+    def __eq__(self, other):
+        if isinstance(other, Square):
+            if other.get_side() == self.get_side():
+                return True
+        return False
 
 class Circle(Ellipse):
     """Circle class"""
@@ -128,6 +156,12 @@ class Circle(Ellipse):
     
     def __repr__(self):
         return f"Circle(r={self.get_radius()})"
+    
+    def __eq__(self, other):
+        if isinstance(other, Circle):
+            if other.get_radius() == self.get_radius():
+                return True
+        return False
    
 class ComplexShape(GeometricShape):
     """ComplexShape class"""
