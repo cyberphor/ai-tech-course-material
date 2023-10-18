@@ -1,10 +1,10 @@
+resource "random_pet" "azurerm_mssql_server_name" {
+  prefix = "sql"
+}
+
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.resource_group_location
-}
-
-resource "random_pet" "azurerm_mssql_server_name" {
-  prefix = "sql"
 }
 
 resource "random_password" "admin_password" {
@@ -28,7 +28,13 @@ resource "azurerm_mssql_server" "server" {
   administrator_login           = var.admin_username
   administrator_login_password  = local.admin_password
   version                       = "12.0"
-  public_network_access_enabled = "true" # task 0: false, task 1: true
+  public_network_access_enabled = "true" # task 0 requires false; task 1 requires true
+
+  # the setting below was required to enable an audit policy via Terraform
+  # https://github.com/Azure/azure-quickstart-templates/issues/6514
+  identity {
+    type = "SystemAssigned" 
+  }
 }
 
 resource "azurerm_mssql_database" "db" {
