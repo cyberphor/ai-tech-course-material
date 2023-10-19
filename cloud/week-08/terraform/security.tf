@@ -49,8 +49,12 @@ resource "azurerm_log_analytics_workspace" "main" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "main" {
+ depends_on = [
+    azurerm_mssql_database.main
+  ]
+
   name                       = "Diagnostic Settings"
-  target_resource_id         = "${azurerm_mssql_server.main.id}/databases/SalesLT"
+  target_resource_id         = "${azurerm_mssql_server.main.id}/databases/${var.sql_db_name}"
   log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
   
   enabled_log {
