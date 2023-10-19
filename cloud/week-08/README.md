@@ -71,21 +71,16 @@ az sql server firewall-rule list \
 # define environment variables
 export SQL_SERVER_USER="clouduser"
 export SQL_SERVER_ENDPOINT="${SQL_SERVER}.database.windows.net"
-export SQL_SERVER_DB="SalesLT" # sample SQL database
+export SQL_SERVER_DB="cloud-security-db" # sample SQL database
 ```
 
-**Step 2.** Create a sample SQL database using `sqlcmd`. 
-```bash
-sqlcmd -S "${SQL_SERVER_ENDPOINT}" -U "${SQL_SERVER_USER}" -i sql/create_database.sql
-```
-
-**Step 3.** Insert data into the sample SQL database using `sqlcmd`. 
+**Step 2.** Insert data into the SQL database using `sqlcmd`. 
 ```bash
 sqlcmd -S "${SQL_SERVER_ENDPOINT}" -U "${SQL_SERVER_USER}" -d "${SQL_SERVER_DB}" -i sql/insert_data.sql 
 ```
 
 ## Configure Server-Level Auditing for an Azure SQL Server
-**Step 1.** Add the content below to the Terraform `security.tf` configuration file.
+**Step 1.** Add the block below to the Terraform `security.tf` configuration file if it doesn't already exist.
 ```hcl
 resource "random_pet" "azurerm_storage_account_name" {
   separator = ""
@@ -118,10 +113,21 @@ cd ..
 sqlcmd -S "${SQL_SERVER_ENDPOINT}" -U "${SQL_SERVER_USER}" -d "${SQL_SERVER_DB}" -i sql/select_data.sql
 ```
 
-**Step 4.** Enter the command below to verify logs generated.
-```bash
-
-``` 
+**Step 4.** Verify logs generated.
 
 ## Configure Defender for Cloud for an Azure SQL Database
-Text goes here. 
+**Step 1.** Add the `threat_detection_policy` block below to the `azurerm_mssql_database` block (within the Terraform `security.tf` configuration file) if it doesn't already exist.
+```t
+  threat_detection_policy {
+    state                      = "Enabled"
+    storage_endpoint           = azurerm_storage_account.threat_detection_logs.primary_blob_endpoint
+    storage_account_access_key = azurerm_storage_account.threat_detection_logs.primary_access_key
+  }
+```
+
+**Step 2.** Enter the commands below to apply your new Terraform configuration plan.  
+```bash
+cd terraform
+terraform apply
+cd ..
+```

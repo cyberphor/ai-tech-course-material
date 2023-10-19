@@ -1,3 +1,3 @@
--- Create SalesLT database
-CREATE DATABASE SalesLT;
+-- Create cloud-security-db database
+CREATE DATABASE "cloud-security-db";
 GO
