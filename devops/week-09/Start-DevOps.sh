@@ -9,14 +9,9 @@ export PROJECT_NAME="week09"
 export PROJECT_VISIBILITY="Private"
 
 # Azure DevOps build pipeline variables
-export BUILD_PIPELINE_NAME="Build"
-export BUILD_PIPELINE_DESCRIPTION="Build pipeline"
-export BUILD_PIPELINE_FILE_PATH="azure-build-pipeline.yml"
-
-# Azure DevOps release pipeline variables
-export RELEASE_PIPELINE_NAME="Release"
-export RELEASE_PIPELINE_DESCRIPTION="Release pipeline"
-export RELEASE_PIPELINE_FILE_PATH="azure-release-pipeline.yml"
+export PIPELINE_NAME="Build and Release"
+export PIPELINE_DESCRIPTION="Build and release pipeline"
+export PIPELINE_FILE_PATH="azure-pipelines.yml"
 
 # Create an Azure DevOps project. If prompted, enter "Y" to install the "azure-devops" extension. 
 function Create-AzureDevOpsProject {
@@ -54,8 +49,7 @@ function Create-AzureDevOpsPipeline {
 if [ -n "$AZURE_DEVOPS_EXT_GITHUB_PAT" ]; then
     Create-AzureDevOpsProject
     export SERVICE_ENDPOINT_ID=$(Create-AzureDevOpsServiceEndpointGitHub)
-    Create-AzureDevOpsPipeline "${SERVICE_ENDPOINT_ID}" "${BUILD_PIPELINE_NAME}" "${BUILD_PIPELINE_FILE_PATH}"
-    Create-AzureDevOpsPipeline "${SERVICE_ENDPOINT_ID}" "${RELEASE_PIPELINE_NAME}" "${RELEASE_PIPELINE_FILE_PATH}"
+    Create-AzureDevOpsPipeline "${SERVICE_ENDPOINT_ID}" "${PIPELINE_NAME}" "${PIPELINE_FILE_PATH}"
 else 
     echo "[x] Error: 'AZURE_DEVOPS_EXT_GITHUB_PAT' is not defined."
     echo " 1. Create a GitHub Personal Access Token (PAT) for Azure DevOps to use."
