@@ -1,14 +1,14 @@
-# GitHub variables
+# GitHub variables.
 export REPO_ORG="SAIL-Classroom"
 export REPO_NAME="ci-cd-pipeline-for-vm-hosted-webservices-cyberphor"
 export REPO_BRANCH="master"
 
-# Azure DevOps project variables
+# Azure DevOps project variables.
 export PROJECT_ORG="victorfernandeziii"
 export PROJECT_NAME="week09"
 export PROJECT_VISIBILITY="Private"
 
-# Azure DevOps build pipeline variables
+# Azure DevOps build pipeline variables.
 export PIPELINE_NAME="Build and Release"
 export PIPELINE_DESCRIPTION="Build and release pipeline"
 export PIPELINE_FILE_PATH="azure-pipelines.yml"
@@ -32,7 +32,7 @@ function Create-AzureDevOpsServiceEndpointGitHub {
         --output "tsv"
 }
 
-# Create a CI/CD pipeline (based on the specified configuration file) using Azure DevOps.
+# Create a CI/CD pipeline using Azure DevOps a specified configuration file.
 function Create-AzureDevOpsPipeline {
     az pipelines create \
         --org "https://dev.azure.com/${PROJECT_ORG}" \
@@ -45,7 +45,7 @@ function Create-AzureDevOpsPipeline {
         --skip-run
 }
 
-# Create an build pipeline using Azure DevOps.
+# Start the script.
 if [ -n "$AZURE_DEVOPS_EXT_GITHUB_PAT" ]; then
     Create-AzureDevOpsProject
     export SERVICE_ENDPOINT_ID=$(Create-AzureDevOpsServiceEndpointGitHub)
