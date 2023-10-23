@@ -6,7 +6,7 @@
 export AZURE_DEVOPS_EXT_GITHUB_PAT=""
 ```
 
-**Step 2.** Download the provided source code. If you get a "Permission denied (publickey)" error, make sure you created an SSH key pair and added the public key to your GitHub profile. If the repo doesn't include the build and release pipeline files, add them.
+**Step 2.** Download the provided source code. If you get a "Permission denied (publickey)" error, make sure you created an SSH key pair and added the public key to your GitHub profile. If the repo doesn't include a CI/CD pipeline file, add it.
 ```bash
 git clone git@github.com:SAIL-Classroom/ci-cd-pipeline-for-vm-hosted-webservices-cyberphor.git
 cd ci-cd-pipeline-for-vm-hosted-webservices-cyberphor

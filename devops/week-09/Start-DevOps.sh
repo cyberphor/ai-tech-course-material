@@ -32,7 +32,7 @@ function Create-AzureDevOpsServiceEndpointGitHub {
         --output "tsv"
 }
 
-# Create an build pipeline using Azure DevOps.
+# Create an build pipeline (based on the specified configuration file) using Azure DevOps.
 function Create-AzureDevOpsPipeline {
     az pipelines create \
         --org "https://dev.azure.com/${PROJECT_ORG}" \
