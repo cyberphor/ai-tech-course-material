@@ -23,13 +23,13 @@ bash Start-DevOps.sh
 ```
 
 ## Run Terraform
-```
+```bash
 cd terraform/
 terraform init
 terraform plan
 terraform apply
-export ansible_password="$(terraform output admin_username)"
-export ansible_password="$(terraform output admin_password)"
+export ANSIBLE_USERNAME="$(terraform output admin_username)"
+export HOSTS="$(terraform output ip_addresses | tr -d '[]\n,' | paste -sd ',' -)"
 cd ..
 ```
 
@@ -38,8 +38,9 @@ Text goes here.
 
 ## Register Multiple Virtual Machines with a Deployment Group
 ```bash
-ansible-playbook playbook.yml \
-  -i inventory.yml \
+ansible-playbook \
+  playbook.yml \
+  -i "${HOSTS}" \
   --ssh-common-args='-o StrictHostKeyChecking=no'
 ```
 

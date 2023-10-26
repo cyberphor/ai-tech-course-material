@@ -66,13 +66,6 @@ variable "admin_username" {
   default     = "clouduser"
 }
 
-variable "admin_password" {
-  type        = string
-  description = "Password of local administrator"
-  sensitive   = true
-  default     = null
-}
-
 variable "prod_server_1" {
   type        = string
   default     = "Prod-Server-1"

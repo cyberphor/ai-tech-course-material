@@ -29,8 +29,10 @@ resource "azurerm_linux_virtual_machine" "qa_server_1" {
   location                        = azurerm_resource_group.main.location
   size                            = var.server_size
   admin_username                  = var.admin_username
-  admin_password                  = local.admin_password
-  disable_password_authentication = false
+  admin_ssh_key {
+    username                      = var.admin_username
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
   os_disk {
     caching                       = var.os_disk_caching              
     storage_account_type          = var.os_disk_storage_account_type

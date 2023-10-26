@@ -3,8 +3,7 @@ export DEPLOYMENT_GROUP="QA"
 export PROJECT_ORG="victorfernandeziii"
 export PROJECT_NAME="week09"
 export PAT="hhs3jcpiz4wjd7saa72elzd3wku5x4brmuap4q7q7xqx3fk4lbxa" # good luck :)
-# TODO: add auto-accept
-# TODO: tag = ci-cd-pipeline-for-vm-hosted-webservices
+export DEPLOYMENT_GROUP_TAG="ci-cd-pipeline-for-vm-hosted-webservices"
 
 mkdir azagent
 cd azagent
@@ -21,9 +20,10 @@ if [ -x "$(command -v systemctl)" ];
     --projectname "${PROJECT_NAME}" \
     --auth PAT \
     --token "${PAT}" \
-    --runasservice
+    --deploymentgrouptags "${DEPLOYMENT_GROUP_TAG}" \
+    --runasservice 
     sudo ./svc.sh install
-  sudo ./svc.sh start
+    sudo ./svc.sh start
 else ./config.sh \
   --deploymentgroup \
   --deploymentgroupname "${DEPLOYMENT_GROUP}" \
@@ -33,6 +33,8 @@ else ./config.sh \
   --work _work \
   --projectname "${PROJECT_NAME}" \
   --auth PAT \
-  --token "${PAT}"
+  --token "${PAT}" \
+  --deploymentgrouptags "${DEPLOYMENT_GROUP_TAG}" \
+  --unattended
   ./run.sh
 fi
