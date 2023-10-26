@@ -11,18 +11,18 @@ variable "resource_group_name" {
 }
 
 variable "network_name" {
-  type       = string
-  default    = "network_webservices"
+  type        = string
+  default     = "network_webservices"
 }
 
 variable "subnet_name" {
-  type       = string
-  default    = "subnet_webservices"
+  type        = string
+  default     = "subnet_webservices"
 }
 
 variable "network_security_group_name" {
-  type       = string
-  default    = "WebServiceNSG"
+  type        = string
+  default     = "WebServiceNSG"
 }
 
 variable "server_size" {

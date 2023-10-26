@@ -92,5 +92,11 @@ echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
+### Install Ansible within a GitHub Namespace
+**Step 1.** Install Ansible.
+```bash
+sudo python -m pip install ansible sshpass
+```
+
 ## Copyright
 This project is licensed under the terms of the [MIT license](/LICENSE).
