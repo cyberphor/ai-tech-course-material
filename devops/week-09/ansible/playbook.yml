@@ -1,9 +1,7 @@
 ---
 - name: "Register with a Deployment Group"
   hosts: "linux_virtual_machines"
-  remote_user: '{{ lookup("env", "ANSIBLE_USERNAME") }}'
-  vars:
-    ansible_password: '{{ lookup("env", "ANSIBLE_PASSWORD") }}'
+  remote_user: lookup("env", "ANSIBLE_USERNAME")
   tasks:
     - name: "Register"
       ansible.builtin.script: register.sh

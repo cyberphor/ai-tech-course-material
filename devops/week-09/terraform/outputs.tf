@@ -1,21 +1,26 @@
 
 output "admin_username" {
-  value     = var.admin_username
+  value = var.admin_username
 }
 
-output "admin_password" {
-  sensitive = true
-  value     = local.admin_password
-}
+resource "null_resource" "create_ansible_host_inventory" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
 
-output "prod_server_1_public_ip_address" {
-  value = azurerm_linux_virtual_machine.prod_server_1.public_ip_address
-}
+  for_each = {
+    prod_1 = azurerm_linux_virtual_machine.prod_server_1.public_ip_address,
+    prod_2 = azurerm_linux_virtual_machine.prod_server_2.public_ip_address,
+    qa_1   = azurerm_linux_virtual_machine.qa_server_1.public_ip_address
+  }
+  
+  ip_address = each.value
 
-output "prod_server_2_public_ip_address" {
-  value = azurerm_linux_virtual_machine.prod_server_1.public_ip_address
-}
-
-output "qa_server_1public_ip_address" {
-  value = azurerm_linux_virtual_machine.qa_server_1.public_ip_address
+  provisioner "local-exec" {
+    command = <<EOT
+      echo "[linux_virtual_machines]" > inventory.yml
+      echo ${ip_address} >> inventory.yml
+      done
+    EOT
+  }
 }
