@@ -1,3 +1,5 @@
+# TODO: rewrite in python (https://github.com/microsoft/azure-devops-python-api)
+
 # GitHub variables.
 export REPO_ORG="SAIL-Classroom"
 export REPO_NAME="ci-cd-pipeline-for-vm-hosted-webservices-cyberphor"

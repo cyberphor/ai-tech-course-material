@@ -22,5 +22,26 @@ az account show
 bash Start-DevOps.sh
 ```
 
+## Run Terraform
+```
+cd terraform/
+terraform init
+terraform plan
+terraform apply
+export ansible_password="$(terraform output admin_username)"
+export ansible_password="$(terraform output admin_password)"
+cd ..
+```
+
+## Create Your Deployment Groups
+Text goes here. 
+
+## Register Multiple Virtual Machines with a Deployment Group
+```bash
+ansible-playbook playbook.yml \
+  -i inventory.yml \
+  --ssh-common-args='-o StrictHostKeyChecking=no'
+```
+
 ### References
 * [https://stackoverflow.com/questions/75081137/unable-to-create-pipeline-using-azure-devops-cli-in-azure-devops-portal-from-azu](https://stackoverflow.com/questions/75081137/unable-to-create-pipeline-using-azure-devops-cli-in-azure-devops-portal-from-azu)
