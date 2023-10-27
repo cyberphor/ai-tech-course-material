@@ -80,3 +80,18 @@ variable "qa_server_1" {
   type        = string
   default     = "QA-Server-1"
 }
+
+variable "ansible_host_group_prod" {
+  type        = string
+  default     = "linux_virtual_machines_prod"
+}
+
+variable "ansible_host_group_qa" {
+  type        = string
+  default     = "linux_virtual_machines_qa"
+}
+
+variable "ansible_inventory_file_path" {
+  type        = string
+  default     = "../ansible/inventory.ini"
+}
