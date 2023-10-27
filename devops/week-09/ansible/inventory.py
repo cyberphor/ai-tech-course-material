@@ -17,8 +17,9 @@ def update(file_path: str, host_group: list, host: str):
     hosts = inventory[host_group]["hosts"]
     if host not in hosts:
         inventory[host_group]["hosts"][host] = None
-    with open(file_path, "w", encoding = "UTF-8") as file_stream:
-        dump(inventory, file_stream, default_flow_style=False)
+        with open(file_path, "w", encoding = "UTF-8") as file_stream:
+            new_inventory = dump(inventory, default_flow_style = False).replace("null","")
+            file_stream.write(new_inventory)
 
 if __name__ == "__main__":
     parser = ArgumentParser()
