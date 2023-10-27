@@ -59,7 +59,7 @@ ssh-add ~/.ssh/id_rsa  # add your SSH private key to the SSH authentication agen
 ## Register Multiple Virtual Machines with a Deployment Group
 ```bash
 cd ansible/
-ansible-playbook playbook.yml -i inventory.ini --ssh-common-args='-o StrictHostKeyChecking=no'
+ansible-playbook playbook.yaml -i inventory.yaml --ssh-common-args='-o StrictHostKeyChecking=no'
 ```
 
 ### References
