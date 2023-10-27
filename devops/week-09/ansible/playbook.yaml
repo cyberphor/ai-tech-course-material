@@ -1,18 +1,7 @@
 ---
 - hosts: "all"
-  vars:
-    ansible_user: "{{ lookup('env', 'ANSIBLE_USER') }}"
-    azure_pipeline_agent_url: "{{ lookup('env', 'AZURE_PIPELINE_AGENT_URL_LINUX') }}"
-    deployment_group_prod: "{{ lookup('env', 'DEPLOYMENT_GROUP_PROD') }}"
-    deployment_group_qa: "{{ lookup('env', 'DEPLOYMENT_GROUP_QA') }}"
-    deployment_group_tag: "{{ lookup('env', 'DEPLOYMENT_GROUP_TAG') }}"
-    deployment_group_pat: "{{ lookup('env', 'DEPLOYMENT_GROUP_PAT') }}"
-    project_org: "{{ lookup('env', 'PROJECT_ORG') }}"
-    project_name: "{{ lookup('env', 'PROJECT_NAME') }}"
-- hosts: "all"
   tasks:
     - name: "Create a folder for the Azure Pipelines agent"
-      when: ansible_user is defined
       ansible.builtin.file:
         state: directory
         path: azagent
@@ -30,13 +19,6 @@
 - hosts: "linux_virtual_machines_prod"
   tasks:
     - name: "Prepare the Azure Pipelines agent for Prod machines"
-      when: |
-        azure_pipeline_agent_url is defined and 
-        deployment_group_prod is defined and 
-        deployment_group_tag is defined and 
-        project_name is defined and 
-        project_org is defined and 
-        deployment_group_pat is defined
       args:
         chdir: azagent/
       ansible.builtin.shell: |
@@ -55,13 +37,6 @@
 - hosts: "linux_virtual_machines_qa"
   tasks:
     - name: "Prepare the Azure Pipelines agent for QA machines"
-      when: |
-        azure_pipeline_agent_url is defined and 
-        deployment_group_qa is defined and 
-        deployment_group_tag is defined and 
-        project_name is defined and 
-        project_org is defined and 
-        deployment_group_pat is defined
       args:
         chdir: azagent/
       ansible.builtin.shell: |

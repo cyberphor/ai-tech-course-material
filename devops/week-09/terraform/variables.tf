@@ -93,5 +93,5 @@ variable "ansible_host_group_qa" {
 
 variable "ansible_inventory_file_path" {
   type        = string
-  default     = "../ansible/inventory.ini"
+  default     = "../ansible/inventory.yaml"
 }
