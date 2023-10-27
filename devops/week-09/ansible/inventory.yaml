@@ -1,0 +1,3 @@
+linux_virtual_machines_prod:
+  hosts:
+    1.1.1.10: null

@@ -9,16 +9,16 @@ def update(file_path: str, host_group: list, host: str):
         with open(file_path, "r", encoding = "UTF-8") as file_stream:
             inventory = safe_load(file_stream)
     else:
-        inventory = {host_group: {"hosts": []}}
+        inventory = {host_group: {"hosts": {}}}
 
     if host_group not in inventory.keys():
-        inventory[host_group] = {"hosts": []}
+        inventory[host_group] = {"hosts": {}}
     
     hosts = inventory[host_group]["hosts"]
     if host not in hosts:
-        inventory[host_group]["hosts"].append(host)
+        inventory[host_group]["hosts"][host] = None
     with open(file_path, "w", encoding = "UTF-8") as file_stream:
-        dump(inventory, file_stream)
+        dump(inventory, file_stream, default_flow_style=False)
 
 if __name__ == "__main__":
     parser = ArgumentParser()
