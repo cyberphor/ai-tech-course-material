@@ -1,0 +1,7 @@
+linux_virtual_machines_prod:
+  hosts:
+    20.120.91.18: 
+    20.168.254.101: 
+linux_virtual_machines_qa:
+  hosts:
+    20.106.255.85: 
