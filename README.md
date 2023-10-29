@@ -1,5 +1,3 @@
-# Army AI Technician Program
-
 ## Getting Started
 ### Install the Azure CLI within a GitHub Codespace
 **Step 1.** Enter the command below. 
