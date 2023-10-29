@@ -11,8 +11,8 @@ export PROJECT_NAME="week09"
 export PROJECT_VISIBILITY="Private"
 
 # Azure DevOps build pipeline variables.
-export PIPELINE_NAME="Build and Release"
-export PIPELINE_DESCRIPTION="Build and release pipeline"
+export PIPELINE_NAME="Build"
+export PIPELINE_DESCRIPTION="Build pipeline"
 export PIPELINE_FILE_PATH="azure-pipelines.yml"
 
 # Create an Azure DevOps project. If prompted, enter "Y" to install the "azure-devops" extension. 
