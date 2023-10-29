@@ -1,5 +1,4 @@
-# Source Code for AITP-Related Projects
-Vic's source code and notes relating to the Army AI Technician Program (AITP).
+# Army AI Technician Program
 
 ## Getting Started
 ### Install the Azure CLI within a GitHub Codespace
