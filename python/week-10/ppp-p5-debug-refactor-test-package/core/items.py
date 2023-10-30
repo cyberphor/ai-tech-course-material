@@ -1,7 +1,7 @@
 import math
 import random
 
-from errors import *
+from core.errors import *
 
 class Item:
     def __init__(self, name, price):
@@ -23,7 +23,7 @@ class Item:
             amount =  f"{(self.price * quantity):.2f}"
         dollars = amount.split(".")[0]
         cents = amount.split(".")[1]
-        if order > self.get_order():
+        if None is not order and order > self.get_order():
             dollars = f"{dollars:0>{order+1}}"
         if hide_price:
             price = f"${'?' * len(dollars)}.??"
@@ -40,7 +40,7 @@ class Item:
         if None is not quantity:
             list_item = list_item + f" ({quantity}x)"
         return list_item
-    
+
     def __repr__(self):
         return f'Item({self.name}, {self.price})'
     
@@ -84,7 +84,9 @@ class ItemPool:
         out = 'ITEMS\n'
         for item_name in sorted(self.items.keys()):
             item = self.items[item_name]
-            out += item.item2line(padding=max_name - len(item_name), order=max_order) + '\n'
+            # HACK: task 2 - added line below in place of line following it
+            out += item.get_price_str(quantity = max_name, order = max_order) + '\n'
+            # out += item.item2line(padding=max_name - len(item_name), order=max_order) + '\n'
         return out
     
     def __repr__(self):
