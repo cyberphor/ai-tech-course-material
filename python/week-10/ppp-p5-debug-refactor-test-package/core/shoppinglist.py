@@ -39,47 +39,5 @@ class ShoppingList:
     def get_item_price(self, i):
         return round(self.list[i][0].price * self.list[i][1], 2)
 
-    def show_list(self, mask_index = None):
-        line_base_len = len('TOTAL') - 4
-        max_item = max(len(item.name) for item, _ in self.list)
-        line_base_len = max(max_item, line_base_len)
-        total = Item('TOTAL', self.get_total_price())
-        max_order = total.get_order()
-        max_name = len(total.name)
-        for item, _ in self.list:
-            max_name = max(max_name, len(item.name))
-            max_order = max(max_order, item.get_order())
-        out = 'SHOPPING LIST\n'
-        i = 0
-        for i, (item, quantity) in enumerate(self.list):
-            hide_price = mask_index == i
-            # HACK: task 2 - added the seven lines below in place of one line following them
-            padding = "." * (line_base_len - len(item.name))
-            out += " ".join([
-                item.get_list_item_str(quantity = quantity),
-                padding,
-                item.get_price_str(quantity = quantity, order = max_order, hide_price = hide_price),
-                "\n"
-            ])
-            #out += item.item2line(quantity, hide_price, max_order, padding) + '\n'
-        i += 1
-        hide_price = mask_index == i
-        q_len = 5
-        d_len = 2
-        # HACK: task 2 - added the five lines below in place of the lines following them
-        total_line = " ".join([
-            total.name,
-            ((max_name - len(total.name) + q_len + d_len) * "."),
-            total.get_price_str(hide_price = hide_price),
-        ])
-        # total_line = total.item2line(
-        #     padding = max_name - len(total.name) + q_len + d_len,
-        #     order = max_order,
-        #     hide_price = hide_price,
-        #     leading_dash = False
-        # )
-        hline = '-'*len(total_line) + '\n'
-        return out+hline+total_line + '\n'
-
     def __len__(self):
         return len(self.list)

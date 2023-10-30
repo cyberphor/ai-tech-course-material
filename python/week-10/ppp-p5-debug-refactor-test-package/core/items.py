@@ -16,14 +16,14 @@ class Item:
         return math.floor(round(math.log(self.price, 10), 10))
     
     # HACK: task 2 - added the method below
-    def get_price_str(self, quantity = None, order = None, hide_price = False):
+    def get_price_str(self, quantity = None, hide_price = False, order = None):
         if None is quantity:
             amount = f"{self.price:.2f}"
         else:
             amount =  f"{(self.price * quantity):.2f}"
         dollars, cents = amount.split(".")
         if None is not order and order > self.get_order():
-            dollars = f"{dollars:0>{order + 1}}"
+            dollars = f"{dollars:0>{order}}"
         if hide_price:
             price = f"${'?' * len(dollars)}.??"
         else:
@@ -74,22 +74,6 @@ class ItemPool:
 
     def sample_items(self, sample_size):
         return random.sample(list(self.items.values()), min(sample_size, len(self.items)))
-
-    def show_items(self):
-        max_name, max_order = 0, 0
-        for item in self.items.values():
-            max_name = max(max_name, len(item.name))
-            max_order = max(max_order, item.get_order())
-        out = 'ITEMS\n'
-        for item_name in sorted(self.items.keys()):
-            item = self.items[item_name]
-            # HACK: task 2 - added four lines below in place of the line following them
-            list_string = item.get_list_item_str(leading_dash=True)
-            padding = "..." + ("." * (max_name - len(item_name)))
-            price_string = item.get_price_str(quantity = max_name, order = (max_order + 1))
-            out += f"{list_string}{padding}{price_string}\n"
-            # out += item.item2line(padding=max_name - len(item_name), order=max_order) + '\n'
-        return out
 
     def __repr__(self):
         return f'ItemPool({self.items})'
