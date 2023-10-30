@@ -14,27 +14,32 @@ class Item:
 
     def get_order(self):
         return math.floor(round(math.log(self.price, 10), 10))
-
-    def item2line(self, quantity = None, hide_price = False, order = None, padding = 0,leading_dash = True):
-        # quantity
-        if quantity is None:
-            qnt_str = ''
+    
+    # HACK: task 2 - added method below
+    def get_price_str(self, quantity = None, order = None, hide_price = False):
+        if None is quantity:
+            amount = f"{self.price:.2f}"
         else:
-            qnt_str = f' ({quantity}x)'
-
-        # price
-        if order is None:
-            order = self.get_order()
-        prcStr = '${:0' + str(order + 4) + '.2f}'
-        prcStr = prcStr.format(self.price * (quantity or 1))
+            amount =  f"{(self.price * quantity):.2f}"
+        dollars = amount.split(".")[0]
+        cents = amount.split(".")[1]
+        if order > self.get_order():
+            dollars = f"{dollars:0>{order+1}}"
         if hide_price:
-            prcStr = f'${"?" * (order + 1)}.??'
+            price = f"${'?' * len(dollars)}.??"
+        else:
+            price = f"${dollars}.{cents}"
+        return price
 
-        # dash
-        dash = ''
+    # HACK: task 2 - added method below
+    def get_list_item_str(self, quantity = None, leading_dash = True):
         if leading_dash:
-            dash = '- '
-        return f'{dash}{self.name}{qnt_str} ...{"." * padding} {prcStr}'
+            list_item = f"- {self.name}"      
+        else:
+            list_item = self.name
+        if None is not quantity:
+            list_item = list_item + f" ({quantity}x)"
+        return list_item
     
     def __repr__(self):
         return f'Item({self.name}, {self.price})'

@@ -1,7 +1,7 @@
 import random
-from errors import *
-from items import *
-from shoppinglist import *
+from core.errors import *
+from core.items import *
+from core.shoppinglist import *
 
 class AppEngine:
     def __init__(self, shoppingList = None, items = None):
@@ -76,7 +76,7 @@ class AppEngine:
         item_tuple = item_str.split(': ')
         if len(item_tuple)==2:
             name, price = item_tuple
-            # HACK: updated line below
+            # HACK: task 1 - updated line below
             item = Item(name, float(price))
             self.items.add_item(item)
             self.message = f'{item} added successfully.'
