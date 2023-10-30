@@ -11,7 +11,7 @@ export VM_SIZE="Standard_B1ls"
 export VM_TAGS="project=bcdr"
 export VM_AUTH_TYPE="password"
 export VM_ADMIN_USER="azureuser"
-export VM_ADMIN_PASSWORD="P@ssw0rd1.Aa"
+export VM_ADMIN_PASSWORD=""
 export VM_VAULT_NAME="myRecoveryServicesVault"
 export STORAGE_NAME="restorationlocationweek09"
 export STORAGE_KIND="StorageV2"
@@ -129,7 +129,7 @@ export VM_SIZE="Standard_B1ls"
 export VM_TAGS="project=p8"
 export VM_AUTH_TYPE="password"
 export VM_ADMIN_USER="azureuser"
-export VM_ADMIN_PASSWORD="P@ssw0rd1.Aa"
+export VM_ADMIN_PASSWORD=""
 ```
 
 **Step 2.** Create a resource group.
@@ -275,7 +275,7 @@ export VM_IMAGE1="Ubuntu2204"
 export VM_TAGS1="project=bcdr"
 export VM_AUTH_TYPE1="password"
 export VM_ADMIN_USER1="azureuser"
-export VM_ADMIN_PASSWORD1="P@ssw0rd1.Aa"
+export VM_ADMIN_PASSWORD1=""
 export VM_PORT1="80"
 
 # west
@@ -286,7 +286,7 @@ export VM_IMAGE2="Ubuntu2204"
 export VM_TAGS2="project=bcdr"
 export VM_AUTH_TYPE2="password"
 export VM_ADMIN_USER2="azureuser"
-export VM_ADMIN_PASSWORD2="P@ssw0rd1.Aa"
+export VM_ADMIN_PASSWORD2=""
 export VM_PORT2="80"
 ```
 ```bash
