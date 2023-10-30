@@ -15,23 +15,22 @@ class Item:
     def get_order(self):
         return math.floor(round(math.log(self.price, 10), 10))
     
-    # HACK: task 2 - added method below
+    # HACK: task 2 - added the method below
     def get_price_str(self, quantity = None, order = None, hide_price = False):
         if None is quantity:
             amount = f"{self.price:.2f}"
         else:
             amount =  f"{(self.price * quantity):.2f}"
-        dollars = amount.split(".")[0]
-        cents = amount.split(".")[1]
+        dollars, cents = amount.split(".")
         if None is not order and order > self.get_order():
-            dollars = f"{dollars:0>{order+1}}"
+            dollars = f"{dollars:0>{order + 1}}"
         if hide_price:
             price = f"${'?' * len(dollars)}.??"
         else:
             price = f"${dollars}.{cents}"
         return price
 
-    # HACK: task 2 - added method below
+    # HACK: task 2 - added the method below
     def get_list_item_str(self, quantity = None, leading_dash = True):
         if leading_dash:
             list_item = f"- {self.name}"      
@@ -84,11 +83,14 @@ class ItemPool:
         out = 'ITEMS\n'
         for item_name in sorted(self.items.keys()):
             item = self.items[item_name]
-            # HACK: task 2 - added line below in place of line following it
-            out += item.get_price_str(quantity = max_name, order = max_order) + '\n'
+            # HACK: task 2 - added four lines below in place of the line following them
+            list_string = item.get_list_item_str(leading_dash=True)
+            padding = "..." + ("." * (max_name - len(item_name)))
+            price_string = item.get_price_str(quantity = max_name, order = (max_order + 1))
+            out += f"{list_string}{padding}{price_string}\n"
             # out += item.item2line(padding=max_name - len(item_name), order=max_order) + '\n'
         return out
-    
+
     def __repr__(self):
         return f'ItemPool({self.items})'
 
