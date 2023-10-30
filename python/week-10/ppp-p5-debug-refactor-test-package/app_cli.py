@@ -76,7 +76,7 @@ class AppEngine:
         item_tuple = item_str.split(': ')
         if len(item_tuple)==2:
             name, price = item_tuple
-            # HACK: task 1 - updated line below
+            # HACK: task 1 - updated the line below
             item = Item(name, float(price))
             self.items.add_item(item)
             self.message = f'{item} added successfully.'

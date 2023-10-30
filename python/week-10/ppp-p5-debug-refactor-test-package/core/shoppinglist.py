@@ -11,7 +11,7 @@ class ShoppingList:
     def refresh(self, item_pool, size = None, quantities = None):
         if size is None:
             size = random.randint(1,item_pool.get_size()+1)
-            # HACK: task 1  - added next 3 lines below
+            # HACK: task 1  - added the next 3 lines below
             item_pool_size = item_pool.get_size()
             if size > item_pool_size:
                 size = size - item_pool_size
@@ -53,20 +53,20 @@ class ShoppingList:
         i = 0
         for i, (item, quantity) in enumerate(self.list):
             hide_price = mask_index == i
-            padding = line_base_len - len(item.name)
-            # HACK: task 2 - added line below in place of line following it
+            # HACK: task 2 - added the seven lines below in place of one line following them
+            padding = "." * (line_base_len - len(item.name))
             out += " ".join([
                 item.get_list_item_str(quantity = quantity),
-                 (padding * "."),
-                 item.get_price_str(quantity = quantity, order = max_order, hide_price = hide_price),
-                 "\n"
+                padding,
+                item.get_price_str(quantity = quantity, order = max_order, hide_price = hide_price),
+                "\n"
             ])
             #out += item.item2line(quantity, hide_price, max_order, padding) + '\n'
         i += 1
         hide_price = mask_index == i
         q_len = 5
         d_len = 2
-        # HACK: task 2 - added line below in place of line following it
+        # HACK: task 2 - added the five lines below in place of the lines following them
         total_line = " ".join([
             total.name,
             ((max_name - len(total.name) + q_len + d_len) * "."),
