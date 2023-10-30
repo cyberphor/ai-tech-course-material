@@ -41,7 +41,6 @@ class Item:
     
     def __eq__(self, other):
         return isinstance(other, Item) and self.name == other.name and self.price == other.price
-           
 
 class ItemPool:
     def __init__(self, items = None):
