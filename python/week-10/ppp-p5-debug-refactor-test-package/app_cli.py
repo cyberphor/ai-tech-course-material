@@ -1,93 +1,114 @@
 import random
+from core.appengine import AppEngine
 from core.errors import *
 from core.items import *
 from core.shoppinglist import *
 
-class AppEngine:
-    def __init__(self, shoppingList = None, items = None):
-        self.items = items
-        self.shopping_list = shoppingList
-        self.continue_execution = True
-        self.message = None
-        self.correct_answer = None
-        self.status = None
+class AppCLI:
+    def __init__(self, shoppingList=None, items=None):
+        self.app_engine = AppEngine(shoppingList, items)
 
     def run(self):
         while True:
             prompt = 'What would you like to do? '
-            if self.correct_answer is not None:
+            if self.app_engine.correct_answer is not None:
                 prompt = 'What amount should replace the questionmarks? $'
             cmd = input(prompt)
             self.execute_command(cmd)
-            print(f'{self.message}\n')
-            self.message = None
+            print(f'{self.app_engine.message}\n')
+            self.app_engine.message = None
 
-            if not self.continue_execution:
+            if not self.app_engine.continue_execution:
                 break
 
     def execute_command(self,cmd):
-        if self.correct_answer is not None:
-            self.process_answer(cmd)
+        if self.app_engine.correct_answer is not None:
+            self.app_engine.process_answer(cmd)
         elif cmd == 'q' or cmd == 'quit':
-            self.continue_execution = False
-            self.message = 'Have a nice day!'
+            self.app_engine.continue_execution = False
+            self.app_engine.message = 'Have a nice day!'
         elif cmd == 'a' or cmd == 'ask':
             self.process_ask()
         elif cmd == 'l' or cmd == 'list':
-            self.shopping_list.refresh(item_pool = self.items)
-            self.message = (f'Shopping list with {len(self.shopping_list)} items has been created.')
+            self.app_engine.shopping_list.refresh(item_pool = self.app_engine.items)
+            self.app_engine.message = (f'Shopping list with {len(self.app_engine.shopping_list)} items has been created.')
         elif cmd.startswith('show'):
             self.process_show(cmd)
         elif cmd.startswith('add'):
-            self.process_add_item(cmd)
+            self.app_engine.process_add_item(cmd)
         elif cmd.startswith('del'):
-            self.process_del_item(cmd)
+            self.app_engine.process_del_item(cmd)
         else:
-            self.message = f'"{cmd}" is not a valid command.'
+            self.app_engine.message = f'"{cmd}" is not a valid command.'
 
     def process_ask(self):
-        q =random.randint(0, len(self.shopping_list.list))
-        self.message= self.shopping_list.show_list(mask_index = q)
-        if q<len(self.shopping_list.list):
-            self.correct_answer = self.shopping_list.get_item_price(q)
+        q =random.randint(0, len(self.app_engine.shopping_list.list))
+        self.app_engine.message= self.show_list(mask_index = q)
+        if q<len(self.app_engine.shopping_list.list):
+            self.app_engine.correct_answer = self.app_engine.shopping_list.get_item_price(q)
         else:
-           self.correct_answer = self.shopping_list.get_total_price()
-
-    def process_answer(self, cmd):
-        answer = round(float(cmd), 2)
-        if answer == self.correct_answer:
-            self.message = 'Correct!'
-        else:
-            self.message = f'Not Correct! (Expected ${self.correct_answer:.02f})\nYou answered ${answer:.02f}.'
-        self.correct_answer = None
+           self.app_engine.correct_answer = self.app_engine.shopping_list.get_total_price()
 
     def process_show(self, cmd):
         what = cmd[ 5: ]
-        if what == 'items' :
-            self.message = self.items.show_items()
-        elif what == 'list' :
-            self.message = self.shopping_list.show_list()
+        if what == 'items':
+            # HACK: task 2 - added the line below in place of the line following it
+            self.app_engine.message = self.show_items()
+            #self.message = self.items.show_items()
+        elif what == 'list':
+            self.app_engine.message = self.show_list()
         else:
-            self.message= f'Cannot show {what}.\n'
-            self.message += 'Usage: show list|items'
+            self.app_engine.message = "\n".join([
+                f"Cannot show {what}.",
+                "Usage: show list|items"
+            ])
 
-    def process_add_item(self, cmd):
-        item_str = cmd[4:]
-        item_tuple = item_str.split(': ')
-        if len(item_tuple)==2:
-            name, price = item_tuple
-            # HACK: task 1 - updated the line below
-            item = Item(name, float(price))
-            self.items.add_item(item)
-            self.message = f'{item} added successfully.'
-        else:
-            self.message = f'Cannot add "{item_str}".\n'
-            self.message += 'Usage: add <item_name>: <item_price>'
-
-    def process_del_item(self, cmd):
-        item_name = cmd[4: ]
-        self.items.remove_item( item_name )
-        self.message =f'{item_name} removed successfully.'
+    # HACK: task 2 - moved the method below from the core.items module to here
+    def show_items(self):
+        max_name, max_order = 0, 0
+        for item in self.app_engine.items.items.values():
+            max_name = max(max_name, len(item.name))
+            max_order = max(max_order, item.get_order())
+        out = 'ITEMS\n'
+        for item_name in sorted(self.app_engine.items.items.keys()):
+            item = self.app_engine.items.items[item_name]
+            # HACK: task 2 - added four lines below in place of the line following them
+            list_string = item.get_list_item_str(leading_dash=True)
+            padding = "..." + ("." * (max_name - len(item_name)))
+            price_string = item.get_price_str(order = max_order)
+            out += f"{list_string} {padding} {price_string}" + "\n"
+        return out
+    
+    def show_list(self, mask_index = None):
+        line_base_len = len('TOTAL') - 4
+        max_item = max(len(item.name) for item, _ in self.app_engine.shopping_list.list)
+        line_base_len = max(max_item, line_base_len)
+        total = Item('TOTAL', self.app_engine.shopping_list.get_total_price())
+        max_order = total.get_order()
+        max_name = len(total.name)
+        for item, _ in self.app_engine.shopping_list.list:
+            max_name = max(max_name, len(item.name))
+            max_order = max(max_order, item.get_order())
+        out = 'SHOPPING LIST\n'
+        i = 0
+        for i, (item, quantity) in enumerate(self.app_engine.shopping_list.list):
+            hide_price = mask_index == i
+            # HACK: task 2 - added the seven lines below in place of one line following them
+            padding = "..." + ("." * (line_base_len - len(item.name)))
+            out += " ".join([
+                item.get_list_item_str(quantity = quantity),
+                padding,
+                item.get_price_str(quantity = quantity, order = max_order, hide_price = hide_price),
+            ]) + "\n"
+        i += 1
+        hide_price = mask_index == i
+        q_len = 5
+        d_len = 2
+        # HACK: task 2 - added the five lines below
+        padding = "..." + ("." * (max_name - len(total.name) + q_len + d_len))
+        total_line = f"{total.name} {padding} {total.get_price_str(hide_price = hide_price)}"
+        hline = '-' * len(total_line) + '\n'
+        return out + hline + total_line + '\n'
 
 if __name__ == '__main__':
     # usage example
@@ -101,5 +122,5 @@ if __name__ == '__main__':
     ip.add_item(item4)
     ip.add_item(item5)
     sp = ShoppingList(size=3, quantities=[3, 2, 4], item_pool=ip)
-    app = AppEngine(sp, ip)
+    app = AppCLI(sp, ip)
     app.run()
