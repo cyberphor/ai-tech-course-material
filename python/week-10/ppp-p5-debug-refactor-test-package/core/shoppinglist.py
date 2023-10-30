@@ -1,5 +1,5 @@
-from errors import *
-from items import *
+from core.errors import *
+from core.items import *
 import random
 
 class ShoppingList:
@@ -11,7 +11,7 @@ class ShoppingList:
     def refresh(self, item_pool, size = None, quantities = None):
         if size is None:
             size = random.randint(1,item_pool.get_size()+1)
-            # HACK: added next 3 lines below
+            # HACK: task 1  - added next 3 lines below
             item_pool_size = item_pool.get_size()
             if size > item_pool_size:
                 size = size - item_pool_size
