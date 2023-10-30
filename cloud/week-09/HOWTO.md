@@ -93,7 +93,7 @@ az storage account create \
     * Restore point > Select > (the snapshot created in Step 6)
     * Restore configuration: Create new
       * Restore type: Create new virtual machine
-      * Virtual machine name: (e.g., "VM2")
+      * Virtual machine name: (e.g., `VM2`)
       * Resource group: (your resource group)
       * Virtual network: (your virtual network)
       * Subnet: (your subnet)
@@ -117,9 +117,10 @@ az vm list \
   --resource-group "${RESOURCE_GROUP}"
 ```
 
-## Replicate an Azure Virtual Machine in Another Region
+## Replicate an Azure Virtual Machine to Another Region
 **Step 1.** Define your environment variables.
 ```bash
+export SUBSCRIPTION_ID=$(az account show --query "id" --output "tsv")
 export RESOURCE_GROUP="myRG_WestUS"
 export LOCATION="westus"
 export VM_NAME="VM3"
@@ -170,26 +171,232 @@ az network nsg rule list \
 
 **Step 6.** Enable replication of your virtual machine in the West US region to the East US region.
 * Resource Groups > (your resource group) > (your backup vault)
-* Protected items > Replicated items > Replicate > Azure virtual machines
-  * Source
-    * Region: West US
-    * Subscription: (your subscription)
-    * Resource group: (your second resource group; e.g., `myRG_WestUS`)
-    * Virtual machine deployment mode: Resource manager
-  * Virtual machines
-    * (your virtual machine; e.g., `VM3`)
-  * Replication settings
-    * Target location: East US
-    * Target subscription: (your subscription)
-    * Target resource group: (use the default value provided)
-    * (use the default value provided for the remaining options)
+  * Protected items > Replicated items > Replicate > Azure virtual machines
+    * Source
+      * Region: West US
+      * Subscription: (your subscription)
+      * Resource group: (your second resource group; e.g., `myRG_WestUS`)
+      * Virtual machine deployment mode: Resource manager
+    * Virtual machines
+      * (your virtual machine; e.g., `VM3`)
+    * Replication settings
+      * Target location: East US 2
+      * Target subscription: (your subscription)
+      * Target resource group: (use the default value provided)
+      * (use the default value provided for the remaining options)
 
 **Step 7.** Wait for the replication to finish. 
 * Resource Groups > (your resource group) > (your backup vault)
-* Monitoring > Site Recovery jobs
-  * Wait for your recovery jobs to complete
+  * Monitoring > Site Recovery jobs
+    * Wait for your recovery jobs to complete
 
 **Step 8.** Verify your virtual machine was replicated. 
 * Resource Groups > (your resource group) > (your backup vault)
-* Protected items > Replicated items
-  * Confirm for your virtual machine's "Replication Health" status is "Protected" 
+  * Protected items > Replicated items
+    * Confirm for your virtual machine's "Replication Health" status is "Protected" 
+
+```bash
+az rest \
+  -m get \
+  -u "https://management.azure.com/Subscriptions/$SUBSCRIPTION_ID/resourceGroups/backup-disaster-recovery/providers/Microsoft.RecoveryServices/vaults/myRecoveryServicesVault/replicationProtectedItems?api-version=2018-07-10" \
+  --query "value[].{friendlyName:properties.friendlyName, failoverHealth:properties.failoverHealth, protectionState:properties.protectionState, protectionStateDescription:properties.protectionStateDescription, testFailoverState:properties.testFailoverState}"
+```
+
+## Test a Failover and Failback
+**Step 1.** Define your environment variables. 
+```bash
+export SUBSCRIPTION_ID=$(az account show --query "id" --output "tsv")
+```
+
+**Step 2.** Add a virtual network to the resource group created by the Azure Site Recovery service (e.g., `myRG_WestUS-asr`). The resource group will have two virtual networks after this step is completed. 
+* Project details
+  * Subscription: (your subscription)
+  * Resource group: (the resource group created by the Azure Site Recovery service)
+* Instance details
+  * Virtual network name: `VM3VNET-test`
+  * Region: "East US 2"
+
+**Step 3.** Perform a failover test. 
+* Resource Groups > (your resource group; e.g., `backup-disaster-recovery`) > (your backup vault; e.g., `myRecoverServicesVault`)
+  * Protected items > Replicated items > (your virtual machine; e.g., `VM3`) > Test failover
+    * Recovery point: (use the default value provided)
+    * Azure virtual network: `VM3VNET-test`
+
+**Step 4.** Verify the failover test completed successfully. 
+* Resource Groups > (your resource group) > (your backup vault)
+  * Monitoring > Site Recovery jobs
+    * Confirm the "Test failover" job status is "Successful"
+
+**Step 5.** Delete the resources created during the failover test. 
+* Resource Groups > (your resource group) > (your backup vault)
+  * Protected items > Replicated items > (your virtual machine) > Cleanup test failover
+
+**Step 6.** Restart the virtual machine (e.g., `VM3`). 
+
+**Step 7.** Verify the "Replication Health" of the virtual machine is "Healthy."
+* Resource Groups > (your resource group) > (your backup vault)
+  * Protected items > Replicated items > (your virtual machine)
+    * Confirm the "Replication Health" of the virtual machine is "Healthy"
+
+**Step 8.** Perform a failover. 
+* Resource Groups > (your resource group) > (your backup vault)
+  * Protected items > Replicated items > (your virtual machine) > Failover
+    * Failover settings
+      * Recovery point: (use the default value provided)
+      * Shut machine before beginning the failover: (checked)
+
+**Step 9.** Verify the failover completed successfully. 
+* Resource Groups > (your resource group) > (your backup vault)
+  * Monitoring > Site Recovery jobs
+    * Confirm the "Failover" job status is "Successful"
+
+**Step 10** Commit the failover. 
+* Resource Groups > (your resource group) > (your backup vault)
+  * Protected items > Replicated items > (your virtual machine) > Commit
+
+**Step 11.** Verify the failover was comitted. 
+```bash
+az rest \
+  -m get \
+  -u "https://management.azure.com/Subscriptions/$SUBSCRIPTION_ID/resourceGroups/backup-disaster-recovery/providers/Microsoft.RecoveryServices/vaults/myRecoveryServicesVault/replicationProtectedItems?api-version=2018-07-10"
+```
+
+## Implement Load Balancing Using Azure Traffic Manager
+**Step 1.** Define and load your environment variables. 
+```bash
+code task4.env
+```
+```bash
+# east
+export LOCATION="eastus"
+export RESOURCE_GROUP1="p8t4_eastus"
+export VM_NAME1="VMeast"
+export VM_IMAGE1="Ubuntu2204"
+export VM_TAGS1="project=bcdr"
+export VM_AUTH_TYPE1="password"
+export VM_ADMIN_USER1="azureuser"
+export VM_ADMIN_PASSWORD1="P@ssw0rd1.Aa"
+export VM_PORT1="80"
+
+# west
+export LOCATION2="westus"
+export RESOURCE_GROUP2="p8t4_westus"
+export VM_NAME2="VMwest"
+export VM_IMAGE2="Ubuntu2204"
+export VM_TAGS2="project=bcdr"
+export VM_AUTH_TYPE2="password"
+export VM_ADMIN_USER2="azureuser"
+export VM_ADMIN_PASSWORD2="P@ssw0rd1.Aa"
+export VM_PORT2="80"
+```
+```bash
+source task4.env
+```
+
+**Step 2.** Create two resource groups. 
+```bash
+# east
+az group create \
+  --name "${RESOURCE_GROUP1}" \
+  --location "${LOCATION2}"
+```
+```bash
+# west
+az group create \
+  --name "${RESOURCE_GROUP2}" \
+  --location "${LOCATION2}"
+```
+
+**Step 3.** Create two virtual machines.
+```bash
+# east
+az vm create \
+  --resource-group "${RESOURCE_GROUP1}" \
+  --name "${VM_NAME1}" \
+  --image "${VM_IMAGE1}" \
+  --tags "${VM_TAGS1}" \
+  --authentication-type "${VM_AUTH_TYPE1}" \
+  --admin-user "${VM_ADMIN_USER1}" \
+  --admin-password "${VM_ADMIN_PASSWORD1}"
+```
+```bash
+# west
+az vm create \
+  --resource-group "${RESOURCE_GROUP2}" \
+  --name "${VM_NAME2}" \
+  --image "${VM_IMAGE2}" \
+  --tags "${VM_TAGS2}" \
+  --authentication-type "${VM_AUTH_TYPE2}" \
+  --admin-user "${VM_ADMIN_USER2}" \
+  --admin-password "${VM_ADMIN_PASSWORD2}"
+```
+
+**Step 4.** Open a web server port on both virtual machines. 
+```bash
+# east
+az vm open-port \
+  --resource-group "${RESOURCE_GROUP1}" \
+  --name "${VM_NAME1}" \
+  --port "${VM_PORT1}"
+```
+```bash
+# west
+az vm open-port \
+  --resource-group "${RESOURCE_GROUP2}" \
+  --name "${VM_NAME2}" \
+  --port "${VM_PORT2}"
+```
+
+**Step 5.** Login to both virtual machines and install Apache. 
+```bash
+# east
+ssh azureuser@$VM_IP1
+sudo apt update
+sudo apt -y install apache2
+echo "Hello from East US!" | sudo tee /var/www/html/index.html
+```
+```bash
+# west
+ssh azureuser@$VM_IP2
+sudo apt update
+sudo apt -y install apache2
+echo "Hello from West US!" | sudo tee /var/www/html/index.html
+```
+
+**Step 6.** Configure a DNS name for both virtual machine. 
+* Resource groups > (resource group 1) > (public ip 1) > Settings > Configuration
+  * DNS name label: `vm1week09cyberphor`
+* Resource groups > (resource group 2) > (public ip 2) > Settings > Configuration
+  * DNS name label: `vm2week09cyberphor`
+
+**Step 7.** Create a traffic manager profile. 
+* Search for "traffic manager profiles" > Create an Azure Traffic Manager profile
+  * Name: "trafficmanagerweek09cyberphor"
+  * Routing method: "Performance"
+  * Subscription: (your subscription)
+  * Resource group: (resource group 1; e.g., `p8t4_eastus`)
+
+**Step 8.** Add endpoints to the traffic manager profile. 
+* Resource groups > (resource group 1) > Traffic manager profile
+  * Settings > Endpoints
+    * (add an endpoint for virtual machine 1)
+      * Type: "Azure endpoint"
+      * Name: (e.g., `eastus`)
+      * Enabled: (checked)
+      * Target resource type: "Public IP address"
+      * Public IP address: (e.g., IP address of VM 1)
+    * (add an endpoint for virtual machine 2)
+      * Type: "Azure endpoint"
+      * Name: (e.g., `westus`)
+      * Enabled: (checked)
+      * Target resource type: "Public IP address"
+      * Public IP address: (e.g., IP address of VM 2)
+
+**Step 9.** Test your traffic manager profile by turning-off the first virtual machine. 
+* Resource groups > (resource group 1) > (virtual machine 1)
+  * Stop
+    * Do you want to reserve the Public IP address? (checked)
+
+**Step 10.** Verify the traffic manager is aware of the offline endpoint.
+* Resource groups > (resource group 1) > Traffic manager profile > Overview
+  * Confirm the "Monitor Status" of the first virtual machine is "Degraded"
