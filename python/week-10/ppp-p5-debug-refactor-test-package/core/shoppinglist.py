@@ -54,17 +54,23 @@ class ShoppingList:
         for i, (item, quantity) in enumerate(self.list):
             hide_price = mask_index == i
             padding = line_base_len - len(item.name)
-            out += item.item2line(quantity, hide_price, max_order, padding) + '\n'
+            # HACK: task 2 - added line below in place of line following it
+            out += item.get_price_str(quantity = quantity, hide_price = hide_price) + '\n'
+            #out += item.item2line(quantity, hide_price, max_order, padding) + '\n'
         i += 1
         hide_price = mask_index == i
         q_len = 5
         d_len = 2
-        total_line = total.item2line(
-            padding = max_name - len(total.name) + q_len + d_len,
-            order = max_order,
-            hide_price = hide_price,
-            leading_dash = False
+        # HACK: task 2 - added line below in place of line following it
+        total_line = total.get_price_str(
+            hide_price = hide_price
         )
+        # total_line = total.item2line(
+        #     padding = max_name - len(total.name) + q_len + d_len,
+        #     order = max_order,
+        #     hide_price = hide_price,
+        #     leading_dash = False
+        # )
         hline = '-'*len(total_line) + '\n'
         return out+hline+total_line + '\n'
 
