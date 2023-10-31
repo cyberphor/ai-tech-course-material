@@ -23,7 +23,7 @@ class Item:
             amount =  f"{(self.price * quantity):.2f}"
         dollars, cents = amount.split(".")
         if None is not order and order > self.get_order():
-            dollars = f"{dollars:0>{order}}"
+            dollars = f"{dollars:0>{order + 1}}"
         if hide_price:
             price = f"${'?' * len(dollars)}.??"
         else:
