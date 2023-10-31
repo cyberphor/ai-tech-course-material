@@ -1,4 +1,5 @@
 from core.items import Item
+from core.errors import DuplicateItemError, InvalidItemPriceError, InvalidItemNameError, NonExistingItemError
 
 class AppEngine:
     def __init__(self, shoppingList = None, items = None):
@@ -10,11 +11,15 @@ class AppEngine:
         self.status = None
 
     def process_answer(self, cmd):
-        answer = round(float(cmd), 2)
-        if answer == self.correct_answer:
-            self.message = 'Correct!'
-        else:
-            self.message = f'Not Correct! (Expected ${self.correct_answer:.02f})\nYou answered ${answer:.02f}.'
+        # HACK: task 3 - added try/except block
+        try:
+            answer = round(float(cmd), 2)
+            if answer == self.correct_answer:
+                self.message = 'Correct!'
+            else:
+                self.message = f'Not Correct! (Expected ${self.correct_answer:.02f})\nYou answered ${answer:.02f}.'
+        except ValueError:
+            self.message = 'The provided answer is not a valid number!'
         self.correct_answer = None
 
     def process_add_item(self, cmd):
@@ -22,15 +27,23 @@ class AppEngine:
         item_tuple = item_str.split(': ')
         if len(item_tuple)==2:
             name, price = item_tuple
-            # HACK: task 1 - updated the line below
-            item = Item(name, float(price))
-            self.items.add_item(item)
-            self.message = f'{item} added successfully.'
+            # HACK: task 3 - added try/except block below
+            try:
+                # HACK: task 1 - updated the line below
+                item = Item(name, float(price))
+                self.items.add_item(item)
+                self.message = f'{item} added successfully.'
+            except (ValueError, DuplicateItemError, InvalidItemPriceError, InvalidItemNameError) as error:
+                self.message = error
         else:
             self.message = f'Cannot add "{item_str}".\n'
             self.message += 'Usage: add <item_name>: <item_price>'
 
     def process_del_item(self, cmd):
-        item_name = cmd[4: ]
-        self.items.remove_item( item_name )
-        self.message = f'{item_name} removed successfully.'
+        # HACK: task 3 - added the try/except block below
+        try:
+            item_name = cmd[4: ]
+            self.items.remove_item( item_name )
+            self.message = f'{item_name} removed successfully.'
+        except NonExistingItemError as error:
+            self.message = error
