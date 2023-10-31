@@ -1,14 +1,18 @@
-import random
+"""Module for the app CLI"""
+from random import randint
 from core.appengine import AppEngine
-from core.errors import *
-from core.items import *
-from core.shoppinglist import *
+from core.items import Item
+from core.items import ItemPool
+from core.shoppinglist import ShoppingList
+
 
 class AppCLI:
-    def __init__(self, shoppingList=None, items=None):
-        self.app_engine = AppEngine(shoppingList, items)
+    """App CLI class"""
+    def __init__(self, shopping_list=None, items=None):
+        self.app_engine = AppEngine(shopping_list, items)
 
     def run(self):
+        """Method to run CLI"""
         while True:
             prompt = 'What would you like to do? '
             if self.app_engine.correct_answer is not None:
@@ -21,17 +25,26 @@ class AppCLI:
             if not self.app_engine.continue_execution:
                 break
 
-    def execute_command(self,cmd):
+    def execute_command(self, cmd):
+        """Method to execute command given"""
         if self.app_engine.correct_answer is not None:
             self.app_engine.process_answer(cmd)
-        elif cmd == 'q' or cmd == 'quit':
+        elif cmd in ('q', 'quit'):
             self.app_engine.continue_execution = False
             self.app_engine.message = 'Have a nice day!'
-        elif cmd == 'a' or cmd == 'ask':
+        elif cmd in ('a', 'ask'):
             self.process_ask()
-        elif cmd == 'l' or cmd == 'list':
-            self.app_engine.shopping_list.refresh(item_pool = self.app_engine.items)
-            self.app_engine.message = (f'Shopping list with {len(self.app_engine.shopping_list)} items has been created.')
+        elif cmd in ('l', 'list'):
+            # HACK: task 4 - wrote code this way because line was too long
+            self.app_engine.shopping_list.refresh(
+                item_pool=self.app_engine.items
+            )
+            # HACK: task 4 - wrote code this way because line was too long
+            self.app_engine.message = "".join([
+                "Shopping list with ",
+                f"{len(self.app_engine.shopping_list)}",
+                "items has been created."
+            ])
         elif cmd.startswith('show'):
             self.process_show(cmd)
         elif cmd.startswith('add'):
@@ -42,19 +55,23 @@ class AppCLI:
             self.app_engine.message = f'"{cmd}" is not a valid command.'
 
     def process_ask(self):
-        q =random.randint(0, len(self.app_engine.shopping_list.list))
-        self.app_engine.message= self.show_list(mask_index = q)
-        if q<len(self.app_engine.shopping_list.list):
-            self.app_engine.correct_answer = self.app_engine.shopping_list.get_item_price(q)
+        """Method for processing request"""
+        question = randint(0, len(self.app_engine.shopping_list.list))
+        self.app_engine.message = self.show_list(mask_index=question)
+        if question < len(self.app_engine.shopping_list.list):
+            # HACK: task 4 - wrote code this way because line was too long
+            item_price = self.app_engine.shopping_list.get_item_price(question)
+            self.app_engine.correct_answer = item_price
         else:
-           self.app_engine.correct_answer = self.app_engine.shopping_list.get_total_price()
+            total_price = self.app_engine.shopping_list.get_total_price()
+            self.app_engine.correct_answer = total_price
 
     def process_show(self, cmd):
-        what = cmd[ 5: ]
+        """Method for processing show command"""
+        what = cmd[5:]
         if what == 'items':
-            # HACK: task 2 - added the line below in place of the line following it
+            # HACK: task 2 - added the line below
             self.app_engine.message = self.show_items()
-            #self.message = self.items.show_items()
         elif what == 'list':
             self.app_engine.message = self.show_list()
         else:
@@ -65,6 +82,7 @@ class AppCLI:
 
     # HACK: task 2 - moved the method below from the core.items module to here
     def show_items(self):
+        """Method for showing items"""
         max_name, max_order = 0, 0
         for item in self.app_engine.items.items.values():
             max_name = max(max_name, len(item.name))
@@ -72,16 +90,21 @@ class AppCLI:
         out = 'ITEMS\n'
         for item_name in sorted(self.app_engine.items.items.keys()):
             item = self.app_engine.items.items[item_name]
-            # HACK: task 2 - added four lines below in place of the line following them
+            # HACK: task 2 - added four lines below
             list_string = item.get_list_item_str(leading_dash=True)
             padding = "..." + ("." * (max_name - len(item_name)))
-            price_string = item.get_price_str(order = max_order)
+            price_string = item.get_price_str(order=max_order)
             out += f"{list_string} {padding} {price_string}" + "\n"
         return out
-    
-    def show_list(self, mask_index = None):
+
+    def show_list(self, mask_index=None):
+        """Method for showing list"""
         line_base_len = len('TOTAL') - 4
-        max_item = max(len(item.name) for item, _ in self.app_engine.shopping_list.list)
+        # HACK: task 4 - wrote code this way because line was too long
+        max_item = max(
+            len(item.name)
+            for item, _ in self.app_engine.shopping_list.list
+        )
         line_base_len = max(max_item, line_base_len)
         total = Item('TOTAL', self.app_engine.shopping_list.get_total_price())
         max_order = total.get_order()
@@ -91,24 +114,31 @@ class AppCLI:
             max_order = max(max_order, item.get_order())
         out = 'SHOPPING LIST\n'
         i = 0
-        for i, (item, quantity) in enumerate(self.app_engine.shopping_list.list):
+        for i, (item, quantity) in enumerate(
+                self.app_engine.shopping_list.list):
             hide_price = mask_index == i
-            # HACK: task 2 - added the seven lines below in place of one line following them
+            # HACK: task 2 - added the lines below
             padding = "..." + ("." * (line_base_len - len(item.name)))
             out += " ".join([
-                item.get_list_item_str(quantity = quantity),
+                item.get_list_item_str(quantity=quantity),
                 padding,
-                item.get_price_str(quantity = quantity, order = max_order, hide_price = hide_price),
+                item.get_price_str(
+                    quantity=quantity,
+                    order=max_order,
+                    hide_price=hide_price
+                ),
             ]) + "\n"
         i += 1
         hide_price = mask_index == i
-        q_len = 5
-        d_len = 2
-        # HACK: task 2 - added the five lines below
-        padding = "..." + ("." * (max_name - len(total.name) + q_len + d_len))
-        total_line = f"{total.name} {padding} {total.get_price_str(hide_price = hide_price)}"
+        # HACK: task 2 - added the lines below
+        total_line = " ".join([
+            f"{total.name}",
+            ("..." + ("." * (max_name - len(total.name) + 7))),
+            f"{total.get_price_str(hide_price = (hide_price))}"
+        ])
         hline = '-' * len(total_line) + '\n'
         return out + hline + total_line + '\n'
+
 
 if __name__ == '__main__':
     # usage example
