@@ -1,7 +1,7 @@
 """Module for shopping list"""
 from random import choices
 from random import randint
-from core.errors import InvalidShoppingListSizeError
+from shoppinglistapp.core.errors import InvalidShoppingListSizeError
 
 
 class ShoppingList:

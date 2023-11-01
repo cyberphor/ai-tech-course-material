@@ -1,9 +1,9 @@
 """Module for app engine"""
-from core.items import Item
-from core.errors import DuplicateItemError
-from core.errors import InvalidItemPriceError
-from core.errors import InvalidItemNameError
-from core.errors import NonExistingItemError
+from shoppinglistapp.core.items import Item
+from shoppinglistapp.core.errors import DuplicateItemError
+from shoppinglistapp.core.errors import InvalidItemPriceError
+from shoppinglistapp.core.errors import InvalidItemNameError
+from shoppinglistapp.core.errors import NonExistingItemError
 
 
 class AppEngine:
