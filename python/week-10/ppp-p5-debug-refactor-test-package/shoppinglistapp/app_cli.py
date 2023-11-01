@@ -1,9 +1,9 @@
 """Module for the app CLI"""
 from random import randint
-from core.appengine import AppEngine
-from core.items import Item
-from core.items import ItemPool
-from core.shoppinglist import ShoppingList
+from shoppinglistapp.core.appengine import AppEngine
+from shoppinglistapp.core.items import Item
+from shoppinglistapp.core.items import ItemPool
+from shoppinglistapp.core.shoppinglist import ShoppingList
 
 
 class AppCLI:

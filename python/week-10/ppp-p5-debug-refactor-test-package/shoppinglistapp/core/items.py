@@ -1,11 +1,11 @@
 """Module for items"""
 import math
 import random
-from core.errors import DuplicateItemError
-from core.errors import InvalidItemNameError
-from core.errors import InvalidItemPriceError
-from core.errors import InvalidItemPoolError
-from core.errors import NonExistingItemError
+from shoppinglistapp.core.errors import DuplicateItemError
+from shoppinglistapp.core.errors import InvalidItemNameError
+from shoppinglistapp.core.errors import InvalidItemPriceError
+from shoppinglistapp.core.errors import InvalidItemPoolError
+from shoppinglistapp.core.errors import NonExistingItemError
 
 
 class Item:
