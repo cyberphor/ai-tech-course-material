@@ -3,8 +3,12 @@
 ppp-p5-debug-refactor-test-package/.env
 ppp-p5-debug-refactor-test-package/.sailconfig.json
 ppp-p5-debug-refactor-test-package/.pytest_cache
+ppp-p5-debug-refactor-test-package/dist/
 ppp-p5-debug-refactor-test-package/htmlcov/
 ppp-p5-debug-refactor-test-package/__pycache__/
 ppp-p5-debug-refactor-test-package/dependencies/
 ppp-p5-debug-refactor-test-package/p5-env/
+ppp-p5-debug-refactor-test-package/shoppinglistapp/__pycache__/
+ppp-p5-debug-refactor-test-package/shoppinglistapp/core/__pycache__/
+ppp-p5-debug-refactor-test-package/shoppinglistapp.egg-info/
 ppp-p5-debug-refactor-test-package/submission_logs/
