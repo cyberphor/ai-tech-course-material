@@ -31,7 +31,7 @@ A GitHub Actions event is a trigger for job execution.
 A GitHub Actions workflow is one or more jobs defined in a YAML and executed by a runner after an event has occurred. The default file-name of a GitHub Actions workflow (`.github/workflows/main.yml`) has nothing to do with worflow execution. 
 
 ## Solutions
-* [Task 1](/devops/week-11/HOWTO.md#create-a-cd-pipeline-using-github-actions)
+* [Task 1](/devops/week-11/HOWTO.md#create-a-ci-pipeline-using-github-actions)
 * [Task 2](/devops/week-11/HOWTO.md#create-a-cd-pipeline-using-github-actions)
 * [Task 3](/devops/week-11/HOWTO.md)
 * [Task 4](/devops/week-11/HOWTO.md)
