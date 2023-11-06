@@ -69,3 +69,9 @@ git clone git@github.com:${GITHUB_ORG}/${GITHUB_REPO}
 **Step 7.** Set the "Expiration" date (e.g., 60 days).  
 **Step 8.** Select "repo" as the scope.  
 **Step 9.** Click "Generate token."  
+
+## Create a CI Pipeline Using GitHub Actions
+[Task 1](/devops/week-11/task1.yml)
+
+## Create a CD Pipeline Using GitHub Actions
+[Task 2](/devops/week-11/task2.yml)
