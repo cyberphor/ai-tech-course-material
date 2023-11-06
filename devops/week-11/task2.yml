@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 env:
-  AZURE_WEBAPP_NAME: https://devopsweek11cyberphor.azurewebsites.net
+  AZURE_WEBAPP_NAME: devopsweek11cyberphor
   JAVA_VERSION: 8
 
 jobs:
