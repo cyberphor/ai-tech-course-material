@@ -7,7 +7,6 @@
 3. [Add a GitHub Action](#task-4)
 4. [Push a Commit](#task-5)
 
-
 ## Task 1
 ### Configure Git
 **Step 1.** Enter your email address.

@@ -1,11 +1,5 @@
 ## Contents
 
-### Installation Guides
-* [How to Install the Azure CLI within a GitHub Codespace](/INSTALL.md#how-to-install-the-azure-cli-within-a-github-codespace)
-* [How to Install Terraform within a GitHub Codespace](/INSTALL.md#how-to-install-terraform-within-a-github-codespace)
-* [How to Install sqlcmd within a GitHub Codespace](/INSTALL.md#how-to-install-sqlcmd-within-a-github-codespace)
-* [How to Install Ansible within a GitHub Namespace](/INSTALL.md#how-to-install-ansible-within-a-github-namespace)
-
 ### Projects
 #### Cloud
 * [Week 01](/cloud/week-01/)
@@ -28,7 +22,16 @@
 * [Week 10: Debugging, Refactoring, Testing, Packaging](/python/week-10/)
 
 #### DevOps
-* [Week 03](/devops/week-03/)
+* [Week 03: Getting Started with DevOps](/devops/week-03/)
+  * [GitHub Personal Access Tokens](/devops/week-03/HOWTO.md#create-a-github-personal-access-token)
+  * [Azure Personal Access Tokens](/devops/week-03/HOWTO.md#create-an-azure-devops-personal-access-token)
 * [Week 05](/devops/week-05/)
 * [Week 07](/devops/week-07/)
 * [Week 09: CI/CD Pipelines for a VM-Hosted Web Service](/devops/week-09/)
+* [Week 11: GitHub Actions](/devops/week-11/)
+
+### Installation Guides
+* [How to Install the Azure CLI within a GitHub Codespace](/INSTALL.md#how-to-install-the-azure-cli-within-a-github-codespace)
+* [How to Install Terraform within a GitHub Codespace](/INSTALL.md#how-to-install-terraform-within-a-github-codespace)
+* [How to Install sqlcmd within a GitHub Codespace](/INSTALL.md#how-to-install-sqlcmd-within-a-github-codespace)
+* [How to Install Ansible within a GitHub Namespace](/INSTALL.md#how-to-install-ansible-within-a-github-namespace)
