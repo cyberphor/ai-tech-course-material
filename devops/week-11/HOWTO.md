@@ -70,7 +70,7 @@ git clone git@github.com:${GITHUB_ORG}/${GITHUB_REPO}
 **Step 8.** Select "repo" as the scope.  
 **Step 9.** Click "Generate token."  
 
-## Create a CI Pipeline Using GitHub Actions
+## Create a CI Pipeline Using a GitHub Actions Workflow
 **Step 1.** Create two folders called `.github/` and `.github/workflows/`. 
 ```bash
 mkdir -p .github/workflows/
@@ -85,7 +85,7 @@ git commit -m "Added a CI pipeline"
 git push
 ```
 
-## Create a CD Pipeline Using GitHub Actions
+## Create a CD Pipeline Using a GitHub Actions Workflow
 **Step 1.** Create a web app using the Azure App Service. 
 * Azure > App Service
   * Create > Web App
@@ -133,4 +133,34 @@ az ad sp create-for-rbac
 git add .
 git commit -m "Added a CD pipeline"
 git push
+```
+
+## Create a CD Pipeline Using a GitHub Actions Workflow With a Matrix Strategy
+**Step 1.** Create a file called `main.yml` under the `.github/workflow/` folder using the [provided GitHub Actions Workflow configuration file](/devops/week-11/task3.yml) as a template. 
+
+**Step 5.** Commit the changes you made to your repository. 
+```bash
+git add .
+git commit -m "Added a matrix strategy to the CD pipeline"
+git push
+```
+
+## Create a CD Pipeline Using a GitHub Actions Workflow With Conditional Statements
+**Step 1.** Create a file called `main.yml` under the `.github/workflow/` folder using the [provided GitHub Actions Workflow configuration file](/devops/week-11/task3.yml) as a template. 
+
+**Step 2.** Commit the changes you made to your repository. 
+```bash
+git add .
+git commit -m "Added conditional statements to the CD pipeline"
+git push
+```
+
+**Step 3.** Create a new tag within the local instance of the repository. 
+```bash
+git tag v1.0
+```
+
+**Step 4.** Push the tags added to the local instance of the repository to the remote instance of the repository.
+```bash
+git push origin --tags
 ```
