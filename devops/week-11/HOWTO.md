@@ -71,7 +71,66 @@ git clone git@github.com:${GITHUB_ORG}/${GITHUB_REPO}
 **Step 9.** Click "Generate token."  
 
 ## Create a CI Pipeline Using GitHub Actions
-[Task 1](/devops/week-11/task1.yml)
+**Step 1.** Create two folders called `.github/` and `.github/workflows/`. 
+```bash
+mkdir -p .github/workflows/
+```
+
+**Step 2.** Create a file called `main.yml` under the `.github/workflow/` folder using the [provided GitHub Actions Workflow configuration file](/devops/week-11/task1.yml) as a template. 
+
+**Step 3.** Commit the changes you made to your repository. 
+```bash
+git add .
+git commit -m "Added a CI pipeline"
+git push
+```
 
 ## Create a CD Pipeline Using GitHub Actions
-[Task 2](/devops/week-11/task2.yml)
+**Step 1.** Create a web app using the Azure App Service. 
+* Azure > App Service
+  * Create > Web App
+    * Basics
+      * Project Details
+        * Subscription: (your subscription)
+          * Resource Group > Create new: `ghactions_app`
+      * Instance Details
+        * Name: `devopsweek11cyberphor`
+        * Publish: "Code"
+        * Runtime Stack: "Java 8"
+        * Java web server stack: "Apache Tomcat 9.0"
+        * Operating System: "Windows"
+        * Region: "East US"
+      * Pricing Plans
+        * Windows Plan (East US): (use the value provided by default)
+        * Pricing Plan: "Free F1 (Shared Infrastructure)"
+
+**Step 2.** Create a service principal for your GitHub Actions runner to authenticate with when connecting to Azure. Copy the output to memory.
+```bash
+# define your environment variables
+export SUBSCRIPTION_ID="17408d59-f3b6-43a5-a48c-c3667527f330"
+export RESOURCE_GROUP="ghactions_app"
+export SERVICE_PRINCIPAL_NAME="WebApp"
+```
+```bash
+# create a service prinicpal
+az ad sp create-for-rbac 
+  --name "${SERVICE_PRINCIPAL_NAME}" \
+  --role "contributor" \
+  --scopes "/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP}" \
+  --sdk-auth 
+```
+
+**Step 3.** Add the output of the previous step as a "Secret" to your Github repository (NOTE: if the name of your secret was `AZURE_CREDENTIALS`, the GitHub Actions Workflow would access it using `${{ secrets.AZURE_CREDENTIALS }}`).
+* GitHub > (your repository) > Settings > Security > Secrets and variables > Actions
+  * New repository secret
+    * Name: `AZURE_CREDENTIALS`
+    * Secret: (the output of the previous step)
+
+**Step 4.** Create a file called `main.yml` under the `.github/workflow/` folder using the [provided GitHub Actions Workflow configuration file](/devops/week-11/task2.yml) as a template. 
+
+**Step 5.** Commit the changes you made to your repository. 
+```bash
+git add .
+git commit -m "Added a CD pipeline"
+git push
+```
