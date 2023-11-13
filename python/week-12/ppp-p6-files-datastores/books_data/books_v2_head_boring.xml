@@ -1,0 +1,155 @@
+<books>
+	<book id="d37aeb24-54de-4c2a-878a-5074ca65ae22">
+		<info>
+			<title>Dinner with Anna Karenina</title>
+			<authors>Gloria Goldreich</authors>
+			<isbn>0778322270</isbn>
+			<isbn13>9780778322276</isbn13>
+			<language_code>eng</language_code>
+			<num_pages>360</num_pages>
+			<publication_date>1/28/2006</publication_date>
+			<publisher>Mira Books</publisher>
+		</info>
+		<rating>
+			<average_rating>2.99</average_rating>
+			<ratings_count>411</ratings_count>
+			<text_reviews_count>65</text_reviews_count>
+		</rating>
+	</book>
+	<book id="365fa822-37c0-4093-9fdf-a94bf13f22c5">
+		<info>
+			<title>Le Divorce</title>
+			<authors>Diane Johnson</authors>
+			<isbn>0452284481</isbn>
+			<isbn13>9780452284487</isbn13>
+			<language_code>eng</language_code>
+			<num_pages>320</num_pages>
+			<publication_date>7/1/2003</publication_date>
+			<publisher>Plume</publisher>
+		</info>
+		<rating>
+			<average_rating>2.88</average_rating>
+			<ratings_count>3602</ratings_count>
+			<text_reviews_count>295</text_reviews_count>
+		</rating>
+	</book>
+	<book id="9224c156-f718-495f-a605-73073e7f9dda">
+		<info>
+			<title>The Diagnosis</title>
+			<authors>Alan Lightman</authors>
+			<isbn>0375725504</isbn>
+			<isbn13>9780375725500</isbn13>
+			<language_code>eng</language_code>
+			<num_pages>384</num_pages>
+			<publication_date>2/19/2002</publication_date>
+			<publisher>Vintage</publisher>
+		</info>
+		<rating>
+			<average_rating>2.86</average_rating>
+			<ratings_count>898</ratings_count>
+			<text_reviews_count>123</text_reviews_count>
+		</rating>
+	</book>
+	<book id="e984fe1c-0bd3-44d1-af7a-611342c228a9">
+		<info>
+			<title>Alentejo Blue</title>
+			<authors>Monica Ali</authors>
+			<isbn>0743293037</isbn>
+			<isbn13>9780743293037</isbn13>
+			<language_code>eng</language_code>
+			<num_pages>304</num_pages>
+			<publication_date>6/20/2006</publication_date>
+			<publisher>Scribner Book Company</publisher>
+		</info>
+		<rating>
+			<average_rating>2.72</average_rating>
+			<ratings_count>788</ratings_count>
+			<text_reviews_count>104</text_reviews_count>
+		</rating>
+	</book>
+	<book id="8dee2a5e-8f4c-43a4-b9b2-bf2b02a01c24">
+		<info>
+			<title>Yellow Dog</title>
+			<authors>Martin Amis</authors>
+			<isbn>1400077273</isbn>
+			<isbn13>9781400077274</isbn13>
+			<language_code>eng</language_code>
+			<num_pages>352</num_pages>
+			<publication_date>1/4/2005</publication_date>
+			<publisher>Vintage</publisher>
+		</info>
+		<rating>
+			<average_rating>2.79</average_rating>
+			<ratings_count>1449</ratings_count>
+			<text_reviews_count>94</text_reviews_count>
+		</rating>
+	</book>
+	<book id="c1ba81c2-37c0-4902-ba84-d580f9e80456">
+		<info>
+			<title>Lost</title>
+			<authors>Gregory Maguire/Douglas Smith</authors>
+			<isbn>0060988649</isbn>
+			<isbn13>9780060988647</isbn13>
+			<language_code>eng</language_code>
+			<num_pages>340</num_pages>
+			<publication_date>9/17/2002</publication_date>
+			<publisher>William Morbook Paperbacks</publisher>
+		</info>
+		<rating>
+			<average_rating>2.82</average_rating>
+			<ratings_count>13152</ratings_count>
+			<text_reviews_count>904</text_reviews_count>
+		</rating>
+	</book>
+	<book id="be6a5320-c05a-44d6-af8b-ac13e5befc30">
+		<info>
+			<title>Up in the Air</title>
+			<authors>Walter Kirn</authors>
+			<isbn>0385722370</isbn>
+			<isbn13>9780385722377</isbn13>
+			<language_code>eng</language_code>
+			<num_pages>320</num_pages>
+			<publication_date>9/24/2002</publication_date>
+			<publisher>Anchor</publisher>
+		</info>
+		<rating>
+			<average_rating>2.86</average_rating>
+			<ratings_count>3504</ratings_count>
+			<text_reviews_count>490</text_reviews_count>
+		</rating>
+	</book>
+	<book id="2c6e6e2c-a587-4056-a5ad-f97bd526d4f9">
+		<info>
+			<title>Queen of the Underworld</title>
+			<authors>Gail Godwin</authors>
+			<isbn>0345483197</isbn>
+			<isbn13>9780345483195</isbn13>
+			<language_code>eng</language_code>
+			<num_pages>368</num_pages>
+			<publication_date>1/30/2007</publication_date>
+			<publisher>Ballantine Books</publisher>
+		</info>
+		<rating>
+			<average_rating>2.89</average_rating>
+			<ratings_count>541</ratings_count>
+			<text_reviews_count>100</text_reviews_count>
+		</rating>
+	</book>
+	<book id="fb73c76f-e857-408e-b493-28bd28d26cb6">
+		<info>
+			<title>Citizen Girl</title>
+			<authors>Emma McLaughlin/Nicola Kraus</authors>
+			<isbn>0743266862</isbn>
+			<isbn13>9780743266864</isbn13>
+			<language_code>en-US</language_code>
+			<num_pages>305</num_pages>
+			<publication_date>10/4/2005</publication_date>
+			<publisher>Washington Square Press</publisher>
+		</info>
+		<rating>
+			<average_rating>2.4</average_rating>
+			<ratings_count>5415</ratings_count>
+			<text_reviews_count>577</text_reviews_count>
+		</rating>
+	</book>
+</books>
