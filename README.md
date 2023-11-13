@@ -14,12 +14,13 @@
 * [Week 10: Containers: Docker and Kubernetes](/cloud/week-10/)
 
 #### Python
-* [Week 01](/python/week-01/)
-* [Week 02](/python/week-02/)
-* [Week 04](/python/week-04/)
-* [Week 06](/python/week-06/)
-* [Week 08](/python/week-08/)
-* [Week 10: Debugging, Refactoring, Testing, Packaging](/python/week-10/)
+* [Week 01: Types, Variables, and Functions](/python/week-01/README.md)
+* [Week 02: Strings](/python/week-02/README.md)
+* [Week 04: Data Structures](/python/week-04/README.md)
+* [Week 06: Files](/python/week-06/README.md)
+* [Week 08: Object-Oriented Programming](/python/week-08/README.md)
+* [Week 10: Debugging, Refactoring, Testing, and Packaging](/python/week-10/)
+* [Week 12: Data Stores](/python/week-12/README.md)
 
 #### DevOps
 * [Week 03: Getting Started with DevOps](/devops/week-03/README.md)
