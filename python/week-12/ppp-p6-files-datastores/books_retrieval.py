@@ -4,6 +4,7 @@ import json
 from xml.etree.ElementTree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.etree.ElementTree import indent
+from xml.etree.ElementTree import parse
 from xml.etree.ElementTree import SubElement
 
 BOOK_ATTRIBUTES = [
@@ -24,6 +25,7 @@ RATING_ATTRIBUTES = [
 ]
 
 def fix_book_value_types(book):
+  """Function for converting string-based book properties to numbers"""
   book["num_pages"] = int(book["num_pages"])
   book["average_rating"] = float(book["average_rating"])
   book["ratings_count"] = int(book["ratings_count"])
@@ -46,6 +48,7 @@ def retrieve_popular_books(csv_in: str, json_out: str):
     json_file.write(json.dumps(popular_books, indent=4))
 
 def retrieve_boring_books(json_in: str, xml_out: str):
+  """Function for getting books from a JSON file and writing them to an XML file"""
   boring_books = Element("books") 
   with open(json_in, "r", encoding="UTF-8") as json_file:
     books = json.load(json_file)
@@ -63,10 +66,27 @@ def retrieve_boring_books(json_in: str, xml_out: str):
   indent(boring_books, space="\t")
   ElementTree(boring_books).write(xml_out)
 
-def retrieve_wildly_popular_books():
-  pass
+def retrieve_wildly_popular_books(xml_in: str, csv_out: str):
+  """Function for getting books from an XML file and writing them to a CSV file"""
+  with open(csv_out, "w", encoding="UTF-8") as csv_file:
+    xml_file = parse(xml_in).getroot()
+    csv_headers = [csv_header.tag for csv_header in xml_file[0]]
+    csv_headers.pop(0)
+    csv_headers.insert(0, "book_id")
+    csv_writer = csv.DictWriter(csv_file, fieldnames=csv_headers, lineterminator="\n")
+    csv_writer.writeheader()
+    for book in xml_file:
+      average_rating = float([average_rating.text for average_rating in book.iter("average_rating")][0])
+      rating_count = int([rating_count.text for rating_count in book.iter("ratings_count")][0])
+      if average_rating > 4.0 and rating_count > 1000000:
+        wildly_popular_book = {}
+        for element in book:
+          if element.tag == "bookID":
+            element.tag = "book_id"
+          wildly_popular_book[element.tag] = element.text
+        csv_writer.writerow(wildly_popular_book)
 
 if __name__ == "__main__":
-  retrieve_popular_books(csv_in="books_data/books_v2.csv", json_out="books_data/books_v2_head_popular.json")
-  retrieve_boring_books(json_in="books_data/books_v2.json", xml_out="books_data/books_v2_head_boring.xml")
-  retrieve_wildly_popular_books()
+  retrieve_popular_books(csv_in="books_data/books_v2.csv", json_out="books_data/books_v2_popular.json")
+  retrieve_boring_books(json_in="books_data/books_v2.json", xml_out="books_data/books_v2_boring.xml")
+  retrieve_wildly_popular_books(xml_in="books_data/books_v2.xml", csv_out="books_data/books_v2_wild.csv")
