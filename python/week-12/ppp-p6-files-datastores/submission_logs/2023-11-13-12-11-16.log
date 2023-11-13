@@ -1,0 +1,18 @@
+[DEBUG] 2023-11-13 GMT-0500 12:11:16.389: The Username is set to (keyring app): vf@andrew.cmu.edu
+[DEBUG] 2023-11-13 GMT-0500 12:11:16.389: The Submission Password is set to (keyring app): ***
+[INFO] 2023-11-13 GMT-0500 12:11:16.389: Submission process STARTED.
+[INFO] 2023-11-13 GMT-0500 12:11:16.389: Asking for agreement.
+[DEBUG] 2023-11-13 GMT-0500 12:11:18.901: Agreement answer: I AGREE
+[DEBUG] 2023-11-13 GMT-0500 12:11:18.901: Task signature: sail2-project-author-data-manip-ytypfeld-v2-3a8842d6-d581-45c9-afa7-87d19fd46f83
+[INFO] 2023-11-13 GMT-0500 12:11:18.901: Collecting information about context.
+[INFO] 2023-11-13 GMT-0500 12:11:19.159: Finding files for submission.
+[INFO] 2023-11-13 GMT-0500 12:11:19.159: Generating submission files for task 1.
+[INFO] 2023-11-13 GMT-0500 12:11:19.159: Evaluating task 1.
+[INFO] 2023-11-13 GMT-0500 12:11:21.679: Submission archive generated.
+[INFO] 2023-11-13 GMT-0500 12:11:21.679: Sending the submission to Sail() Auto-grading Service.
+[DEBUG] 2023-11-13 GMT-0500 12:11:23.039: AGS Success: True
+[DEBUG] 2023-11-13 GMT-0500 12:11:23.039: AGS Status: 200
+[DEBUG] 2023-11-13 GMT-0500 12:11:23.039: AGS Message: Your submission is in processing, submission token is: vf@andrew.cmu.edu_project-author-data-manip-ytypfeld_3a8842d6-d581-45c9-afa7-87d19fd46f83_436251514 Wait and check your code, score and feedback on your Learning Management System.
+[INFO] 2023-11-13 GMT-0500 12:11:23.039: Finding files for cleanup.
+[INFO] 2023-11-13 GMT-0500 12:11:23.049: Cleanup finished.
+[INFO] 2023-11-13 GMT-0500 12:11:23.049: Submission process FINISHED.
