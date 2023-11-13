@@ -1,0 +1,28 @@
+[WARNING] 2023-11-13 GMT-0500 10:55:34.248: Could not find stored credentials.
+[INFO] 2023-11-13 GMT-0500 10:55:34.248: Asking for the Username.
+[DEBUG] 2023-11-13 GMT-0500 10:55:40.461: The provided Username has been stored in a keyring application.
+[WARNING] 2023-11-13 GMT-0500 10:55:40.472: Could not find stored credentials.
+[INFO] 2023-11-13 GMT-0500 10:55:40.472: Asking for the Submission Password.
+[DEBUG] 2023-11-13 GMT-0500 10:55:45.056: The provided Submission Password has been stored in a keyring application.
+[INFO] 2023-11-13 GMT-0500 10:55:45.057: Submission process STARTED.
+[INFO] 2023-11-13 GMT-0500 10:55:45.057: Asking for agreement.
+[DEBUG] 2023-11-13 GMT-0500 10:55:47.941: Agreement answer: I AGREE
+[DEBUG] 2023-11-13 GMT-0500 10:55:47.943: Task signature: sail2-project-author-data-manip-ytypfeld-v2-3a8842d6-d581-45c9-afa7-87d19fd46f83
+[INFO] 2023-11-13 GMT-0500 10:55:47.943: Collecting information about context.
+[INFO] 2023-11-13 GMT-0500 10:55:48.197: Finding files for submission.
+[INFO] 2023-11-13 GMT-0500 10:55:48.197: Generating submission files for task 1.
+[INFO] 2023-11-13 GMT-0500 10:55:48.197: Evaluating task 1.
+[INFO] 2023-11-13 GMT-0500 10:55:50.784: Submission archive generated.
+[INFO] 2023-11-13 GMT-0500 10:55:50.784: Sending the submission to Sail() Auto-grading Service.
+[DEBUG] 2023-11-13 GMT-0500 10:55:51.317: AGS Success: False
+[DEBUG] 2023-11-13 GMT-0500 10:55:51.317: AGS Status: 401
+[DEBUG] 2023-11-13 GMT-0500 10:55:51.317: AGS Message: Verification failed. Please check:
+1. if your Learning Management System (LMS) submission username and submission password are correct. Your LMS username may not be the same as the email you used for your cloud platform accounts.
+2. if you are working on a course that includes Amazon Web Service (AWS), please also check if your AWS ID has been linked to our organization.
+[DEBUG] 2023-11-13 GMT-0500 10:55:51.324: Username has been removed from a keyring application.
+[DEBUG] 2023-11-13 GMT-0500 10:55:51.324: An attempt to remove USERNAME from .sailconfig.json was not successful.
+[DEBUG] 2023-11-13 GMT-0500 10:55:51.330: Submission Password has been removed from a keyring application.
+[DEBUG] 2023-11-13 GMT-0500 10:55:51.331: An attempt to remove SUBMISSION_PASSWORD from .sailconfig.json was not successful.
+[INFO] 2023-11-13 GMT-0500 10:55:51.331: Finding files for cleanup.
+[INFO] 2023-11-13 GMT-0500 10:55:51.332: Cleanup finished.
+[INFO] 2023-11-13 GMT-0500 10:55:51.333: Submission process FINISHED.
