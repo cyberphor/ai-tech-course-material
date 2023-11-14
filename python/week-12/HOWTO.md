@@ -68,9 +68,14 @@ mysql -u dbuser -p
 ```
 
 ## Task 1
-**Step 1.** Create a file called `books_retrieval.py` using inspiration from the [source code shared](/python/week-12/ppp-p6-files-datastores/books_retrieval.py). 
+**Step 1.** Create a Python script called `books_retrieval.py` using inspiration from the [source code shared](/python/week-12/ppp-p6-files-datastores/books_retrieval.py). 
 ```bash
 touch books_retrieval.py
+```
+
+**Step 2.** Execute the Python script. 
+```bash
+python books_retrieval.py
 ```
 
 ## Task 2
@@ -79,9 +84,19 @@ touch books_retrieval.py
 touch data_loading.py
 ```
 
-**Step 2.** Verify the required database and table were created. 
+**Step 2.** Execute the Python script. 
+```bash
+python data_loading.py
 ```
-sudo mysql < check-db.sql
+
+**Step 3.** Verify the database and table were required created. 
+```bash
+sudo mysql < sql-print-database-schema.sql
+```
+
+**Step 4.** Verify the table was loaded with data. 
+```bash
+sudo mysql < sql-print-table.sql
 ```
 
 ## Task 3

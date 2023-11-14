@@ -1,6 +1,7 @@
 """Module for retrieving books"""
 import csv
 import json
+import mysql.connector
 from xml.etree.ElementTree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.etree.ElementTree import indent
@@ -86,7 +87,32 @@ def retrieve_wildly_popular_books(xml_in: str, csv_out: str):
           wildly_popular_book[element.tag] = element.text
         csv_writer.writerow(wildly_popular_book)
 
+def retrieve_long_books(user: str, password: str, host: str, db: str, table: str, csv_out: str):
+    with open(csv_out, "w", encoding="UTF-8") as csv_file:
+        connection = mysql.connector.connect(host=host, user=user, password=password)
+        cursor = connection.cursor()
+        query = f"SELECT column_name FROM information_schema.columns WHERE table_name = '{table}' ORDER BY ordinal_position;"
+        cursor.execute(query)
+        csv_headers = [csv_header[0] for csv_header in cursor]
+        csv_headers.pop(0)
+        csv_headers.insert(0, "book_id")
+        csv_writer = csv.writer(csv_file)
+        csv_writer.writerow(csv_headers)
+        query = f"SELECT * FROM {db}.{table} WHERE num_pages > 2000;"
+        cursor.execute(query)
+        csv_writer.writerows(cursor)
+        cursor.close()
+        connection.commit()
+
 if __name__ == "__main__":
   retrieve_popular_books(csv_in="books_data/books_v2.csv", json_out="books_data/books_v2_popular.json")
   retrieve_boring_books(json_in="books_data/books_v2.json", xml_out="books_data/books_v2_boring.xml")
   retrieve_wildly_popular_books(xml_in="books_data/books_v2.xml", csv_out="books_data/books_v2_wild.csv")
+  retrieve_long_books(
+    user="dbuser",
+    password="dbroot",
+    host="localhost",
+    db="books",
+    table="goodreads",
+    csv_out="books_data/long_books.csv"
+  )
