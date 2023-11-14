@@ -87,6 +87,7 @@ def retrieve_wildly_popular_books(xml_in: str, csv_out: str):
           wildly_popular_book[element.tag] = element.text
         csv_writer.writerow(wildly_popular_book)
 
+# HACK: this is used in Task 2
 def retrieve_long_books(user: str, password: str, host: str, db: str, table: str, csv_out: str):
     with open(csv_out, "w", encoding="UTF-8") as csv_file:
         connection = mysql.connector.connect(host=host, user=user, password=password)
