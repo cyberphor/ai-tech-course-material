@@ -39,6 +39,7 @@ python -m venv p6-env
 ```bash
 python -m pip install wheel
 python -m pip install -r requirements.txt
+python -m pip install mysql-connector-python
 ```
 
 **Step 5.** Install MySQL server. 
@@ -67,16 +68,20 @@ mysql -u dbuser -p
 ```
 
 ## Task 1
-**Step 1.** Create a file called `books_retrieval.py`. 
+**Step 1.** Create a file called `books_retrieval.py` using inspiration from the [source code shared](/python/week-12/ppp-p6-files-datastores/books_retrieval.py). 
 ```bash
 touch books_retrieval.py
 ```
 
-Use the command below if you're using PowerShell. 
-```powershell
-New-Item -Type File books_retrieval.py
+## Task 2
+**Step 1.** Create a file called `data_loading.py` using inspiration from the [source code shared](/python/week-12/ppp-p6-files-datastores/data_loading.py). 
+```bash
+touch data_loading.py
 ```
 
-## Task 2
+**Step 2.** Verify the required database and table were created. 
+```
+sudo mysql < check-db.sql
+```
 
 ## Task 3

@@ -2,10 +2,10 @@
 import mysql.connector
 
 def setup_sql_table(user: str, password: str, host: str, new_db: str, new_table: str):
-    delete_database = f'DROP DATABASE IF EXISTS {db};'
-    create_database = f'CREATE DATABASE {db};'
+    delete_database = f'DROP DATABASE IF EXISTS {new_db};'
+    create_database = f'CREATE DATABASE {new_db};'
     create_table = f'''
-        CREATE TABLE {db}.{table} (
+        CREATE TABLE {new_db}.{new_table} (
             id VARCHAR(255) PRIMARY KEY,
             title VARCHAR(1024),
             authors VARCHAR(1024),
@@ -21,7 +21,7 @@ def setup_sql_table(user: str, password: str, host: str, new_db: str, new_table:
         );
     '''
 
-    connection = mysql.connector.connect(host, user, password)
+    connection = mysql.connector.connect(host=host, user=user, password=password)
     cursor = connection.cursor()
     cursor.execute(delete_database)
     cursor.execute(create_database)    
@@ -30,10 +30,10 @@ def setup_sql_table(user: str, password: str, host: str, new_db: str, new_table:
     connection.commit()
 
 def load_to_sql(user: str, password: str, host: str, db: str, table: str, csv_in: str):
-    connection = mysql.connector.connect(host, user, password)
+    connection = mysql.connector.connect(host=host, user=user, password=password)
     cursor = connection.cursor()
     insert_statement = f'INSERT INTO {db}.{table} VALUES (%s, %s);'
-    cursor.execute(insert_statement, (val1, val2))
+    #cursor.execute(insert_statement, (val1, val2))
     cursor.close()
     connection.commit()
 

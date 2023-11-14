@@ -3,4 +3,5 @@ ppp-p6-files-datastores/books_data/zZz_*
 ppp-p6-files-datastores/dependencies/
 ppp-p6-files-datastores/p6-env/
 ppp-p6-files-datastores/submission_logs/
+ppp-p6-files-datastores/submit.py
 ppp-p6-files-datastores/zZz_*
