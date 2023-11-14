@@ -41,6 +41,31 @@ python -m pip install wheel
 python -m pip install -r requirements.txt
 ```
 
+**Step 5.** Install MySQL server. 
+```bash
+sudo apt update
+sudo apt install -y mysql-server
+```
+
+**Step 6.** Create a new privileged user for the MySQL server. 
+```bash
+vim create-priv-user.sql
+```
+```sql
+use mysql;
+CREATE USER 'dbuser'@'localhost' IDENTIFIED BY 'dbroot';
+GRANT ALL PRIVILEGES ON *.* TO 'dbuser'@'localhost' WITH GRANT OPTION;
+```
+```bash
+sudo mysql < create-priv-user.sql
+```
+
+**Step 7.** Verify you can login using the new credentials. 
+```bash
+# password is "dbroot"
+mysql -u dbuser -p
+```
+
 ## Task 1
 **Step 1.** Create a file called `books_retrieval.py`. 
 ```bash
