@@ -1,7 +1,12 @@
 # CI/CD Pipeline for a Containerized Microservice
 
 ## Setup
-**Step 1.** Create a virtual machine using the information below and Azure Portal. 
+**Step 1.** Create an SSH key-pair to authenticate with. 
+```bash
+ssh-keygen -t rsa -b 4096 -C Desktop
+```
+
+**Step 1.** Create a virtual machine using the information below and Azure Portal. Make sure to copy the SSH public key from the previous step to the appropiate field.
 | Field                        | Value                                   |
 | ---------------------------- | --------------------------------------- |
 | Resource group               | `devops-dev`                            |
@@ -13,12 +18,29 @@
 | Authentication type          | `SSH`                                   |
 
 **Step 2.** Connect to the virtual machine via SSH. 
+```bash
+ssh victor@172.178.78.169
+```
 
 **Step 3.** Install the Azure CLI. 
+```bash
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+```
 
 **Step 4.** Login to Azure. 
+```bash
+az login
+```
+
+**Step 5.** Identify which Azure subscription you want to use. 
+```bash
+az account show
+```
 
 **Step 5.** Configure the Azure CLI to use the correct Azure subscription. 
+```bash
+az account set --subscription "AI2C Subscription 1"
+```
 
 **Step 6.** Get the provided source code. 
 ```bash
@@ -26,7 +48,6 @@ git clone git@github.com:SAIL-Classroom/ci-cd-pipelines-for-containerized-micros
 ```
 
 **Step 7.** Create a [GitHub Personal Access Token](/INSTALL.md#how-to-create-a-github-personal-access-token).
-
 
 ## Task 1
 
