@@ -1,0 +1,21 @@
+# CI/CD Pipeline for a Containerized Microservice
+
+## Training Objectives
+* Describe Docker
+* Describe Kubernetes
+* Describe how a developer uses Docker and Kubernetes to implement Microservice Architectures (MSA) 
+* Describe the development and deployment lifecycle of a MSA
+* Build container images
+* Push container images into an Azure Container Registry
+* Provision, configure, and manage a Kubernetes cluster
+* Deploy multiple microservices onto a Kubernetes cluster
+* Use GitHub Actions to create a CI/CD pipeline for a containerized microservice
+* Implement CD for an environment with immutable infrastructure
+
+## Solutions
+* [Setup](/devops/week-12/HOWTO.md#setup)
+* [Task 1](/devops/week-12/HOWTO.md#task-1)
+* [Task 2](/devops/week-12/HOWTO.md#task-2)
+* [Task 3](/devops/week-12/HOWTO.md#task-3)
+* [Task 4](/devops/week-12/HOWTO.md#task-4)
+* [Task 5](/devops/week-12/HOWTO.md#task-5)
