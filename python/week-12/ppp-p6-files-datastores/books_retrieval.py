@@ -47,7 +47,7 @@ def retrieve_popular_books(csv_in: str, json_out: str):
             "info": {attribute: book[attribute] for attribute in BOOK_ATTRIBUTES},
             "rating": {attribute: book[attribute] for attribute in RATING_ATTRIBUTES}
           }
-    json_file.write(json.dumps(popular_books, indent=4))
+    json_file.write(json.dumps(popular_books, indent=4, ensure_ascii=False))
 
 def retrieve_boring_books(json_in: str, xml_out: str):
   """Function for getting books from a JSON file and writing them to an XML file"""
@@ -124,17 +124,17 @@ def retrieve_obscure_books(db: str, coll: str, json_out: str):
     json_file.write(json.dumps(obscure_books, indent=4))
 
 if __name__ == "__main__":
-  #retrieve_popular_books(csv_in="books_data/books_v2.csv", json_out="books_data/books_v2_popular.json")
-  #retrieve_boring_books(json_in="books_data/books_v2.json", xml_out="books_data/books_v2_boring.xml")
-  #retrieve_wildly_popular_books(xml_in="books_data/books_v2.xml", csv_out="books_data/books_v2_wild.csv")
-  #retrieve_long_books(
-  #  user="dbuser",
-  #  password="dbroot",
-  #  host="localhost",
-  #  db="books",
-  #  table="goodreads",
-  #  csv_out="books_data/long_books.csv"
-  #)
+  retrieve_popular_books(csv_in="books_data/books_v2.csv", json_out="books_data/books_v2_popular.json")
+  retrieve_boring_books(json_in="books_data/books_v2.json", xml_out="books_data/books_v2_boring.xml")
+  retrieve_wildly_popular_books(xml_in="books_data/books_v2.xml", csv_out="books_data/books_v2_wild.csv")
+  retrieve_long_books(
+    user="dbuser",
+    password="dbroot",
+    host="localhost",
+    db="books",
+    table="goodreads",
+    csv_out="books_data/long_books.csv"
+  )
   retrieve_obscure_books(
     db="books",
     coll="goodreads",
