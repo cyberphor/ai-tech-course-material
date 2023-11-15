@@ -46,3 +46,8 @@
 * [How to Install Terraform within a GitHub Codespace](/INSTALL.md#how-to-install-terraform-within-a-github-codespace)
 * [How to Install sqlcmd within a GitHub Codespace](/INSTALL.md#how-to-install-sqlcmd-within-a-github-codespace)
 * [How to Install Ansible within a GitHub Namespace](/INSTALL.md#how-to-install-ansible-within-a-github-namespace)
+* [How to Create a GitHub Personal Access Token](/INSTALL.md#how-to-create-a-github-personal-access-token)
+* [How to Create an Azure DevOps Personal Access Token](/INSTALL.md#how-to-create-an-azure-devops-personal-access-token)
+
+## Copyright
+This project is licensed under the terms of the [MIT license](/LICENSE).
