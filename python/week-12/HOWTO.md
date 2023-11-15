@@ -67,6 +67,16 @@ sudo mysql < create-priv-user.sql
 mysql -u dbuser -p
 ```
 
+**Step 8.** Install MongoDB using the [script shared](/python/week-12/install-MongoDB.sh). 
+```bash
+sudo bash install-MongoDB.sh
+```
+
+**Step 9.** Verify MongoDB is listening for connections on TCP port 27017. 
+```bash
+sudo netstat -pant | grep 27017
+```
+
 ## Task 1
 **Step 1.** Create a Python script called `books_retrieval.py` using inspiration from the [source code shared](/python/week-12/ppp-p6-files-datastores/books_retrieval.py). 
 ```bash
@@ -99,7 +109,7 @@ sudo mysql < sql-print-database-schema.sql
 sudo mysql < sql-print-table.sql
 ```
 
-**Step 5.** Update the script created in Task 1 using the function below. 
+**Step 5.** Update the script created in Task 1 (`books_retrieval.py`) using the function below. 
 ```python
 def retrieve_long_books(user: str, password: str, host: str, db: str, table: str, csv_out: str):
     with open(csv_out, "w", encoding="UTF-8") as csv_file:
@@ -125,3 +135,50 @@ python books_retrieval.py
 ```
 
 ## Task 3
+**Step 1.** Update the script created in Task 2 (`data_loading.py`) using the function below. Beware of any import dependencies not shown.
+```python
+def load_to_mongodb(db: str, coll: str, json_in: str):
+    """Function for loading data from a JSON file into a NoSQL collection"""
+    with open(json_in, "r", encoding="UTF-8") as json_file:
+        books = json.load(json_file)
+        client = MongoClient()
+        client.drop_database(db)
+        database = client[db]
+        for book in books:
+            book = fix_book_value_types(book)
+            database[coll].insert_one(book)
+```
+
+**Step 2.** Execute the updated script. 
+```bash
+python data_loading.py
+```
+
+**Step 3.** Verify data was loaded into the NoSQL (i.e., MongoDB) collection using the [script shared](/python/week-12/ppp-p6-files-datastores/nosql-print-collection.js). 
+```bash
+sudo mongosh < nosql-print-collection.js
+```
+
+**Step 4.** Update the script created in Task 1 (`books_retrieval.py`) using the function below. Beware of any import dependencies not shown.
+```python
+def retrieve_obscure_books(db: str, coll: str, json_out: str):
+  """Function for getting books in a NoSQL collection into a JSON file"""
+  with open(json_out, "w", encoding="UTF-8") as json_file:
+    obscure_books = {}
+    client = MongoClient()
+    database = client[db]
+    books = database[coll].find({})
+    for book in books:
+      book.pop("_id")
+      if book["ratings_count"] == 1:
+        obscure_books.update({book["bookID"]: {
+          "info": {attribute: book[attribute] for attribute in BOOK_ATTRIBUTES},
+          "rating": {attribute: book[attribute] for attribute in RATING_ATTRIBUTES}
+        }})
+    json_file.write(json.dumps(obscure_books, indent=4))
+```
+
+**Step 5.** Execute the updated script. 
+```bash
+python books_retrieval.py
+```

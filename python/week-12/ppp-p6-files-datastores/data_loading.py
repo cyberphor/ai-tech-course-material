@@ -1,6 +1,11 @@
 """Module for loading data into a SQL database"""
 import csv
+import json
 import mysql.connector
+from pymongo import MongoClient
+from books_retrieval import fix_book_value_types
+from books_retrieval import BOOK_ATTRIBUTES
+from books_retrieval import RATING_ATTRIBUTES
 
 def setup_sql_table(user: str, password: str, host: str, new_db: str, new_table: str):
     """Function for creating a SQL database and table"""
@@ -46,6 +51,7 @@ def load_to_sql(user: str, password: str, host: str, db: str, table: str, csv_in
         connection.commit()
 
 def retrieve_long_books(user: str, password: str, host: str, db: str, table: str, csv_out: str):
+    """Function for loading data from a SQL table into a CSV file"""
     with open(csv_out, "w", encoding="UTF-8") as csv_file:
         connection = mysql.connector.connect(host=host, user=user, password=password)
         cursor = connection.cursor()
@@ -62,6 +68,17 @@ def retrieve_long_books(user: str, password: str, host: str, db: str, table: str
         cursor.close()
         connection.commit()
 
+def load_to_mongodb(db: str, coll: str, json_in: str):
+    """Function for loading data from a JSON file into a NoSQL collection"""
+    with open(json_in, "r", encoding="UTF-8") as json_file:
+        books = json.load(json_file)
+        client = MongoClient()
+        client.drop_database(db)
+        database = client[db]
+        for book in books:
+            book = fix_book_value_types(book)
+            database[coll].insert_one(book)
+
 if __name__ == "__main__":
     setup_sql_table(
         user="dbuser",
@@ -77,4 +94,9 @@ if __name__ == "__main__":
         db="books",
         table="goodreads",
         csv_in="books_data/books_v2.csv"
+    )
+    load_to_mongodb(
+        db="books",
+        coll="goodreads",
+        json_in="books_data/books_v2.json"
     )
