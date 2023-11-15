@@ -1,6 +1,5 @@
-# Contents
+## Contents
 
-## Projects
 ### Cloud
 * [Week 01: Getting Started with Azure](/cloud/week-01/README.md)
 * [Week 02: Azure Resource Groups](/cloud/week-02/README.md)
@@ -42,7 +41,7 @@
   * [CD Pipeline](/devops/week-11/task2.yml)
 * [Week 12: Containerized Microservices](/devops/week-12/README.md)
 
-## Installation Guides
+### Installation Guides
 * [How to Install the Azure CLI within a GitHub Codespace](/INSTALL.md#how-to-install-the-azure-cli-within-a-github-codespace)
 * [How to Install Terraform within a GitHub Codespace](/INSTALL.md#how-to-install-terraform-within-a-github-codespace)
 * [How to Install sqlcmd within a GitHub Codespace](/INSTALL.md#how-to-install-sqlcmd-within-a-github-codespace)
