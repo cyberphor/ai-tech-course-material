@@ -8,7 +8,7 @@
 * Build container images
 * Push container images into an Azure Container Registry
 * Provision, configure, and manage a Kubernetes cluster
-* Deploy multiple microservices onto a Kubernetes cluster
+* Deploy microservices onto a Kubernetes cluster
 * Use GitHub Actions to create a CI/CD pipeline for a containerized microservice
 * Implement CD for an environment with immutable infrastructure
 
@@ -30,7 +30,7 @@ An Azure Container Registry is a resource for storing container images.
 ## Solutions
 * [Setup](/devops/week-12/HOWTO.md#setup)
 * [Task 1: Build container images and push them to a container registry](/devops/week-12/HOWTO.md#task-1)
-* [Task 2](/devops/week-12/HOWTO.md#task-2)
-* [Task 3](/devops/week-12/HOWTO.md#task-3)
-* [Task 4](/devops/week-12/HOWTO.md#task-4)
-* [Task 5](/devops/week-12/HOWTO.md#task-5)
+* [Task 2: Provision a Kubernetes cluster](/devops/week-12/HOWTO.md#task-2)
+* [Task 3: Deploy microservices onto a Kubernetes cluster](/devops/week-12/HOWTO.md#task-3)
+* [Task 4: Use GitHub Actions to create a CI/CD pipeline for a containerized microservice](/devops/week-12/HOWTO.md#task-4)
+* [Task 5: Implement CD for an environment with immutable infrastructure](/devops/week-12/HOWTO.md#task-5)

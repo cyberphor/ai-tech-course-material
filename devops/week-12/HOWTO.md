@@ -60,6 +60,7 @@ git clone git@github.com:SAIL-Classroom/ci-cd-pipelines-for-containerized-micros
 **Step 10.** Create a [GitHub Personal Access Token](/INSTALL.md#how-to-create-a-github-personal-access-token) and update to the `meta.json`.
 
 ## Task 1
+### Build container images and push them to a container registry
 **Step 1.** Build container images for the Dockerfiles provided. 
 ```bash
 cd ci-cd-pipelines-for-containerized-microservices-cyberphor/
@@ -130,9 +131,17 @@ az acr repository list --name "${ACR_NAME}"
 ```
 
 ## Task 2
+### Provision a Kubernetes cluster
+**Step 1.** Text goes here.
 
 ## Task 3
+### Deploy microservices onto a Kubernetes cluster
+**Step 1.** Text goes here.
 
 ## Task 4
+### Use GitHub Actions to create a CI/CD pipeline for a containerized microservice
+**Step 1.** Text goes here.
 
 ## Task 5
+### Implement CD for an environment with immutable infrastructure
+**Step 1.** Text goes here.
