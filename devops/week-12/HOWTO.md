@@ -32,32 +32,37 @@ curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh
 sudo usermod -aG docker $(whoami)
 ```
 
-**Step 6.** Install the Azure CLI. 
+**Step 6.** Install Kubernetes. 
+```bash
+sudo snap install kubectl --classic
+```
+
+**Step 7.** Install the Azure CLI. 
 ```bash
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 ```
 
-**Step 5.** Login to Azure. 
+**Step 8.** Login to Azure. 
 ```bash
 az login
 ```
 
-**Step 7.** Identify which Azure subscription you want to use. 
+**Step 9.** Identify which Azure subscription you want to use. 
 ```bash
 az account list
 ```
 
-**Step 8.** Configure the Azure CLI to use the correct Azure subscription. 
+**Step 10.** Configure the Azure CLI to use the correct Azure subscription. 
 ```bash
 az account set --subscription "AI2C Subscription 1"
 ```
 
-**Step 9.** Get the provided source code. 
+**Step 11.** Get the provided source code. 
 ```bash
 git clone git@github.com:SAIL-Classroom/ci-cd-pipelines-for-containerized-microservices-cyberphor.git
 ```
 
-**Step 10.** Create a [GitHub Personal Access Token](/INSTALL.md#how-to-create-a-github-personal-access-token) and update to the `meta.json`.
+**Step 12.** Create a [GitHub Personal Access Token](/INSTALL.md#how-to-create-a-github-personal-access-token) and update to the `meta.json`.
 
 ## Task 1
 ### Build container images and push them to a container registry
@@ -82,6 +87,7 @@ export LOCATION="eastus"
 export RESOURCE_GROUP="cicd_microservices"
 export ACR_NAME="devopsweek12acrcyberphor"
 export ACR_SKU="Basic"
+export K8S_CLUSTER_NAME="myAKSCluster"
 ```
 
 **Step 4.** Create a resource group in Azure. 
@@ -132,7 +138,19 @@ az acr repository list --name "${ACR_NAME}"
 
 ## Task 2
 ### Provision a Kubernetes cluster
-**Step 1.** Text goes here.
+**Step 1.** Create a new Kubernetes cluster with ACR integration.
+```bash
+az aks create \
+  --resource-group "${RESOURCE_GROUP}" \
+  --name "${K8S_CLUSTER_NAME}" \
+  --attach-acr "${ACR_NAME}" \
+  --generate-ssh-keys
+```
+
+**Step 2.** Verify the Kubernetes cluster was created. 
+```bash
+az aks list --resource-group "${RESOURCE_GROUP}" --output "table"
+```
 
 ## Task 3
 ### Deploy microservices onto a Kubernetes cluster
