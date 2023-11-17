@@ -62,7 +62,16 @@ az account set --subscription "AI2C Subscription 1"
 git clone git@github.com:SAIL-Classroom/ci-cd-pipelines-for-containerized-microservices-cyberphor.git
 ```
 
-**Step 12.** Create a [GitHub Personal Access Token](/INSTALL.md#how-to-create-a-github-personal-access-token) and update to the `meta.json`.
+**Step 12.** Create a [GitHub Personal Access Token](/INSTALL.md#how-to-create-a-github-personal-access-token) and update the `meta.json`.
+
+**Step 13.** Define your environment variables. 
+```bash
+export LOCATION="eastus"
+export RESOURCE_GROUP="cicd_microservices"
+export ACR_NAME="devopsweek12acrcyberphor"
+export ACR_SKU="Basic"
+export K8S_CLUSTER_NAME="myAKSCluster"
+```
 
 ## Task 1
 ### Build container images and push them to a container registry
@@ -81,21 +90,12 @@ docker image build --rm --tag users-api:latest users-api/
 docker image ls
 ```
 
-**Step 3.** Define your Azure-related environment variables. 
-```bash
-export LOCATION="eastus"
-export RESOURCE_GROUP="cicd_microservices"
-export ACR_NAME="devopsweek12acrcyberphor"
-export ACR_SKU="Basic"
-export K8S_CLUSTER_NAME="myAKSCluster"
-```
-
-**Step 4.** Create a resource group in Azure. 
+**Step 3.** Create a resource group in Azure. 
 ```bash
 az group create --location "${LOCATION}" --name "${RESOURCE_GROUP}"
 ```
 
-**Step 5.** Create an Azure Container Registry (ACR). 
+**Step 4.** Create an Azure Container Registry (ACR). 
 ```bash
 az acr create \
   --location "${LOCATION}" \
@@ -104,17 +104,17 @@ az acr create \
   --sku "${ACR_SKU}"
 ```
 
-**Step 6.** Enable the admin user for the ACR you created. 
+**Step 5.** Enable the admin user for the ACR you created. 
 ```bash
 az acr update --name "${ACR_NAME}" --admin-enabled true
 ```
 
-**Step 7.** Login to the ACR. 
+**Step 6.** Login to the ACR. 
 ```bash
 az acr login --name "${ACR_NAME}"
 ```
 
-**Step 8.** Review the name of login server for your ACR. For example, the name of the login server for the environment variables I defined early is `devopsweek12acrcyberphor.azurecr.io`.
+**Step 7.** Review the name of login server for your ACR. For example, the name of the login server for the environment variables I defined early is `devopsweek12acrcyberphor.azurecr.io`.
 ```bash
 az acr list \
   --resource-group "${RESOURCE_GROUP}" \
@@ -122,7 +122,7 @@ az acr list \
   --output "tsv"
 ```
 
-**Step 9.** Tag and push each of the container images created earlier to your ACR. 
+**Step 8.** Tag and push each of the container images created earlier to your ACR. 
 ```bash
 export IMAGES=$(docker image ls | grep latest | grep -v azure | cut -d" " -f1)
 for IMAGE in $IMAGES; do 
@@ -131,7 +131,7 @@ for IMAGE in $IMAGES; do
 done
 ```
 
-**Step 10.** Verify each of the newly-tagged container images were pushed to the ACR. 
+**Step 9.** Verify each of the newly-tagged container images were pushed to the ACR. 
 ```bash
 az acr repository list --name "${ACR_NAME}" 
 ```
@@ -154,7 +154,36 @@ az aks list --resource-group "${RESOURCE_GROUP}" --output "table"
 
 ## Task 3
 ### Deploy microservices onto a Kubernetes cluster
-**Step 1.** Text goes here.
+**Step 1.** For every microservice, update its `deployment.yaml` and `service.yaml` files with the correct image name, pod port number, and service port number. 
+```bash
+cd k8s/auth-api/
+# image: devopsweek12acrcyberphorazurecr.io/auth-api:latest
+# deployment (pod) port: 8081
+# service port: 8081
+
+cd k8s/frontend/
+# image: devopsweek12acrcyberphorazurecr.io/frontend:latest
+# deployment (pod) port: 8080
+# service port: 80
+
+cd k8s/log-message-processor/
+# image: devopsweek12acrcyberphorazurecr.io/log-message-processor:latest
+
+cd k8s/todo-api/
+# image: devopsweek12acrcyberphorazurecr.io/todos-api:latest
+# deployment (pod) port: 8082
+# service port: 8082
+
+cd k8s/users-api/
+# image: devopsweek12acrcyberphorazurecr.io/users-api:latest
+# deployment (pod) port: 8083
+# service port: 8083
+```
+
+**Step 2.** Create the Kubernetes objects. 
+```bash
+kubectl create -R -f k8s/
+```
 
 ## Task 4
 ### Use GitHub Actions to create a CI/CD pipeline for a containerized microservice

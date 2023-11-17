@@ -28,7 +28,42 @@ The Docker Engine builds container images using Dockerfiles.
 An Azure Container Registry is a resource for storing container images. 
 
 **Kubernetes**  
-Kubernetes is a tool for managing containers. 
+Kubernetes is a tool for managing containers. Using Kubernetes is a two-step process. 
+1. Users define requirements for their service-based architecture (i.e., container cluster) using declarative syntax in a YAML format
+2. Kubernetes deploys and manages the containers needed to meet the user's requirements (i.e, the *desired state* of their app)
+
+**Kubernetes Objects**  
+Kubernetes represents requirements as objects. 
+
+**Kubernetes Object Types**   
+Below is a list of common types of Kubernetes object.  
+
+*Node*  
+A node is a physical or virtual machine within the cluster. 
+
+*Pod*  
+A pod is one or more containers. 
+
+*Service*  
+A service is one or more pods. 
+
+*Deployment*  
+A deployment is a running instance of a service (i.e., one or more running containers)
+
+**Kubernetes Object Fields**  
+Every object definition must include the fields described below. 
+
+*apiVersion*  
+The `apiVersion` field defines which version of the Kubernetes API to use. 
+
+*kind*  
+The `kind` field defines the type of object Kubernetes must create and manage. 
+
+*metadata*  
+The `metadata` field defines unique identifiers for the object. 
+
+*spec*  
+The `spec` field defines the object's characteristics (e.g., fault-tolerance).
 
 **Azure Kubernetes Service**  
 Azure Kubernetes Service (AKS) is used to deploy and operate Kubernetes clusters. 
