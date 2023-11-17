@@ -13,7 +13,7 @@
 * Implement CD for an environment with immutable infrastructure
 
 **Container**  
-A container is a collection of processes and considered an instance of a container image.
+A container is an instance of a container image. Specifically, it's a collection of processes. Containers provide the most value in service-based architectures because they are small. The smaller your codebase, the easier and faster it is to build, test, and deploy it. 
 
 **Container Image**  
 A container image is a compiled program. 
@@ -26,6 +26,12 @@ The Docker Engine builds container images using Dockerfiles.
 
 **Azure Container Registry**  
 An Azure Container Registry is a resource for storing container images. 
+
+**Kubernetes**  
+Kubernetes is a tool for managing containers. 
+
+**Azure Kubernetes Service**  
+Azure Kubernetes Service (AKS) is used to deploy and operate Kubernetes clusters. 
 
 ## Solutions
 * [Setup](/devops/week-12/HOWTO.md#setup)
