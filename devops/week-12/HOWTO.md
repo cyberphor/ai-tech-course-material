@@ -70,7 +70,7 @@ export LOCATION="eastus"
 export RESOURCE_GROUP="cicd_microservices"
 export ACR_NAME="devopsweek12acrcyberphor"
 export ACR_SKU="Basic"
-export K8S_CLUSTER_NAME="myAKSCluster"
+export AKS_CLUSTER_NAME="myAKSCluster"
 ```
 
 ## Task 1
@@ -138,51 +138,90 @@ az acr repository list --name "${ACR_NAME}"
 
 ## Task 2
 ### Provision a Kubernetes cluster
-**Step 1.** Create a new Kubernetes cluster with ACR integration.
+**Step 1.** Create a new Azure Kubernetes Service (AKS) cluster with ACR integration.
 ```bash
 az aks create \
   --resource-group "${RESOURCE_GROUP}" \
-  --name "${K8S_CLUSTER_NAME}" \
+  --name "${AKS_CLUSTER_NAME}" \
   --attach-acr "${ACR_NAME}" \
   --generate-ssh-keys
 ```
 
-**Step 2.** Verify the Kubernetes cluster was created. 
+**Step 2.** Setup access to the AKS cluster for `kubectl`. 
+```bash
+az aks get-credentials --resource-group "${RESOURCE_GROUP}" --name "${AKS_CLUSTER_NAME}"
+```
+
+You should get a message similar to below. 
+```
+Merged "myAKSCluster" as current context in /home/victor/.kube/config
+```
+
+**Step 3.** Verify the Kubernetes cluster was created. 
 ```bash
 az aks list --resource-group "${RESOURCE_GROUP}" --output "table"
 ```
 
 ## Task 3
 ### Deploy microservices onto a Kubernetes cluster
-**Step 1.** For every microservice, update its `deployment.yaml` and `service.yaml` files with the correct image name, pod port number, and service port number. 
-```bash
-cd k8s/auth-api/
-# image: devopsweek12acrcyberphorazurecr.io/auth-api:latest
-# deployment (pod) port: 8081
-# service port: 8081
+**Step 1.** For every microservice, update its provided `deployment.yaml` and `service.yaml` files with the correct image name, pod port number, and service port number. If you get an error messaging saying `The connection to the server localhost:8080 was refused - did you specify the right host or port?`, make sure you've authenticated with both Azure and your ACR. Then, check if `kubectl` has the credentials needed to access your AKS cluster (see the previous task for more information). 
+```yaml
+# k8s/frontend/deployment.yaml
+- image: devopsweek12acrcyberphorazurecr.io/frontend:latest
+- containerPort: 8080
 
-cd k8s/frontend/
-# image: devopsweek12acrcyberphorazurecr.io/frontend:latest
-# deployment (pod) port: 8080
-# service port: 80
+# k8s/frontend/service.yaml
+- port: 80
+  targetPort: 8080
 
-cd k8s/log-message-processor/
-# image: devopsweek12acrcyberphorazurecr.io/log-message-processor:latest
+# k8s/auth-api/deployment.yaml
+- image: devopsweek12acrcyberphorazurecr.io/auth-api:latest
+- containerPort: 8081
 
-cd k8s/todo-api/
-# image: devopsweek12acrcyberphorazurecr.io/todos-api:latest
-# deployment (pod) port: 8082
-# service port: 8082
+# k8s/auth-api/service.yaml
+- port: 8081
 
-cd k8s/users-api/
-# image: devopsweek12acrcyberphorazurecr.io/users-api:latest
-# deployment (pod) port: 8083
-# service port: 8083
+# k8s/log-message-processor/deployment.yaml
+- image: devopsweek12acrcyberphorazurecr.io/log-message-processor:latest
+
+# k8s/todo-api/deployment.yaml
+- image: devopsweek12acrcyberphorazurecr.io/todos-api:latest
+- containerPort: 8082
+
+# k8s/todo-api/service.yaml
+- port: 8082
+
+# k8s/users-api/deployment.yaml
+- image: devopsweek12acrcyberphorazurecr.io/users-api:latest
+- containerPort: 8083
+
+# k8s/users-api/service.yaml
+- port: 8083
 ```
 
 **Step 2.** Create the Kubernetes objects. 
 ```bash
 kubectl create -R -f k8s/
+```
+
+If you need to troubleshoot and/or delete objects, use the command below. 
+```bash
+kubectl delete -R -f k8s/
+```
+
+**Step 3.** Verify the deployment objects were created. 
+```bash
+kubectl get deployments
+```
+
+**Step 4.** Verify the service objects were created. 
+```bash
+kubectl get services
+```
+
+**Step 5.** Verify you can reach the frontend using a public IP address. 
+```bash
+curl http://$PUBLIC_IP
 ```
 
 ## Task 4
