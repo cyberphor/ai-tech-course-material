@@ -68,7 +68,7 @@ The `spec` field defines the object's characteristics (e.g., fault-tolerance).
 **Azure Kubernetes Service**  
 Azure Kubernetes Service (AKS) is used to deploy and operate Kubernetes clusters. 
 
-**Mutable Infrastructure** 
+**Mutable Infrastructure**  
 Mutable infrastructure is infrastructure that changes. Changes are bolted-on and implemented manually. 
 
 **Immutable Infrastructure**  
