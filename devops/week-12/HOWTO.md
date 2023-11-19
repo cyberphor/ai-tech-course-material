@@ -285,7 +285,7 @@ The CI/CD pipeline you're creating includes the jobs described below.
 **Step 4.** Commit the GitHub Actions workflow configuration file to trigger the CI/CD pipeline.
 
 ## Task 5
-### Implement CD for an environment with immutable infrastructure
+### Demonstrate CD for an environment with immutable infrastructure
 **Step 1.** Updated the `index.html` file provided in the `frontend` folder. Replace `<title>frontend</title>` with `<title>new frontend</title>`.
 ```bash
 sed -i "s/<title>frontend<\/title>/<title>new frontend<\/title>g" frontend/index.html
