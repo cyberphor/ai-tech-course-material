@@ -1,0 +1,109 @@
+name: CI/CD Pipeline for a Containerized App
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  prep-matrix:
+    name: Create a strategy matrix
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Get changed files for docker rebuild and push
+        id: changed-files-rebuild-docker
+        uses: tj-actions/changed-files@v13.1
+        with:
+          files: "frontend/* auth-api/* log-message-processor/* todos-api/* users-api/*"
+      - name: Get changed files for Kubernetes deployment
+        id: changed-files-k8s-deployment
+        uses: tj-actions/changed-files@v13.1
+        with:
+          files: "k8s/*"
+      - name: Generate matrix for rebuilding docker
+        id: matrix-docker
+        run: |
+          microsvcs=("frontend" "auth-api" "log-message-processor" "todos-api" "users-api")
+          rebuilds=()
+          nobuilds=()
+          changed_files="${{steps.changed-files-rebuild-docker.outputs.all_changed_files}}"
+          for svc in "${microsvcs[@]}"
+          do
+            [[ "$changed_files" == *"$svc"* ]] && rebuilds+=("$svc") || nobuilds+=("$svc")
+            echo $rebuilds
+          done
+          rebuilds=$(jq --compact-output --null-input '$ARGS.positional' --args "${rebuilds[@]}")
+          nobuilds=$(jq --compact-output --null-input '$ARGS.positional' --args "${nobuilds[@]}")
+          echo "::set-output name=rebuilds::$rebuilds"
+          echo "::set-output name=nobuilds::$nobuilds"
+      - name: Generate matrix for deployment
+        id: matrix-k8s
+        run: |
+          microsvcs=("frontend" "auth-api" "log-message-processor" "todos-api" "users-api" "redis-queue" "zipkin")
+          redeploys=()
+          noreploys=()
+          changed_files_docker="${{steps.changed-files-rebuild-docker.outputs.all_changed_files}}"
+          changed_files_k8s="${{steps.changed-files-k8s-deployment.outputs.all_changed_files}}"
+          for svc in "${microsvcs[@]}"
+          do
+            [[ "$changed_files_docker" == *"$svc"* || "$changed_files_k8s" == *"$svc"* ]] && redeploys+=("$svc") || nodeploys+=("$svc")
+          done
+          redeploys=$(jq --compact-output --null-input '$ARGS.positional' --args "${redeploys[@]}")
+          nodeploys=$(jq --compact-output --null-input '$ARGS.positional' --args "${nodeploys[@]}")
+          echo "::set-output name=redeploys::$redeploys"
+          echo "::set-output name=nodeploys::$nodeploys"
+      - name: Check matrix definition
+        run: |
+          matrix=${{ steps.matrix-docker.outputs.rebuilds }}
+          echo $matrix
+          matrix=${{ steps.matrix-k8s.outputs.redeploys }}
+          echo $matrix
+    outputs:
+      rebuilds: ${{ steps.matrix-docker.outputs.rebuilds }}
+      redeploys: ${{ steps.matrix-k8s.outputs.redeploys }}
+  build-docker-image:
+    name: Rebuild and push images
+    needs: prep-matrix
+    strategy:
+      matrix:
+        microservices: ${{ fromJSON(needs.prep-matrix.outputs.rebuilds) }}
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.CONTAINER_REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Re-build and push the ${{ matrix.microservices }} image if necessary
+        run: |
+          docker build --rm -t ${{ secrets.CONTAINER_REGISTRY }}/${{ matrix.microservices }}:latest ${{ matrix.microservices }}/
+          docker push ${{ secrets.CONTAINER_REGISTRY }}/${{ matrix.microservices }}:latest
+  deploy-service:
+    name: Redeploy containers
+    needs: [prep-matrix, build-docker-image]
+    strategy:
+      matrix:
+        microservices: ${{ fromJSON(needs.prep-matrix.outputs.redeploys) }}
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: azure/aks-set-context@v1
+        with:
+          creds: "${{ secrets.AKS_CREDENTIALS }}" # Azure credentials
+          resource-group: "${{ secrets.RESOURCE_GROUP }}"
+          cluster-name: "${{ secrets.AKS_CLUSTER_NAME }}"
+        id: login
+      - name: Deploy ${{ matrix.microservices }} microservices to AKS
+        run: |
+          kubectl delete --ignore-not-found=true -R -f k8s/${{ matrix.microservices }}
+          kubectl create -R -f k8s/${{ matrix.microservices }}
