@@ -80,4 +80,4 @@ Immutable infrastructure is infrastructure that cannot change. Changes are baked
 * [Task 2: Provision a Kubernetes cluster](/devops/week-12/HOWTO.md#task-2)
 * [Task 3: Deploy microservices onto a Kubernetes cluster](/devops/week-12/HOWTO.md#task-3)
 * [Task 4: Use GitHub Actions to create a CI/CD pipeline for a containerized app](/devops/week-12/HOWTO.md#task-4)
-* [Task 5: Implement CD for an environment with immutable infrastructure](/devops/week-12/HOWTO.md#task-5)
+* [Task 5: Demonstrate CD for an environment with immutable infrastructure](/devops/week-12/HOWTO.md#task-5)
