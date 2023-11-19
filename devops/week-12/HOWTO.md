@@ -286,4 +286,14 @@ The CI/CD pipeline you're creating includes the jobs described below.
 
 ## Task 5
 ### Implement CD for an environment with immutable infrastructure
-**Step 1.** Text goes here.
+**Step 1.** Updated the `index.html` file provided in the `frontend` folder. Replace `<title>frontend</title>` with `<title>new frontend</title>`.
+```bash
+sed -i "s/<title>frontend<\/title>/<title>new frontend<\/title>g" frontend/index.html
+```
+
+**Step 2.** Commit the change made. 
+```bash
+git add .
+git commit -m "Updated the frontend's title tag"
+git push
+```
