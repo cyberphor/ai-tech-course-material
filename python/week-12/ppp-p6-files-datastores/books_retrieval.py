@@ -47,7 +47,7 @@ def retrieve_popular_books(csv_in: str, json_out: str):
             "info": {attribute: book[attribute] for attribute in BOOK_ATTRIBUTES},
             "rating": {attribute: book[attribute] for attribute in RATING_ATTRIBUTES}
           }
-    json_file.write(json.dumps(popular_books, indent=4))
+    json_file.write(json.dumps(popular_books, indent=4, ensure_ascii=False))
 
 def retrieve_boring_books(json_in: str, xml_out: str):
   """Function for getting books from a JSON file and writing them to an XML file"""
@@ -90,22 +90,22 @@ def retrieve_wildly_popular_books(xml_in: str, csv_out: str):
 
 # HACK: this is used in Task 2
 def retrieve_long_books(user: str, password: str, host: str, db: str, table: str, csv_out: str):
-    """Function for getting books from a SQL table into a CSV file"""
-    with open(csv_out, "w", encoding="UTF-8") as csv_file:
-        connection = mysql.connector.connect(host=host, user=user, password=password)
-        cursor = connection.cursor()
-        query = f"SELECT column_name FROM information_schema.columns WHERE table_name = '{table}' ORDER BY ordinal_position;"
-        cursor.execute(query)
-        csv_headers = [csv_header[0] for csv_header in cursor]
-        csv_headers.pop(0)
-        csv_headers.insert(0, "book_id")
-        csv_writer = csv.writer(csv_file)
-        csv_writer.writerow(csv_headers)
-        query = f"SELECT * FROM {db}.{table} WHERE num_pages > 2000;"
-        cursor.execute(query)
-        csv_writer.writerows(cursor)
-        cursor.close()
-        connection.commit()
+  """Function for getting books from a SQL table into a CSV file"""
+  with open(csv_out, "w", encoding="UTF-8") as csv_file:
+      connection = mysql.connector.connect(host=host, user=user, password=password)
+      cursor = connection.cursor()
+      query = f"SELECT column_name FROM information_schema.columns WHERE table_name = '{table}' ORDER BY ordinal_position;"
+      cursor.execute(query)
+      csv_headers = [csv_header[0] for csv_header in cursor]
+      csv_headers.pop(0)
+      csv_headers.insert(0, "book_id")
+      csv_writer = csv.writer(csv_file)
+      csv_writer.writerow(csv_headers)
+      query = f"SELECT * FROM {db}.{table} WHERE num_pages > 2000;"
+      cursor.execute(query)
+      csv_writer.writerows(cursor)
+      cursor.close()
+      connection.commit()
 
 def retrieve_obscure_books(db: str, coll: str, json_out: str):
   """Function for getting books in a NoSQL collection into a JSON file"""
@@ -124,17 +124,17 @@ def retrieve_obscure_books(db: str, coll: str, json_out: str):
     json_file.write(json.dumps(obscure_books, indent=4))
 
 if __name__ == "__main__":
-  #retrieve_popular_books(csv_in="books_data/books_v2.csv", json_out="books_data/books_v2_popular.json")
-  #retrieve_boring_books(json_in="books_data/books_v2.json", xml_out="books_data/books_v2_boring.xml")
-  #retrieve_wildly_popular_books(xml_in="books_data/books_v2.xml", csv_out="books_data/books_v2_wild.csv")
-  #retrieve_long_books(
-  #  user="dbuser",
-  #  password="dbroot",
-  #  host="localhost",
-  #  db="books",
-  #  table="goodreads",
-  #  csv_out="books_data/long_books.csv"
-  #)
+  retrieve_popular_books(csv_in="books_data/books_v2.csv", json_out="books_data/books_v2_popular.json")
+  retrieve_boring_books(json_in="books_data/books_v2.json", xml_out="books_data/books_v2_boring.xml")
+  retrieve_wildly_popular_books(xml_in="books_data/books_v2.xml", csv_out="books_data/books_v2_wild.csv")
+  retrieve_long_books(
+    user="dbuser",
+    password="dbroot",
+    host="localhost",
+    db="books",
+    table="goodreads",
+    csv_out="books_data/long_books.csv"
+  )
   retrieve_obscure_books(
     db="books",
     coll="goodreads",
