@@ -15,7 +15,8 @@ def get_names_page(num: int) -> str:
 
 def extract_page_count(page_text: str) -> int:
     """Function to get number of pages to parse"""
-    return BeautifulSoup(page_text, "lxml").find_all("a", class_="pgcanhide")[-1].text
+    page_count = BeautifulSoup(page_text, "lxml").find_all("a", class_="pgcanhide")[-1].text
+    return int(page_count)
 
 def extract_names_from_page(
         page_text: str,
@@ -49,7 +50,8 @@ def scrape_names(
         desc: bool = False,
         output_format: Literal["csv", "json", "xml"] = "csv"):
     """Function to scrape names and store them in a file"""
-    pass
+    with open(output_file_path, "w") as scrape_file:
+        pass
 
 if __name__ == "__main__":
     names_page = get_names_page(num=4)
