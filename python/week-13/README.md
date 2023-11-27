@@ -1,0 +1,18 @@
+# Web Scraping
+
+## Training Objectives
+Using Python
+* Get an HTTP server code from a given URL
+* Extract data from an HTML document
+* Download and store multiple web pages in a file
+* Create a Microsoft Excel document
+* Access an API using token-based authentication
+* Get data from an API
+* Create multiple Microsoft Word documents
+
+## Solutions
+* [Setup](/python/week-13/HOWTO.md)
+* [Task 1](/python/week-13/HOWTO.md#task-1)
+* [Task 2](/python/week-13/HOWTO.md#task-2)
+* [Task 3](/python/week-13/HOWTO.md#task-3)
+* [Task 4](/python/week-13/HOWTO.md#task-4)
