@@ -10,6 +10,11 @@ Using Python
 * Get data from an API
 * Create multiple Microsoft Word documents
 
+## Concepts
+**How to Web Scrape**  
+1. Download HTML using Requests
+2. Parse HTML using BeautifulSoup
+
 ## Solutions
 * [Setup](/python/week-13/HOWTO.md)
 * [Task 1](/python/week-13/HOWTO.md#task-1)

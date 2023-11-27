@@ -24,12 +24,7 @@ python -m pip install -r requirements.txt
 ```
 
 ## Task 1
-### Part 1: Get Page
-**Step 1.** Create a file called `name_scraping.py`.
+**Step 1.** Create a file called `name_scraping.py` using inspiration from [the provided source code](/python/week-13/ppp-p7-webscraping-office-documents/name_scraping.py).
 ```bash
 touch name_scraping.py
 ```
-
-### Part 2: Get Page Count
-### Part 3: Get Names
-### Part 4: Scrape Names
