@@ -4,8 +4,6 @@ import json
 import mysql.connector
 from pymongo import MongoClient
 from books_retrieval import fix_book_value_types
-from books_retrieval import BOOK_ATTRIBUTES
-from books_retrieval import RATING_ATTRIBUTES
 
 def setup_sql_table(user: str, password: str, host: str, new_db: str, new_table: str):
     """Function for creating a SQL database and table"""
