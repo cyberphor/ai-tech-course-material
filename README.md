@@ -20,6 +20,7 @@
 * [Week 08: Object-Oriented Programming](/python/week-08/README.md)
 * [Week 10: Debugging, Refactoring, Testing, and Packaging](/python/week-10/)
 * [Week 12: Data Stores](/python/week-12/README.md)
+* [Week 13: Web Scraping](/python/week-13/README.md)
 
 ### DevOps
 * [Week 03: Getting Started with DevOps](/devops/week-03/README.md)
