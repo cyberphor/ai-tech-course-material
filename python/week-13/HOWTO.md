@@ -40,7 +40,9 @@ from xml.etree.ElementTree import indent
 from xml.etree.ElementTree import Element
 from xml.etree.ElementTree import ElementTree
 from xml.etree.ElementTree import SubElement
+from xml.etree.ElementTree import parse
 from bs4 import BeautifulSoup
+from openpyxl import Workbook
 from requests import codes
 from requests import session
 
@@ -124,5 +126,45 @@ def scrape_names(pages: list[int], output_file_path: str, gender: bool = True, u
 ## Task 2
 **Step 1.** Add the code below to the file created in Task 1 (i.e., `name_scraping.py`).
 ```python
+def json_to_excel(json_file_path: str, excel_file_path: str):
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "names"
+    with open(json_file_path, "r", encoding="UTF-8") as json_file:
+        names = json.loads(json_file.read())
+    worksheet.append(["name"] + [column for column in names[list(names)[0]].keys()])
+    for name in names:
+        row = [name]
+        for cell in names[name]:
+            if cell == "usage":
+                row.append(", ".join(names[name][cell]))
+            else:
+                row.append(names[name][cell])
+        worksheet.append(row)
+    workbook.save(excel_file_path)
 
+def csv_to_excel(csv_file_path: str, excel_file_path: str):
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "names"
+    with open(csv_file_path, "r", encoding="UTF-8") as csv_file:
+        [worksheet.append(name) for name in csv.reader(csv_file)]
+    workbook.save(excel_file_path)
+
+def xml_to_excel(xml_file_path: str, excel_file_path: str):
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "names"
+    names = parse(xml_file_path).getroot()
+    worksheet.append(list(dict.fromkeys(name.tag for name in names[0].iter())))
+    for parent in names:
+        name   = [parent.attrib["value"]] 
+        gender = [child.text for child in parent.iter("gender")]
+        usage  = [child.text for child in parent.iter("usage")]
+        desc   = [child.text for child in parent.iter("desc")]
+        if usage:
+            worksheet.append(name + gender + [", ".join(usage)] + desc)
+        else: 
+            worksheet.append(name + gender + desc)
+    workbook.save(excel_file_path)
 ```
