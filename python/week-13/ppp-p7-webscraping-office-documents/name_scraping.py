@@ -108,7 +108,14 @@ def json_to_excel(json_file_path: str, excel_file_path: str):
     workbook.save(excel_file_path)
 
 def csv_to_excel(csv_file_path: str, excel_file_path: str):
-    pass
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "names"
+    with open(csv_file_path, "r", encoding="UTF-8") as csv_file:
+        names = csv.reader(csv_file)
+        for name in names:
+            worksheet.append(name)
+    workbook.save(excel_file_path)
 
 def xml_to_excel(xml_file_path: str, excel_file_path: str):
     pass
