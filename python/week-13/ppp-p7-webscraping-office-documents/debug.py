@@ -9,33 +9,33 @@ json_file = "debug.json"
 xml_file  = "debug.xml"
 
 # task 1
-#scrape_names(
-#    pages=[1,2,3,4],
-#    output_file_path=csv_file,
-#    gender=True,
-#    usage=True,
-#    desc=bool,
-#    output_format="csv"
-#)
-#
-#scrape_names(
-#    pages=[1,2,3,4],
-#    output_file_path=json_file,
-#    gender=True,
-#    usage=True,
-#    desc=bool,
-#    output_format="json"
-#)
-#
-#scrape_names(
-#    pages=[1,2,3,4],
-#    output_file_path=xml_file,
-#    gender=True,
-#    usage=True,
-#    desc=bool,
-#    output_format="xml"
-#)
-#
+scrape_names(
+    pages=[1,2,3,4],
+    output_file_path=csv_file,
+    gender=True,
+    usage=True,
+    desc=bool,
+    output_format="csv"
+)
+
+scrape_names(
+    pages=[1,2,3,4],
+    output_file_path=json_file,
+    gender=True,
+    usage=True,
+    desc=bool,
+    output_format="json"
+)
+
+scrape_names(
+    pages=[1,2,3,4],
+    output_file_path=xml_file,
+    gender=True,
+    usage=True,
+    desc=bool,
+    output_format="xml"
+)
+
 # task 2
 json_to_excel(
     json_file_path=json_file, 

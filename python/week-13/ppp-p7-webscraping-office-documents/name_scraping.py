@@ -7,6 +7,7 @@ from xml.etree.ElementTree import indent
 from xml.etree.ElementTree import Element
 from xml.etree.ElementTree import ElementTree
 from xml.etree.ElementTree import SubElement
+from xml.etree.ElementTree import parse
 from bs4 import BeautifulSoup
 from openpyxl import Workbook
 from requests import codes
@@ -94,9 +95,7 @@ def json_to_excel(json_file_path: str, excel_file_path: str):
     worksheet.title = "names"
     with open(json_file_path, "r", encoding="UTF-8") as json_file:
         names = json.loads(json_file.read())
-    columns = ["name"]
-    [columns.append(column) for column in names[list(names)[0]].keys()]
-    worksheet.append(columns)
+    worksheet.append(["name"] + [column for column in names[list(names)[0]].keys()])
     for name in names:
         row = [name]
         for cell in names[name]:
@@ -112,10 +111,19 @@ def csv_to_excel(csv_file_path: str, excel_file_path: str):
     worksheet = workbook.active
     worksheet.title = "names"
     with open(csv_file_path, "r", encoding="UTF-8") as csv_file:
-        names = csv.reader(csv_file)
-        for name in names:
-            worksheet.append(name)
+        [worksheet.append(name) for name in csv.reader(csv_file)]
     workbook.save(excel_file_path)
 
 def xml_to_excel(xml_file_path: str, excel_file_path: str):
-    pass
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "names"
+    names = parse(xml_file_path).getroot()
+    worksheet.append(list(dict.fromkeys(name.tag for name in names[0].iter())))
+    for parent in names:
+        name   = [parent.attrib["value"]]
+        gender = [child.text for child in parent.iter("gender")]
+        usage  = [", ".join([child.text for child in parent.iter("usage")])]
+        desc   = [child.text for child in parent.iter("desc")]
+        worksheet.append(name + gender + usage + desc)
+    workbook.save(excel_file_path)
