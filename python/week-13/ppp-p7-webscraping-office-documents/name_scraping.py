@@ -8,6 +8,7 @@ from xml.etree.ElementTree import Element
 from xml.etree.ElementTree import ElementTree
 from xml.etree.ElementTree import SubElement
 from bs4 import BeautifulSoup
+from openpyxl import Workbook
 from requests import codes
 from requests import session
 
@@ -86,3 +87,28 @@ def scrape_names(pages: list[int], output_file_path: str, gender: bool = True, u
                         SubElement(scraped_name, i).text = names[name][i]
             indent(scraped_names, space="\t")
             ElementTree(scraped_names).write(output_file_path, encoding="UTF-8")
+
+def json_to_excel(json_file_path: str, excel_file_path: str):
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "names"
+    with open(json_file_path, "r", encoding="UTF-8") as json_file:
+        names = json.loads(json_file.read())
+    columns = ["name"]
+    [columns.append(column) for column in names[list(names)[0]].keys()]
+    worksheet.append(columns)
+    for name in names:
+        row = [name]
+        for cell in names[name]:
+            if cell == "usage":
+                row.append(", ".join(names[name][cell]))
+            else:
+                row.append(names[name][cell])
+        worksheet.append(row)
+    workbook.save(excel_file_path)
+
+def csv_to_excel(csv_file_path: str, excel_file_path: str):
+    pass
+
+def xml_to_excel(xml_file_path: str, excel_file_path: str):
+    pass
