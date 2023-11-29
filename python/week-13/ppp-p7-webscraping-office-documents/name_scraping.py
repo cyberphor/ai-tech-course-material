@@ -121,9 +121,12 @@ def xml_to_excel(xml_file_path: str, excel_file_path: str):
     names = parse(xml_file_path).getroot()
     worksheet.append(list(dict.fromkeys(name.tag for name in names[0].iter())))
     for parent in names:
-        name   = [parent.attrib["value"]]
+        name   = [parent.attrib["value"]] 
         gender = [child.text for child in parent.iter("gender")]
-        usage  = [", ".join([child.text for child in parent.iter("usage")])]
+        usage  = [child.text for child in parent.iter("usage")]
         desc   = [child.text for child in parent.iter("desc")]
-        worksheet.append(name + gender + usage + desc)
+        if usage:
+            worksheet.append(name + gender + [", ".join(usage)] + desc)
+        else: 
+            worksheet.append(name + gender + desc)
     workbook.save(excel_file_path)
