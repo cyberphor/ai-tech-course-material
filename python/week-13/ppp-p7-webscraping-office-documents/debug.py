@@ -14,7 +14,7 @@ scrape_names(
     output_file_path=csv_file,
     gender=True,
     usage=True,
-    desc=bool,
+    desc=True,
     output_format="csv"
 )
 
@@ -23,16 +23,16 @@ scrape_names(
     output_file_path=json_file,
     gender=True,
     usage=True,
-    desc=bool,
+    desc=True,
     output_format="json"
 )
 
 scrape_names(
     pages=[1,2,3,4],
     output_file_path=xml_file,
-    gender=True,
-    usage=True,
-    desc=bool,
+    gender=False,
+    usage=False,
+    desc=False,
     output_format="xml"
 )
 
