@@ -2,9 +2,9 @@
 
 ## Training Objectives
 Using Python
-* Get an HTTP server code from a given URL
+* Download HTML code from a given URL
 * Extract data from an HTML document
-* Download and store multiple web pages in a file
+* Store data in a file
 * Create a Microsoft Excel document
 * Access an API using token-based authentication
 * Get data from an API
