@@ -3,6 +3,7 @@ from name_scraping import csv_to_excel
 from name_scraping import json_to_excel
 from name_scraping import scrape_names
 from name_scraping import xml_to_excel
+from retrieve_from_gsheet import generate_reminder
 from retrieve_from_gsheet import get_google_sheet
 from retrieve_from_gsheet import get_accounts_info
 
@@ -63,5 +64,34 @@ def task_3():
         f"Number of accounts: {len(accounts)}\n{accounts}\n"
     )
 
+# task 4
+def task_4():
+    generate_reminder(
+        first_name='Rocco',
+        last_name='Hupp',
+        title='Mr.',
+        street='9733 Nancy Wall',
+        city='South Christopherville',
+        state='AL',
+        zip_code='23514',
+        amount_owed=376.6,
+        num_reminders=1,
+        output_dir='reminders'
+    )
+    generate_reminder(
+        first_name='Hang',
+        last_name='Hupp',
+        title='Mrs.',
+        street='9733 Nancy Wall',
+        city='South Christopherville',
+        state='AL',
+        zip_code='23514',
+        amount_owed=376.6,
+        num_reminders=0,
+        output_dir='reminders'
+    )
+
+
+
 if __name__ == "__main__":
-    task_3()
+    task_4()
