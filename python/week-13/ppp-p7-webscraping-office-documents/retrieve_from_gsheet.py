@@ -31,7 +31,7 @@ def generate_reminder(
         city: str = "",
         state: str = "",
         zip_code: str = "",
-        amount_owed: float = 0.0,
+        amount_owed: float = 0,
         num_reminders: int = 0,
         output_dir: str = ""  
     ):
@@ -41,21 +41,38 @@ def generate_reminder(
     reminder = [
         f"{title} {first_name} {last_name}",
         f"{street}",
-        f"{city}, {state} {zip_code}",
-        f"Dear {title} {last_name},",
-        f"Payment on your XYZ account in the amount of ${amount_owed} is due.",
-        f"We have already sent you {num_reminders} reminders.",
-        "Please, disregard this notice if you have already made the payment.",
-        "Best Regards.",
+        f"{city}, {state} {zip_code}\n\n\n\n\n\n\n",
+        f"Dear {title} {last_name},\n\n",
+        f"Payment on your XYZ account in the amount of ${amount_owed:.2f} is due.\n\n",
+        f"We have already sent you {num_reminders} reminders.\n\n",
+        "Please, disregard this notice if you have already made the payment.\n\n\n\n\n\n\n",
+        "Best Regards.\n\n",
         "John Doe",
         "Account Manager XYZ"
     ]
     document = Document()
-    if num_reminders <= 0:
-        reminder = reminder[0:4] + reminder[6:]
+    match num_reminders:
+        case 0:
+            reminder = reminder[0:5] + reminder[6:]
+        case 1:
+            reminder[5] = f"We have already sent you {num_reminders} reminder.\n\n",
     for paragraph in reminder:
         document.add_paragraph(paragraph, style=document.styles["No Spacing"])
     document.save(f"{output_dir}/{last_name}_{first_name}_reminder_{num_reminders + 1}.docx")
 
 def generate_reminders(start: int, end: int, output_dir: str):
-    pass
+    """Function to create multiple Microsoft Word documents"""
+    accounts = get_accounts_info(start=start, end=end)
+    for account in accounts:
+        generate_reminder(
+            account["First Name"],
+            account["Last Name"],
+            account["Title"],
+            account["Street"],
+            account["City"],
+            account["State"],
+            account["ZIP"],
+            account["Amount Owed"],
+            account["Number of Reminders"],
+            output_dir
+        )
