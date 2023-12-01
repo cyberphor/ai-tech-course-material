@@ -28,7 +28,8 @@
 * [Week 07: Continuous Deployment (CD)](/devops/week-07/README.md)
 * [Week 09: Azure DevOps Pipelines](/devops/week-09/README.md)
 * [Week 11: GitHub Actions](/devops/week-11/README.md)
-* [Week 12: Containerized Microservices](/devops/week-12/README.md)
+* [Week 12: Containers](/devops/week-12/README.md)
+* [Week 13: Serverless Functions](/devops/week-13/README.md)
 
 ### Installation Guides
 * [How to Install the Azure CLI within a GitHub Codespace](/INSTALL.md#how-to-install-the-azure-cli-within-a-github-codespace)

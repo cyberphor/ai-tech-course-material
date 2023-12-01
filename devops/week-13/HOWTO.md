@@ -53,6 +53,13 @@ curl http://localhost:7071/api/HttpExample --data "Victor" -w "\n"
 
 **Step 8.** Stop the serverless function.
 
+**Step 9.** Commit the changes you've made so far to your GitHub repository. 
+```bash
+git add .
+git commit -m "Added a serverless function"
+git push
+```
+
 ## Task 2
 
 ## Task 3

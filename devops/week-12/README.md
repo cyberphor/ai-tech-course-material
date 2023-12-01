@@ -1,4 +1,4 @@
-# CI/CD Pipeline for a Containerized Microservice
+# Containers
 
 ## Training Objectives
 * Describe Docker
