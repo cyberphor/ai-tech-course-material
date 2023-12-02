@@ -95,5 +95,39 @@ git push
 ```
 
 ## Task 2
+**Step 1.** Login to Azure and download the "Publish Profile" for your Azure Function (click the "Get publish profile" button on the "Overview" page). 
+
+**Step 2.** Create a service account for GitHub Actions to use when accessing Azure. Copy the output to your clipboard. 
+```bash
+export SUBSCRIPTION_ID="17408d59-f3b6-43a5-a48c-c3667527f330"
+export RESOURCE_GROUP="java-functions-group"
+export FUNCTION_APP_NAME="my-first-function-20231201120945143"
+export SCOPES="/subscriptions/${SUBSCRIPTION_ID}/resourceGroups/${RESOURCE_GROUP}/providers/Microsoft.Web/sites/${FUNCTION_APP_NAME}"
+az ad sp create-for-rbac \
+  --name "${FUNCTION_APP_NAME}" \
+  --role contributor \
+  --scopes "${SCOPES}" \
+  --sdk-auth
+```
+
+Below is an example of the output to expect.
+```json
+{
+  "clientId": "be0fedc0-ecc7-47ce-ad8a-309658c3bb8f",
+  "clientSecret": "nI38Q~6ApA0suh_ace.lcAh3ra2HrxD0ts6siavK",
+  "subscriptionId": "17408d59-f3b6-43a5-a48c-c3667527f330",
+  "tenantId": "da3cb2a3-95dd-4a37-b857-c1264e363deb",
+  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+  "resourceManagerEndpointUrl": "https://management.azure.com/",
+  "activeDirectoryGraphResourceId": "https://graph.windows.net/",
+  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+  "galleryEndpointUrl": "https://gallery.azure.com/",
+  "managementEndpointUrl": "https://management.core.windows.net/"
+}
+```
+
+**Step 3.** Add the output from the previous step as a secret to your GitHub repository. Call it `AZURE_CREDENTIALS`.
+
+**Step 4.** Add a Github Actions workflow configuration file to your repository using inspiration from [the provided example](/devops/week-13/function-deploy.yml).
 
 ## Task 3

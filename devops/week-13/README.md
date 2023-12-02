@@ -1,7 +1,7 @@
 # Serverless Functions
 
 ## Training Objectives
-* Deploy a serverless function
+* Create a serverless function
 * Create a CI/CD pipeline for a serverless function
 * Implement a Blue/Green deployment strategy for a serverless function
 
