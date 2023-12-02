@@ -9,7 +9,7 @@ git clone git@github.com:cyberphor/cicd-functions.git
 ```
 
 ## Task 1
-**Step 1.** From your home directory, generate an Azure Function (i.e., serverless function) template using the command below. 
+**Step 1.** From your home directory, generate an Maven project using the command below. 
 ```bash
 mvn archetype:generate \
     -DarchetypeGroupId=com.microsoft.azure \
@@ -34,26 +34,60 @@ cp -r my-first-function/* cicd-functions/
 cd cicd-functions/
 ```
 
-**Step 4.** In the "pom.xml" file set the "region" to be `eastus`. 
+**Step 4.** In the "pom.xml" file, set the "region" field to `eastus`. Then, add the code below under the "<dependencies>" section.
+```xml
+<dependency>
+    <groupId>commons-codec</groupId>
+    <artifactId>commons-codec</artifactId>
+    <version>1.14</version>
+</dependency>
+```
 
-**Step 5.** Package the Maven code. 
+**Step 5.** Replace the code in the "host.json" file with the code below to implement rate limiting. 
+```json
+{
+  "version": "2.0",
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[3.*, 4.0.0)"
+  },
+  "extensions": {
+    "http": {
+      "routePrefix": "api",
+      "maxOutstandingRequests": 200
+    }
+  }
+}
+```
+
+**Step 6.** Replace the "Function.java" file with [the one provided](/devops/week-13/Function.java).
+```bash
+cp Function.java ~/cicd-functions/src/main/java/edu/cmu/cs/devops/Function.java
+```
+
+**Step 7.** Copy [the provided test file](/devops/week-13/FunctionTest.java) to the correct folder within your Maven project. 
+```bash
+cp FunctionTest.java ~/cicd-functions/src/test/java/edu/cmu/cs/devops/FunctionTest.java
+```
+
+**Step 8.** Package your Maven project.  
 ```bash
 mvn clean package
 ```
 
-**Step 6.** Deploy the serverless function using the Azure Functions plugin (it's installed by default in the Azure Cloud Shell environment). 
+**Step 8.** Deploy the serverless function. Part of the Azure Functions template are the instructions to create a resource group in Azure. Take note of the serverless function URL in the resulting output. 
 ```bash
-mvn azure-functions:run 
+mvn azure-functions:deploy
 ```
 
-**Step 7.** Verify the serverless function is running locally. 
+**Step 9.** Verify the serverless function is working. 
 ```bash
-curl http://localhost:7071/api/HttpExample --data "Victor" -w "\n" 
+export SERVERLESS_FUNCTION_URL="https://my-first-function-20231201120945143.azurewebsites.net/api/HttpExample"
+export REQUEST=$(echo -n "Sort these words for me" | base64)
+curl "${SERVERLESS_FUNCTION_URL}" --data "${REQUEST}" -s | base64 -d
 ```
 
-**Step 8.** Stop the serverless function.
-
-**Step 9.** Commit the changes you've made so far to your GitHub repository. 
+**Step 10.** Commit the changes you've made so far to your GitHub repository. 
 ```bash
 git add .
 git commit -m "Added a serverless function"

@@ -18,6 +18,9 @@ Base64 is an encoding scheme for representing binary data in ASCII. It was devel
 **Azure Function Archectype: Maven**  
 The Maven Azure Function archectype includes the software needed to develop, build, and deploy a Java-based serverless function. NOTE: every Azure Function app must have a globally unique name (i.e., the "functionAppName" field within the app's "pom.xml" file). 
 
+**Cold Start**  
+A cold start is when your serverless function takes longer than usual because it has not been executed for an extended amount of time. It takes longer because the hardware allocated for it has to be powered back on. At some point, it was turned off due to inactivity.  
+
 ## Solutions
 * [Setup](/devops/week-13/HOWTO.md)
 * [Task 1](/devops/week-13/HOWTO.md#task-1)
