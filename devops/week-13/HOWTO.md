@@ -176,3 +176,20 @@ git checkout -b feature/blue-green-gitflow
 ```bash
 git add -A 
 ```
+
+**Step 12.** Commit all the changes you've made so far to your local branch. 
+```bash
+git commit -m "Added a new feature"
+```
+
+**Step 13.** Push all changes committed to the local branch to your GitHub repository. 
+```bash
+git push origin feature/blue-green-gitflow
+```
+
+**Step 14.** Login to GitHub. Then, create and merge a pull request to merge the "feature/blue-green-gitflow" branch into the "develop" branch. 
+* After navigating to GitHub, you should see an notification that says "feature/blue-green-gitflow had recent pushes 1 minute ago" 
+* Click "Compare & pull request"
+* Click "Create pull request"
+* Click "Merge pull request"
+* Click "Confirm merge"
