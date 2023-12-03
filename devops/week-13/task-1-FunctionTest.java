@@ -78,6 +78,4 @@ public class FunctionTest {
         // Verify
         assertEquals(ret.getStatus(), HttpStatus.BAD_REQUEST);
     }
-
-
 }

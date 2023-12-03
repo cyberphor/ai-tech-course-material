@@ -19,7 +19,25 @@ Base64 is an encoding scheme for representing binary data in ASCII. It was devel
 The Maven Azure Function archectype includes the software needed to develop, build, and deploy a Java-based serverless function. NOTE: every Azure Function app must have a globally unique name (i.e., the "functionAppName" field within the app's "pom.xml" file). 
 
 **Cold Start**  
-A cold start is when your serverless function takes longer than usual because it has not been executed for an extended amount of time. It takes longer because the hardware allocated for it has to be powered back on. At some point, it was turned off due to inactivity.  
+A cold start is when your serverless function takes longer than usual because it has not been executed for an extended amount of time. It takes longer because the hardware allocated for it has to be powered back on. At some point, it was turned off due to inactivity. 
+
+**Deployment Strategies**  
+* Canary: deploying your app for a small set of people before everyone else
+* Rolling: individually replacing old instances of your app with the new version
+* Blue/Green: load balancing traffic to the old (Blue, production) and new (Green, staging) version of your app 
+
+**GitFlow**  
+GitFlow is a Git branching strategy. Below describes how you would implement it. 
+* Create and maintain two branches
+  * main
+    * All commits are tagged with a version number (e.g., v0.1.0)
+    * This branch stores all the official release history of the app
+  * develop
+    * This branch serves as the parent branch of all features 
+    * Feature branches never interact with the main branch
+
+**Deployment Slots**  
+Deployment slots are instances of your Azure Function with a unique hostname. App content and configurations elements can be swapped between two deployment slots, including the production slot.
 
 ## Solutions
 * [Setup](/devops/week-13/HOWTO.md)
@@ -27,5 +45,9 @@ A cold start is when your serverless function takes longer than usual because it
 * [Task 2](/devops/week-13/HOWTO.md#task-2)
 * [Task 3](/devops/week-13/HOWTO.md#task-3)
 
-## Visual Aid
+## Visual Aids
+### Serverless Function
 ![serverless-function.png](/devops/week-13/serverless-function.png)
+
+### GitFlow
+![gitflow.png](/devops/week-13/gitflow.png)
