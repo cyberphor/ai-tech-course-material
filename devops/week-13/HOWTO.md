@@ -60,14 +60,14 @@ cd cicd-functions/
 }
 ```
 
-**Step 6.** Replace the "Function.java" file with [the one provided](/devops/week-13/Function.java).
+**Step 6.** Replace the "Function.java" file with [the one provided](/devops/week-13/task-1-Function.java).
 ```bash
-cp Function.java ~/cicd-functions/src/main/java/edu/cmu/cs/devops/Function.java
+cp task-1-Function.java ~/cicd-functions/src/main/java/edu/cmu/cs/devops/Function.java
 ```
 
-**Step 7.** Copy [the provided test file](/devops/week-13/FunctionTest.java) to the correct folder within your Maven project. 
+**Step 7.** Copy [the provided test file](/devops/week-13/task-1-FunctionTest.java) to the correct folder within your Maven project. 
 ```bash
-cp FunctionTest.java ~/cicd-functions/src/test/java/edu/cmu/cs/devops/FunctionTest.java
+cp task-1-FunctionTest.java ~/cicd-functions/src/test/java/edu/cmu/cs/devops/FunctionTest.java
 ```
 
 **Step 8.** Package your Maven project.  
@@ -128,6 +128,51 @@ Below is an example of the output to expect.
 
 **Step 3.** Add the output from the previous step as a secret to your GitHub repository. Call it `AZURE_CREDENTIALS`.
 
-**Step 4.** Add a Github Actions workflow configuration file to your repository using inspiration from [the provided example](/devops/week-13/function-deploy.yml).
+**Step 4.** Add a Github Actions workflow configuration file to your repository using inspiration from [the provided example](/devops/week-13/task-2-function-deploy.yml).
 
 ## Task 3
+In this task, you're going to do the following:
+* Create a staging environment, in Azure, for your serverless function
+* Update the CI/CD pipeline for your production environment
+* Add a secondary CI/CD pipeline albeit for your staging environment
+* Update the code in your serverless function
+* Create a "develop" branch
+
+**Step 1.** Using the Azure Portal, add a "Deployment Slot" to your Azure Function. Call it "staging."
+
+**Step 2.** Download the "Publish Profile" for the "staging" deployment slot.
+
+**Step 3.** Add another secret to your GitHub repository. Call it `AZURE_FUNCTIONAPP_STAGING_PUBLISH_PROFILE` and use the contents of the "staging" publish profile as its value.
+
+**Step 4.** Update your GitHub Actions workflow configuration file using inspiration from [the updated version of the first example](/devops/week-13/task-3-function-deploy.yml). 
+
+**Step 5.** Create an second GitHub Actions workflow configuration file using inspiration from [the second provided example](/devops/week-13/task-3-function-swap.yml).
+
+**Step 6.** Update the "Function.java" file with [a newer version](/devops/week-13/task-3-Function.java).
+```bash
+cp task-3-Function.java ~/cicd-functions/src/main/java/edu/cmu/cs/devops/Function.java
+```
+
+**Step 7.** Update the "FunctionTest.java" file with [a newer version](/devops/week-13/task-3-FunctionTest.java). 
+```bash
+cp task-3-FunctionTest.java ~/cicd-functions/src/test/java/edu/cmu/cs/devops/FunctionTest.java
+```
+
+**Step 8.** Create and checkout a "develop" branch. 
+```bash
+git checkout -b develop
+```
+
+**Step 9.** Push the "develop" branch to your GitHub repository.
+```bash
+git push origin develop
+```
+**Step 10.** Create and checkout a "feature/blue-green-gitflow" branch.
+```bash
+git checkout -b feature/blue-green-gitflow
+```
+
+**Step 11.** Add all the changes you've made so far to the "feature/blue-green-gitflow" branch. The command below adds all modified and untracked files in your entire repository. `git add .` only adds modified/untracked files in your current working directory and subdirectories. 
+```bash
+git add -A 
+```
