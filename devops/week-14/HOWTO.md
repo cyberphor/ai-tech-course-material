@@ -24,7 +24,7 @@ touch main.tf
 ```
 
 **Step 2.** Add the code below to the file you just created. The code below is also [included in this repository](/devops/week-14/task-1/main.tf).
-```json
+```hcl
 terraform {
     required_providers {
         azurerm = {
