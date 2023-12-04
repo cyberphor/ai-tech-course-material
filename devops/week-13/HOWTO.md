@@ -85,6 +85,7 @@ mvn azure-functions:deploy
 export SERVERLESS_FUNCTION_URL="https://my-first-function-20231201120945143.azurewebsites.net/api/HttpExample"
 export REQUEST=$(echo -n "Sort these words for me" | base64)
 curl "${SERVERLESS_FUNCTION_URL}" --data "${REQUEST}" -s | base64 -d
+# for me Sort these words
 ```
 
 **Step 10.** Commit the changes you've made so far to your GitHub repository. 
@@ -132,9 +133,9 @@ Below is an example of the output to expect.
 
 ## Task 3
 In this task, you're going to do the following:
-* Create a staging environment, in Azure, for your serverless function
-* Update the CI/CD pipeline for your production environment
-* Add a secondary CI/CD pipeline albeit for your staging environment
+* Create a *staging* environment in Azure for your serverless function
+* Update the CI/CD pipeline for your *production* environment
+* Add a secondary CI/CD pipeline albeit for your *staging* environment
 * Update the code in your serverless function
 * Create a "develop" branch
 
@@ -148,48 +149,70 @@ In this task, you're going to do the following:
 
 **Step 5.** Create an second GitHub Actions workflow configuration file using inspiration from [the second provided example](/devops/week-13/task-3-function-swap.yml).
 
-**Step 6.** Update the "Function.java" file with [a newer version](/devops/week-13/task-3-Function.java).
+**Step 6.** Sync your local repository and GitHub repository.
+```bash
+git pull origin main
+```
+
+**Step 7.** Update the "Function.java" file with [a newer version](/devops/week-13/task-3-Function.java).
 ```bash
 cp task-3-Function.java ~/cicd-functions/src/main/java/edu/cmu/cs/devops/Function.java
 ```
 
-**Step 7.** Update the "FunctionTest.java" file with [a newer version](/devops/week-13/task-3-FunctionTest.java). 
+**Step 8.** Update the "FunctionTest.java" file with [a newer version](/devops/week-13/task-3-FunctionTest.java). 
 ```bash
 cp task-3-FunctionTest.java ~/cicd-functions/src/test/java/edu/cmu/cs/devops/FunctionTest.java
 ```
 
-**Step 8.** Create and checkout a "develop" branch. 
+**Step 9.** Create and checkout a "develop" branch. 
 ```bash
 git checkout -b develop
 ```
 
-**Step 9.** Push the "develop" branch to your GitHub repository.
+**Step 10.** Push the "develop" branch to your GitHub repository.
 ```bash
 git push origin develop
 ```
-**Step 10.** Create and checkout a "feature/blue-green-gitflow" branch.
+**Step 11.** Create and checkout a "feature/blue-green-gitflow" branch.
 ```bash
 git checkout -b feature/blue-green-gitflow
 ```
 
-**Step 11.** Add all the changes you've made so far to the "feature/blue-green-gitflow" branch. The command below adds all modified and untracked files in your entire repository. `git add .` only adds modified/untracked files in your current working directory and subdirectories. 
+**Step 12.** Add all the changes you've made so far to the "feature/blue-green-gitflow" branch. The command below adds all modified and untracked files in your entire repository. `git add .` only adds modified/untracked files in your current working directory and subdirectories. 
 ```bash
 git add -A 
 ```
 
-**Step 12.** Commit all the changes you've made so far to your local branch. 
+**Step 13.** Commit all the changes you've made so far to your local branch. 
 ```bash
 git commit -m "Added a new feature"
 ```
 
-**Step 13.** Push all changes committed to the local branch to your GitHub repository. 
+**Step 14.** Push all changes committed to the local branch to your GitHub repository. 
 ```bash
 git push origin feature/blue-green-gitflow
 ```
 
-**Step 14.** Login to GitHub. Then, create and merge a pull request to merge the "feature/blue-green-gitflow" branch into the "develop" branch. 
-* After navigating to GitHub, you should see an notification that says "feature/blue-green-gitflow had recent pushes 1 minute ago" 
-* Click "Compare & pull request"
+**Step 15.** Login to GitHub. Create a pull request and merge the "feature/blue-green-gitflow" branch into the "develop" branch. This will trigger the updated "Build and Deploy Job" pipeline and deploy your serverless function to your *staging* environment. 
+* Click "Pull requests"
+* Click "New pull request"
+* Set the "base" to "develop" and "compare" to "feature/blue-green-gitflow"
+* Click "Create pull request"
+* Click "Merge pull request"
+* Click "Confirm merge"
+
+**Step 16.** Test your serverless function in the "staging" environment. 
+```bash
+export SERVERLESS_FUNCTION_URL="https://my-first-function-20231201120945143-staging.azurewebsites.net/api/HttpExample"
+export REQUEST=$(echo -n "Sort these words for me" | base64)
+curl "${SERVERLESS_FUNCTION_URL}" --data "${REQUEST}" -s | base64 -d
+# words these Sort me for
+```
+
+**Step 17.** Login to GitHub. Create a pull request and merge the "develop" branch into the "main" branch. This will trigger the "Swap Job" pipeline and swap your updated serverless function to the "production" environment (specifically, the original version of your serverless function will no longer be considered "production" because the updated version will).
+* Click "Pull requests"
+* Click "New pull request"
+* Set the "base" to "main" and "compare" to "develop"
 * Click "Create pull request"
 * Click "Merge pull request"
 * Click "Confirm merge"

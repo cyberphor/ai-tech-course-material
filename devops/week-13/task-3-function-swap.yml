@@ -23,4 +23,4 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: 'Swap the Azure Function'
         run: |
-          az functionapp deployment slot swap -g ${{ env.RESOURCE_GROUP }} -n ${{ env.AZURE_FUNCTIONAPP_NAME }} --slot staging --target-slot production
+          az functionapp deployment slot swap -g java-functions-group -n my-first-function-20231201120945143 --slot staging --target-slot production
