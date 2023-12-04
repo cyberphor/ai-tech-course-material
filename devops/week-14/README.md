@@ -16,6 +16,23 @@ Infrastructure as Code (IAC) enhances your organization's ability to peform chan
 **Terraform**  
 Text goes here. 
 
+**Terraform Modules**  
+A Terraform module is a folder with Terraform files inside of it. Modules allow you to organize and reuse resource configurations. 
+* root module: the parent directory
+* child module: any module that has been imported by another module
+
+Modules are imported using the `module` block. Below is an example.
+```hcl
+module "servers" {
+    version = 1               # optional
+    source  = "./app-cluster" # required - defines the module file path
+    servers = 5               # optional - an example of an "input variable" (specific to the "app-cluster" module)
+}
+```
+
+**Terraform Module Input Variables**  
+Module input variables are defined in the root module's `variables.tf` file. 
+
 **Provisioner**  
 Text goes here. 
 
