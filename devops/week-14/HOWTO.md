@@ -379,7 +379,252 @@ curl $(terraform output vm_ip | cut -d'"' -f2)
 
 ## Task 3
 In this task, you're going to do the following:
-* Text goes here
+* Duplicate your Terraform configuration files so there's two folders: `terraform_project` and `terraform_project_t3`
+* Update the new root module in the `terraform_project_t3` folder
+* Update the new `vpc` child module in the `terraform_project_t3` folder
+* Update the new `vm` child module in the `terraform_project_t3` folder
+  * The update will include two conditional statements
+    * If the workspace is "prod", do not delete the virtual machine's operating system disk
+    * If the workspace is "prod", do not delete the virtual machine's data disk
+* Create two Terraform workspaces (i.e. `staging` and `prod`)
+* Create and apply the updated Terraform configuration plan within each Terraform workspace
+
+**Step 1.** Create a new directory called `terraform_project_t3`.
+```bash
+cd ~
+mkdir terraform_project_t3
+```
+
+**Step 2.** Copy everything from `terraform_project` to `terraform_project_t3`.
+```bash
+cp terraform_project/* terraform_project_t3/
+``` 
+
+**Step 3.** Change your current working directory to the new folder you created. 
+```bash
+cd terraform_project_3
+```
+
+**Step 4.** Update the `main.tf` in your root module with the content below (the code is also [included in this repository](/devops/week-14/task-3/main.tf)).
+```hcl
+terraform {
+    required_providers {
+        azurerm = {
+            source  = "hashicorp/azurerm"
+            version = "=3.0.0"
+        }
+    }
+}
+
+provider "azurerm" {
+    features {}
+}
+
+resource "azurerm_resource_group" "rg" {
+    name = "terraform_project_${terraform.workspace}_rg"
+    location = var.location
+    tags = {
+        environment = "TF sandbox"
+    }
+}
+
+module "vpc" {
+    source              = "./vpc"
+    location            = var.location
+    resource_group_name = azurerm_resource_group.rg.name
+}
+
+module "vm" {
+    source               = "./vm"
+    location             = var.location
+    admin_username       = var.admin_username
+    admin_password       = var.admin_password
+    resource_group_name  = azurerm_resource_group.rg.name
+    public_ip_address    = module.vpc.public_ip_address
+    network_interface_id = module.vpc.network_interface_id
+}
+
+output "vm_ip" {
+    value = module.vpc.public_ip_address
+}
+```
+
+**Step 5.** Update the `main.tf` in your `vpc` module with the content below (the code is also [included in this repository](/devops/week-14/task-3/vpc/main.tf)).
+```hcl
+resource "azurerm_virtual_network" "vnet" {
+    name                = "terraform_project_${terraform.workspace}_vnet"
+    address_space       = ["10.0.0.0/16"]
+    location            = var.location
+    resource_group_name = var.resource_group_name
+}
+    
+resource "azurerm_subnet" "subnet" {
+    name                 = "terraform_project_${terraform.workspace}_subnet"
+    resource_group_name  = var.resource_group_name
+    virtual_network_name = azurerm_virtual_network.vnet.name
+    address_prefixes     = ["10.0.1.0/24"]
+}
+    
+resource "azurerm_public_ip" "publicip" {
+    name                         = "terraform_project_${terraform.workspace}_public_ip"
+    location                     = var.location
+    resource_group_name          = var.resource_group_name
+    allocation_method = "Static"
+}
+    
+resource "azurerm_network_security_group" "nsg" {
+    name                = "terraform_project_${terraform.workspace}_nsg"
+    location            = var.location
+    resource_group_name = var.resource_group_name
+    security_rule {
+        name                       = "HTTP"
+        priority                   = 103
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "80"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+    security_rule {
+        name                       = "SSH"
+        priority                   = 1001
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "22"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+}
+
+resource "azurerm_network_interface" "nic" {
+    name                      = "terraform_project_${terraform.workspace}_nic"
+    location                  = var.location
+    resource_group_name       = var.resource_group_name
+    ip_configuration {
+        name                          = "terraform_project_nic_${terraform.workspace}_config"
+        subnet_id                     = azurerm_subnet.subnet.id
+        private_ip_address_allocation = "Dynamic"
+        public_ip_address_id          = azurerm_public_ip.publicip.id
+    }
+
+}
+
+resource "azurerm_network_interface_security_group_association" "sg_association" {
+    network_interface_id      = azurerm_network_interface.nic.id
+    network_security_group_id = azurerm_network_security_group.nsg.id
+}
+
+output "public_ip_address" {
+    value = azurerm_public_ip.publicip.ip_address
+}
+
+output "network_interface_id" {
+    value = azurerm_network_interface.nic.id
+}
+```
+
+**Step 6.** Update the `main.tf` in your `vm` module with the content below (the code is also [included in this repository](/devops/week-14/task-3/vm/main.tf)).
+```hcl
+resource "azurerm_virtual_machine" "vm" {
+    name                  = "terraform_project_${terraform.workspace}_vm"
+    location              = var.location
+    resource_group_name   = var.resource_group_name
+    network_interface_ids = [var.network_interface_id]
+    vm_size               = "Standard_DS1_v2"
+    storage_os_disk {
+        name              = "terraform_project_${terraform.workspace}_os_disk"
+        caching           = "ReadWrite"
+        create_option     = "FromImage"
+        managed_disk_type = "Premium_LRS"
+    }
+    storage_image_reference {
+        publisher = "Canonical"
+        offer     = "UbuntuServer"
+        sku       = "16.04.0-LTS"
+        version   = "latest"
+    }
+    os_profile {
+        computer_name  = "terraformProject${terraform.workspace}Vm"
+        admin_username = var.admin_username
+        admin_password = var.admin_password
+    }
+    os_profile_linux_config {
+        disable_password_authentication = false
+    }
+    provisioner "remote-exec" {
+        connection {
+            type = "ssh"
+            user = var.admin_username
+            password = var.admin_password
+            host = var.public_ip_address
+        }
+        inline = [
+            "sudo apt-get -y update",
+            "sudo apt-get -y install apache2",
+            "echo Welcome to the cloud course! | sudo tee /var/www/html/index.html"
+        ]
+    }
+    delete_data_disks_on_termination = terraform.workspace == "prod" ? false : true
+    delete_os_disk_on_termination    = terraform.workspace == "prod" ? false : true
+}
+```
+
+**Step 7.** Initialize your new Terraform root module (i.e., `terraform_project_3` folder). 
+```bash
+terraform init
+```
+
+**Step 8.** Create two new Terraform workspaces called `staging` and `prod`.
+```bash
+terraform workspace new staging
+terraform workspace new prod
+```
+
+**Step 9.** Select the first workspace you created. 
+```bash
+terraform workspace select staging
+```
+
+**Step 10.** Create an execution plan within the `staging` workspace for the updated Terraform configuration. 
+```bash
+terraform plan
+```
+
+**Step 11.** Apply the execution plan within the `staging` workspace.
+```bash
+terraform apply
+```
+
+**Step 12.** Verify your Terraform execution plan worked. 
+```bash
+curl $(terraform output vm_ip | cut -d'"' -f2)
+# Welcome to the cloud course!
+```
+
+**Step 13.** Select the second workspace you created. 
+```bash
+terraform workspace select prod
+```
+
+**Step 14.** Create an execution plan within the `prod` workspace for the updated Terraform configuration. 
+```bash
+terraform plan
+```
+
+**Step 15.** Apply the execution plan within the `prod` workspace.
+```bash
+terraform apply
+```
+
+**Step 16.** Verify your Terraform execution plan worked. 
+```bash
+curl $(terraform output vm_ip | cut -d'"' -f2)
+# Welcome to the cloud course!
+```
 
 ## Task 4
 In this task, you're going to do the following:
