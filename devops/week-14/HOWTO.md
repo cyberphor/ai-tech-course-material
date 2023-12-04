@@ -386,7 +386,7 @@ In this task, you're going to do the following:
   * The update will include two conditional statements
     * If the workspace is "prod", do not delete the virtual machine's operating system disk
     * If the workspace is "prod", do not delete the virtual machine's data disk
-* Create two Terraform workspaces (i.e. `staging` and `prod`)
+* Create two Terraform workspaces (i.e. `staging` and `prod`) within the `terraform_project_t3` folder
 * Create and apply the updated Terraform configuration plan within each Terraform workspace
 
 **Step 1.** Create a new directory called `terraform_project_t3`.
@@ -628,7 +628,69 @@ curl $(terraform output vm_ip | cut -d'"' -f2)
 
 ## Task 4
 In this task, you're going to do the following:
-* Text goes here
+* Update the `main.tf` file within your original root module (i.e., `terraform_project`) folder
+  * The update will include
+    * An Azure Monitor action group 
+    * An Azure Monitor alert configuration
+* Update and apply your Terraform execution plan
+
+**Step 1.** Change your current working directory to the `terraform_project` folder.
+```bash
+cd terraform_project
+```
+
+**Step 2.** Update the `email_address` field in the content below. Then, append the content to the end of the `main.tf` file within your `vm` child module (the code is also [included in this repository](/devops/week-14/task-4/vm/main.tf)).
+```hcl
+resource "azurerm_monitor_action_group" "action_group" {
+  name                = "terraform_project_action_group"
+  resource_group_name = var.resource_group_name
+  short_name          = "devopsadmin"
+  email_receiver {
+    name          = "sendtodevopsadmin"
+    email_address = "vf@andrew.cmu.edu"
+  }
+}
+
+resource "azurerm_monitor_metric_alert" "alert" {
+  name = "terraform_project_alert_cpu"
+  resource_group_name = var.resource_group_name
+  scopes = [azurerm_virtual_machine.vm.id]
+  description = "An alert to watch the metric Percentage CPU"
+  enabled = true
+  criteria {
+    metric_namespace = "Microsoft.Compute/virtualMachines"
+    metric_name = "Percentage CPU"
+    operator    = "GreaterThan"
+    threshold   = 2
+    aggregation = "Average"
+  }
+  action {
+      action_group_id = azurerm_monitor_action_group.action_group.id
+  }
+}
+```
+
+**Step 3.** Update your Terraform execution plan. 
+```bash
+terraform plan
+```
+
+**Step 4.** Apply the updated Terraform execution plan.
+```bash
+terraform apply
+```
+
+**Step 5.** Verify your Terraform execution plan worked. The commands below send 1000 requests simultaneously to the virtual machine, 10 times (sending 10,000 requests in total). 
+```bash
+export VM_IP=$(terraform output vm_ip | cut -d'"' -f2)
+seq 1 10000 | xargs -n 1 -P 1000 -I {} curl $VM_IP
+```
+
+Below is a picture of how the CPU usage should look while the command above is being ran. 
+![cpu-usage](/devops/week-14/cpu-usage.PNG)
+
+Below is a picture of what the alert will look like once it's generated and sent.  
+![alert](/devops/week-14/alert.PNG)
 
 ## Task 5
 In this task, you're going to do the following:
