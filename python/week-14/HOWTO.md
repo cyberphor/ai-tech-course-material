@@ -1,0 +1,42 @@
+# Data Analysis
+
+## Setup
+**Step 1.** Download the provided content. 
+```bash
+wget https://principlesofcomputing.blob.core.windows.net/ppp-p8-data-analysis/handout/sail2/v2/ppp-p8-data-analysis.zip
+```
+
+**Step 2.** Open the content. 
+```bash
+unzip ppp-p8-data-analysis.zip
+```
+
+**Step 3.** Activate the Python virtual environment. 
+```bash
+cd ppp-p8-data-analysis
+python -m venv p8-env
+source p8-env/bin/activate
+```
+
+**Step 4.** Download the provided source code's dependencies. 
+```bash
+python -m pip install -r requirements.txt
+```
+
+**Step 5.** Install the Jupyter VS Code extension. Configure it to use the virtual environment you activated previously. 
+
+## Task 1
+In this task, you're going to do the following:
+* Load data from the file types listed below into `.pkl` (Pickle) files
+  * CSV
+  * XLSX
+  * JSON
+  * XML
+* Merge multiple pandas DataFrames together
+* Store the new DataFrames created into `.pkl` files
+
+**Step 1.** Open the `wdi_preparation.ipynb` file. 
+
+## Task 2
+
+## Task 3

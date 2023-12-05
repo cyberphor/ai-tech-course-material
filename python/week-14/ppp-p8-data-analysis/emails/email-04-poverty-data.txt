@@ -1,0 +1,10 @@
+Hello,
+
+We do have a specialized application that we use to enter and manage the statistics. I have exported the data from the application. However, it comes out in the format that does not appear     very useful to me. I hope that you will be able to figure how to use the data. I believe it contains the kind of information you are looking for.
+
+Best of luck!
+
+Y.
+
+ATTACHMENT
+wdi_data/World_Development_Indicators_Poverty_2017.xml
