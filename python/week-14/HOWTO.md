@@ -20,7 +20,7 @@ source p8-env/bin/activate
 
 **Step 4.** Download the provided source code's dependencies. 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install -r requirements.txt --user
 ```
 
 **Step 5.** Install the Jupyter VS Code extension. Configure it to use the virtual environment you activated previously. 
@@ -35,7 +35,15 @@ In this task, you're going to do the following:
 * Merge multiple pandas DataFrames together
 * Store the new DataFrames created into `.pkl` files
 
-**Step 1.** Open the `wdi_preparation.ipynb` file. 
+### How to Print All Columns in a DataFrame
+```python
+import pandas
+
+data = pandas.read_csv("wdi_data/worldDevInds2017-education.csv")
+columns = pandas.DataFrame(data.head())
+for column in columns:
+  print(column)
+```
 
 ## Task 2
 

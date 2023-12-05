@@ -13,14 +13,11 @@
 **Exploratory Data Analysis**  
 Exploratory Data Analysis (EDA) is the art of identifying patterns data. We conduct EDA to discover what's available and useful in the data provided. 
 
-**Data Cleaning**  
-Text goes here.
+**NumPy**  
+Numerical Python (NumPy) is a Python library used for handling numerical data. It provides the following data structures: one-dimensional arrangements (a fancy list), two-dimensional arrangements (a fancy table), and n-dimensional array.
 
-**Data Preparation**  
-Text goes here.
-
-**Data Integration**  
-Combining data from multiple sources into a unified data set. 
+**Pandas**  
+Pandas is a Python library used for data analysis. It's named was derived from "Python, Data Analysis, and Panel Data." It's based on NumPy. 
 
 ## Solutions
 * [Setup](/python/week-14/HOWTO.md)
