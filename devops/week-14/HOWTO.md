@@ -694,4 +694,310 @@ Below is a picture of what the alert will look like once it's generated and sent
 
 ## Task 5
 In this task, you're going to do the following:
-* Text goes here
+* Create an Azure DevOps project
+* Add an "Azure Resource Manager" service connection to your Azure DevOps project
+* Update the root module so 
+  * State is stored inside of a Azure storage account
+  * A different resource group is created and user
+    * Once everything is done, you'll have two resource groups
+      * One for your Terraform state
+      * One for the cloud resources created by Terraform
+* Generate credentials for Git to use with Azure DevOps
+* Initialize the `terraform_project` folder so it can be used with Git
+* Create and checkout a branch called `terraform`
+* Push the `terraform_project` folder to the Azure DevOps project repo (using the generated Git credentials)
+* Create an Azure DevOps Continuous Integration (CI) pipeline
+  * It will include
+    * Copy files task
+    * Publish build artifacts task
+* Install two Azure DevOps extensions
+  * "Replace Tokens" by Guillaume Rouchon
+  * "Terraform" by Microsoft DevLabs
+* Create an Azure DevOps release pipeline
+  * Link the CI pipeline artifact to it
+  * It will include
+    * Azure CLI task
+    * Azure PowerShell task
+    * Replace Tokens task
+    * Terraform tool installer task
+    * Terraform init task
+    * Terraform validate task
+    * Terraform apply task
+
+**Step 1.** Login to Azure DevOps and create an organization if you don't already have one. 
+
+**Step 2.** In the settings of your Azure DevOps organization, add the "Replace Tokens" and "Terraform" extensions.  
+* Organization Settings > General > Extensions > Browse marketplace
+* Search for and install "Replace Tokens" (author: Guillaume Rouchon) and "Terraform" (author: Microsoft DevLabs)
+
+**Step 3.** Create an Azure DevOps project. 
+| Field        | Value     |
+| ------------ | --------- |
+| Project name | `week-14` |
+| Visibility   | Private   |
+
+
+**Step 4.** In the settings of your project, create a service connection. 
+| Field                   | Value                         |
+| ----------------------- | ----------------------------- |
+| Type                    | Azure Resource Manager        |
+| Authentication method   | Service principal (automatic) |
+| Scope level             | Subscription                  |
+| Subscription            | (your subscription)           |
+| Service connection name | `week-14-service-connection`  |
+
+**Step 5.** Replace your root module's `main.tf` file with the content below (the code is also [included in this repository](/devops/week-14/task-5/main.tf)). The code tells Terraform to store state in an Azure storage account and changes the resource group name to `terraform_project_task5_rg`. 
+```hcl
+terraform {
+    required_providers {
+        azurerm = {
+            source  = "hashicorp/azurerm"
+            version = "=3.0.0"
+        }
+    }
+    backend "azurerm" {
+        storage_account_name = "__terraformstorageaccount__"
+        container_name       = "terraform"
+        key                  = "terraform.tfstate"
+        access_key  ="__storagekey__"
+    }
+}
+
+provider "azurerm" {
+    features {}
+}
+
+resource "azurerm_resource_group" "rg" {
+    name = "terraform_project_task5_rg"
+    location = var.location
+    tags = {
+        environment = "TF sandbox"
+    }
+}
+
+module "vpc" {
+    source              = "./vpc"
+    location            = var.location
+    resource_group_name = azurerm_resource_group.rg.name
+}
+
+module "vm" {
+    source               = "./vm"
+    location             = var.location
+    admin_username       = var.admin_username
+    admin_password       = var.admin_password
+    resource_group_name  = azurerm_resource_group.rg.name
+    public_ip_address    = module.vpc.public_ip_address
+    network_interface_id = module.vpc.network_interface_id
+}
+
+output "vm_ip" {
+    value = module.vpc.public_ip_address
+}
+```
+
+**Step 6.** In the "Repos" section of your Azure DevOps project, click "Generate Git Credentials" and copy the values generated. 
+| Field    | Value                                                                              |
+| -------- | ---------------------------------------------------------------------------------- |
+| URL      | `https://victorfernandeziii@dev.azure.com/victorfernandeziii/week-14/_git/week-14` |
+| Username | `victor.fernandeziii`                                                              |
+| Password | `4wplhvmc7llz5rwm653oi6cmgubfxa7j4t44sb3adpvhncja5s7q`                             |
+
+**Step 7.** Change your current working directory to `terraform_project`. 
+```bash
+cd terraform_project
+```
+
+**Step 8.** Initialize your current working directory so it can be used with Git. 
+```bash
+git init
+```
+
+**Step 9.** Create a file called `.gitignore`. 
+```bash
+touch .gitignore
+```
+
+**Step 10.** Add the content below to it. 
+```
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+**/*.tfstate
+**/*.tfstate.backup
+**/*.tfstate.lock.info
+.terraform/
+submitter
+```
+
+**Step 11.** Create and checkout a branch called `terraform`.
+```bash
+git checkout -b terraform
+```
+
+**Step 12.** Add all Terraform files to the local repository's staging area. 
+```bash
+git add *.tf **/*.tf
+```
+
+**Step 13.** Commit the changes made to the local repository.
+```bash
+git commit -m "Task 5"
+``` 
+
+**Step 14.** Add the Azure DevOps repo as an remote Git repository. 
+```bash
+git remote add origin https://victorfernandeziii@dev.azure.com/victorfernandeziii/week-14/_git/week-14 
+```
+
+**Step 15.** Push local changes to your Azure DevOps repo. 
+```bash
+git push
+```
+
+If you need to define an upstream branch for the `terraform` branch, enter the command below (use the Git password previously generated in Azure DevOps).
+```bash
+git push --set-upstream origin terraform
+```
+
+**Step 16.** Create a CI pipeline for your Azure DevOps project.
+| Field                                          | Value                                                     |
+| ---------------------------------------------- | --------------------------------------------------------- |
+| Where is your code?                            | Use the classic editor to create a pipeline without YAML. |
+| Select a source                                | Azure Repos Git                                           |
+| Team project                                   | `week-14`                                                 |
+| Repository                                     | `week-14`                                                 |
+| Default branch for manual and scheduled builds | `terraform`                                               |
+| Template                                       | Empty pipeline                                            |
+
+**Step 17.** Add a "Copy Files" task to "Agent job 1" in your CI pipeline. Click "Save" after the task has been added. 
+| Field         | Value                                |
+| ------------- | ------------------------------------ |
+| Display name  | `Copy files`                         |
+| Source folder | `.`                                  |
+| Contents      | `**`                                 |
+| Target Folder | `$(build.artifactstagingdirectory)/` |
+
+**Step 18.** Add a "Publish build artifacts" task to "Agent job 1" in your CI pipeline. Click "Save" after the task has been added.
+| Field                     | Value                                |
+| ------------------------- | ------------------------------------ |
+| Display name              | `Publish artifacts`                  |
+| Path to publish           | `$(Build.ArtifactStagingDirectory)`  |
+| Artifact name             | `drop`                               |
+| Artifact publish location | Azure Pipelines                      |
+
+**Step 19.** Run the CI pipeline you just created.
+
+**Step 20.** Create a release pipeline (use "Empty job" as a template) and call it "week-14-releases".
+
+**Step 21.** Link the CI pipeline artifact to the release pipeline (click "Add an artifact"). Take note of the alias you set. It will be used again later. Also, if you wanted to implement "Continuous Deployment," click the "Continuous deployment" trigger and then enable it.
+| Field                   | Value         |
+| ----------------------- | ------------- |
+| Source type             | Build         |
+| Project                 | `week-14`     |
+| Source (build pipeline) | `week-14-CI`  |
+| Source alias            | `_week-14-CI` |
+
+**Step 22.** Add the variables below to the release pipeline. 
+| Name                      | Value                   | Scope   | Settable at release time |
+| ------------------------- | ----------------------- | ------- | ------------------------ |
+| `storagekey`              |                         | Release | Checked                  |
+| `terraformstorageaccount` | `devopsweek14cyberphor` | Release |                          |
+| `terraformstoragerg`      | `terraformrg`           | Release |                          |
+
+**Step 23.** Add a "Azure CLI" task to the "Agent job" in your release pipeline. Click "Save" after the task has been added. The "Azure CLI" task creates a storage account with a blob container inside of it. 
+| Field                             | Value                             |
+| --------------------------------- | --------------------------------- |
+| Display name                      | `Create an Azure storage account` |
+| Azure Resource Manager connection | `week-14-service-connection`      |
+| Script Type                       | Shell                             |
+| Script Location                   | Inline script                     |
+| Inline Script                     | (see below)                       |
+
+Copy and paste the contents below to the "Inline script" field in the "Azure CLI" task.
+```bash
+az group create --location eastus --name $(terraformstoragerg)
+az storage account create --name $(terraformstorageaccount) --resource-group $(terraformstoragerg) --location eastus --sku Standard_LRS
+az storage container create --name terraform --account-name $(terraformstorageaccount)
+az storage account keys list -g $(terraformstoragerg) -n $(terraformstorageaccount)
+```
+
+**Step 24.** Add a "Azure PowerShell" task to the "Agent job" in your release pipeline. Click "Save" after the task has been added. The "Azure PowerShell" task updates the `storagekey` environment variable.  
+| Field                             | Value                               |
+| --------------------------------- | ----------------------------------  |
+| Display name                      | `Get the Azure storage account key` |
+| Subscription                      | (your subscription)                 |
+| Script Type                       | Inline script                       |
+| Inline Script                     | (see below)                         |
+| Azure Powershell Version          | Latest installed version            |
+
+Copy and paste the contents below to the "Inline script" field in the "Azure PowerShell" task.
+```powershell
+Enable-AzureRmAlias
+$key=(Get-AzureRmStorageAccountKey -ResourceGroupName $(terraformstoragerg) -AccountName $(terraformstorageaccount)).Value[0]
+Write-Host "##vso[task.setvariable variable=storagekey]$key"
+```
+
+**Step 25.** Add a "Replace Tokens" task to the "Agent job" in your release pipeline. Click "Save" after the task has been added. The "Replace Tokens" task renames all files that match a `__` naming convention with the correct account names and secrets, removing the need to include sensitive data in your repository. 
+| Field                             | Value                           |
+| --------------------------------- | ------------------------------- |
+| Display name                      | `Replace tokens in **/*.tf`     |
+| Target files                      | `**/*.tf`                       |
+| Token pattern                     | `__...__`                       |
+
+**Step 26.** Add a "Terraform tool installer" task to the "Agent job" in your release pipeline. Click "Save" after the task has been added.
+| Field                             | Value                           |
+| --------------------------------- | ------------------------------- |
+| Display name                      | `Install Terraform`             |
+| Version	                        | `1.3.3`                         |
+
+**Step 27.** Add a "Terraform" task to the "Agent job" in your release pipeline. Click "Save" after the task has been added. For the configuration directory path, the naming convention is the alias of the first pipeline created (e.g. `_week-14-CI`) followed by the name of your artifact (e.g., `drop`).
+| Field                             | Value                                                |
+| --------------------------------- | ---------------------------------------------------- |
+| Display name                      | `Prepare Terraform`                                  |
+| Provider	                        | azurerm                                              |
+| Command	                        | init                                                 |
+| Configuration	directory           | `$(System.DefaultWorkingDirectory)/_week-14-CI/drop` |
+| Suscription                       | (your subscription)                                  |
+| Resource group                    | `$(terraformstoragerg)`                              |
+| Storage account                   | `$(terraformstorageaccount)`                         |
+| Container	                        | `terraform`                                          |
+| Key	                            | `terraform.tfstate`                                  |
+
+**Step 28.** Add a second "Terraform" task to the "Agent job" in your release pipeline. Click "Save" after the task has been added. Use the same configuration directory path as before.
+| Field                             | Value                                                |
+| --------------------------------- | ---------------------------------------------------- |
+| Display name                      | `Validate Terraform's configuration`                 |
+| Provider	                        | azurerm                                              |
+| Command	                        | validate                                             |
+| Configuration directory           | `$(System.DefaultWorkingDirectory)/_week-14-CI/drop` |
+
+**Step 29.** Add a third "Terraform" task to the "Agent job" in your release pipeline. Click "Save" after the task has been added. Use the same configuration directory path as before.
+| Field                             | Value                                                |
+| --------------------------------- | ---------------------------------------------------- |
+| Display name                      | `Apply the Terraform configuration plan`             |
+| Provider	                        | azurerm                                              |
+| Command	                        | apply                                                |
+| Configuration	directory           | `$(System.DefaultWorkingDirectory)/_week-14-CI/drop` |
+| Additional command arguments      | `-auto-approve`                                      |
+| Azure subscription                | (your subscription)                                  |
+
+**Step 30.** After all seven tasks have been added, trigger your CI and release (aka "deployment") pipelines. 
+
+**Step 31.** If you need to locally validate your Terraform configuration, configure the Azure CLI to use the correct subscription. Then, enter the commands below to get your storage account key. Finally, open your root module's `main.tf` file and add the storage account key (a base64 string).    
+```bash
+export RESOURCE_GROUP="terraformrg"
+export STORAGE_ACCOUNT_NAME="devopsweek14cyberphor"
+az storage account keys list \
+    -g "${RESOURCE_GROUP}" \
+    -n "${STORAGE_ACCOUNT_NAME}" \
+    --query "[0].value" \
+    --output "tsv"
+```
+
+**Step 32.** Verify your Terraform execution plan worked. 
+```bash
+export VM_IP=$(terraform output vm_ip | cut -d'"' -f2)
+curl $VM_IP
+# Welcome to the cloud course!
+```

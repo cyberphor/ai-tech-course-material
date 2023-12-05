@@ -21,6 +21,7 @@
 * [Week 10: Debugging, Refactoring, Testing, and Packaging](/python/week-10/)
 * [Week 12: Data Stores](/python/week-12/README.md)
 * [Week 13: Web Scraping](/python/week-13/README.md)
+* [Week 14: Data Analysis](/python/week-14/README.md)
 
 ### DevOps
 * [Week 03: Getting Started with DevOps](/devops/week-03/README.md)
@@ -30,6 +31,7 @@
 * [Week 11: GitHub Actions](/devops/week-11/README.md)
 * [Week 12: Containers](/devops/week-12/README.md)
 * [Week 13: Serverless Functions](/devops/week-13/README.md)
+* [Week 14: Infrastructure as Code](/devops/week-14/README.md)
 
 ### Installation Guides
 * [How to Install the Azure CLI within a GitHub Codespace](/INSTALL.md#how-to-install-the-azure-cli-within-a-github-codespace)

@@ -13,10 +13,8 @@ Using Terraform
 **Infrastructure as Code**  
 Infrastructure as Code (IAC) enhances your organization's ability to peform change management. It also allows you to automate the scaling of infrastructure. 
 
-**Terraform**  
-Text goes here. 
-
-**Terraform Modules**  
+### Terraform
+**Modules**  
 A Terraform module is a folder with Terraform files inside of it. Modules allow you to organize and reuse resource configurations. 
 * root module: the parent directory
 * child module: any module that has been imported by another module
@@ -30,14 +28,20 @@ module "servers" {
 }
 ```
 
-**Terraform Module Input Variables**  
+**Input Variables**  
 Module input variables are defined in the root module's `variables.tf` file. 
 
 **Provisioner**  
 Text goes here. 
 
-**Terraform Workspaces**  
+**Workspaces**  
 Text goes here. 
+
+**Backend**  
+A Terraform backend performs the operations below. Terraform backends and state can be used remotely. This feature allows you to collaborate with others. 
+* Determine how Terrafrom will store state
+* Generate an execution plan
+* Apply an execution plan
 
 ## Solutions
 * [Setup](/devops/week-14/HOWTO.md)
