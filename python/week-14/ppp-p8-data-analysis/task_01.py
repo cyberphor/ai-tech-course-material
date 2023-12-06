@@ -45,9 +45,25 @@ def get_health_data(source_file: str="wdi_data/healthWorld-2017-worldBank.xlsx")
         health_data.set_index("Country", inplace=True)
         return health_data
 
-def get_infrastructure_data():
-    pass
-
+def get_infrastructure_data(source_file: str="wdi_data/2017infra.json"):
+    data = pd.read_json(source_file).transpose()
+    transporation  = pd.json_normalize(data.iloc[:,0]).set_index(data.index)
+    communications = pd.json_normalize(data.iloc[:,1]).set_index(data.index)
+    technology     = pd.json_normalize(data.iloc[:,2]).set_index(data.index)
+    print(transporation)
+    print(communications)
+    print(technology)
+    #print(data.iloc[0,:].iloc[0]["Air transport, passengers carried"]) # first row, first row
+    #print(data.iloc[1,:])
+    #print(data.iloc[2,:])
+    #data = pd.read_json(source_file).transpose()
+    #print(data["Transportation"]["Air transport, passengers carried"])
+    #[print(key) for key in data["Transportation"].iloc[0].keys()]
+    #print(data["Transportation"])
+    #"Air transport, passengers carried"
+    #[print(key) for key in data["Communications"].iloc[0].keys()]
+    #[print(key) for key in data["Technology"].iloc[0].keys()]
+    
 def get_poverty_data():
     pass
 
@@ -62,4 +78,4 @@ def store_data(destination: str, source: pd.DataFrame):
     source.to_pickle(destination)
 
 if __name__ == "__main__":
-    print(get_health_data())
+    get_infrastructure_data()
