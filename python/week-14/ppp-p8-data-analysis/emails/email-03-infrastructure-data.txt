@@ -1,0 +1,5 @@
+Please, find the infrastructure statistics attached. I pulled these from our MongoDB instance. Let me know if you need anything else.
+
+Regards.
+
+Jeff
