@@ -1,6 +1,7 @@
 """Module for Task 1"""
 from os import mkdir
 from os import path
+import json
 import pandas as pd
 
 def get_education_data(source_file: str="wdi_data/worldDevInds2017-education.csv"):
@@ -46,24 +47,31 @@ def get_health_data(source_file: str="wdi_data/healthWorld-2017-worldBank.xlsx")
         return health_data
 
 def get_infrastructure_data(source_file: str="wdi_data/2017infra.json"):
-    data = pd.read_json(source_file).transpose()
-    transporation  = pd.json_normalize(data.iloc[:,0]).set_index(data.index)
-    communications = pd.json_normalize(data.iloc[:,1]).set_index(data.index)
-    technology     = pd.json_normalize(data.iloc[:,2]).set_index(data.index)
-    print(transporation)
-    print(communications)
-    print(technology)
-    #print(data.iloc[0,:].iloc[0]["Air transport, passengers carried"]) # first row, first row
-    #print(data.iloc[1,:])
-    #print(data.iloc[2,:])
-    #data = pd.read_json(source_file).transpose()
-    #print(data["Transportation"]["Air transport, passengers carried"])
-    #[print(key) for key in data["Transportation"].iloc[0].keys()]
-    #print(data["Transportation"])
-    #"Air transport, passengers carried"
-    #[print(key) for key in data["Communications"].iloc[0].keys()]
-    #[print(key) for key in data["Technology"].iloc[0].keys()]
-    
+    data           = pd.read_json(source_file)                            # original df
+    countries      = data.axes[1]                                         # axis 1 = column names, axis 0 = row names
+    transporation  = pd.json_normalize(data.iloc[0]).set_index(countries) # create new df using 1st series in original df 
+    communications = pd.json_normalize(data.iloc[1]).set_index(countries) # create new df using 2nd series in original df 
+    technology     = pd.json_normalize(data.iloc[2]).set_index(countries) # create new df using 3rd series in original df 
+    filters = [  
+        "Air transport, registered carrier departures worldwide",
+        "Fixed broadband subscriptions (per 100 people)",
+        "Individuals using the Internet (% of population)",
+        "High-technology exports (% of manufactured exports)",
+        "Research and development expenditure (% of GDP)",
+        "Technicians in R&D (per million people)"
+    ]
+    labels = [
+        "Air travel passengers",
+        "Broadband subscriptions (per 100 people)",
+        "Internet use (% of population)",
+        "High-tech exports (%)",
+        "R&D expenditure (% of GDP)",
+        "Technicians in R&D (per million people)"
+    ]
+    infrastructure_data = transporation.join(communications).join(technology)[filters]
+    infrastructure_data.rename(columns=dict(zip(filters, labels)), inplace=True)
+    return infrastructure_data
+
 def get_poverty_data():
     pass
 
