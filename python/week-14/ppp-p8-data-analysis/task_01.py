@@ -48,12 +48,13 @@ def get_health_data(source_file: str="wdi_data/healthWorld-2017-worldBank.xlsx")
 
 def get_infrastructure_data(source_file: str="wdi_data/2017infra.json"):
     data           = pd.read_json(source_file)                            # original df
+    #[print(head) for head in pd.json_normalize(data.iloc[0]).head()]
     countries      = data.axes[1]                                         # axis 1 = column names, axis 0 = row names
-    transporation  = pd.json_normalize(data.iloc[0]).set_index(countries) # create new df using 1st series in original df 
+    transportation = pd.json_normalize(data.iloc[0]).set_index(countries) # create new df using 1st series in original df 
     communications = pd.json_normalize(data.iloc[1]).set_index(countries) # create new df using 2nd series in original df 
     technology     = pd.json_normalize(data.iloc[2]).set_index(countries) # create new df using 3rd series in original df 
     filters = [  
-        "Air transport, registered carrier departures worldwide",
+        "Air transport, passengers carried",
         "Fixed broadband subscriptions (per 100 people)",
         "Individuals using the Internet (% of population)",
         "High-technology exports (% of manufactured exports)",
@@ -68,7 +69,7 @@ def get_infrastructure_data(source_file: str="wdi_data/2017infra.json"):
         "R&D expenditure (% of GDP)",
         "Technicians in R&D (per million people)"
     ]
-    infrastructure_data = transporation.join(communications).join(technology)[filters]
+    infrastructure_data = transportation.join(communications).join(technology)[filters]
     infrastructure_data.rename(columns=dict(zip(filters, labels)), inplace=True)
     return infrastructure_data
 
