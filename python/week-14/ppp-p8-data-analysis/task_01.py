@@ -1,7 +1,6 @@
 """Module for Task 1"""
 from os import mkdir
 from os import path
-import json
 import pandas as pd
 
 def get_education_data(source_file: str="wdi_data/worldDevInds2017-education.csv"):
@@ -48,7 +47,6 @@ def get_health_data(source_file: str="wdi_data/healthWorld-2017-worldBank.xlsx")
 
 def get_infrastructure_data(source_file: str="wdi_data/2017infra.json"):
     data           = pd.read_json(source_file)                            # original df
-    #[print(head) for head in pd.json_normalize(data.iloc[0]).head()]
     countries      = data.axes[1]                                         # axis 1 = column names, axis 0 = row names
     transportation = pd.json_normalize(data.iloc[0]).set_index(countries) # create new df using 1st series in original df 
     communications = pd.json_normalize(data.iloc[1]).set_index(countries) # create new df using 2nd series in original df 
@@ -73,8 +71,14 @@ def get_infrastructure_data(source_file: str="wdi_data/2017infra.json"):
     infrastructure_data.rename(columns=dict(zip(filters, labels)), inplace=True)
     return infrastructure_data
 
-def get_poverty_data():
-    pass
+def get_poverty_data(source_file: str="wdi_data/World_Development_Indicators_Poverty_2017.xml"):
+    data = pd.read_xml(source_file, parser="lxml", xpath="/countries/country/field[3]")
+    filters = [
+        "Gini index (World Bank estimate)",
+        "Income share held by highest 10%",
+        "Survey mean consumption or income per capita, total population (2011 PPP $ per day)"
+    ]
+    print(data)
 
 def merge_data():
     pass
@@ -87,4 +91,4 @@ def store_data(destination: str, source: pd.DataFrame):
     source.to_pickle(destination)
 
 if __name__ == "__main__":
-    get_infrastructure_data()
+    get_poverty_data()
