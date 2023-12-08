@@ -106,10 +106,18 @@ def store_data(destination: str, source: pd.DataFrame):
         mkdir(folder)
     source.to_pickle(destination)
 
-if __name__ == "__main__":
+if __name__ == "__main__":   
     education_data      = get_education_data()
     health_data         = get_health_data()
     infrastructure_data = get_infrastructure_data()
     poverty_data        = get_poverty_data()
-    wdi_data = education_data.join(health_data).join(infrastructure_data).join(poverty_data)
-    store_data(destination="wdi_exports/wdi_data.pkl", source=wdi_data)
+    wdi_data            = education_data.join(health_data).join(infrastructure_data).join(poverty_data)
+    data = {
+        "wdi_exports/education_data.pkl": education_data,
+        "wdi_exports/health_data.pkl": health_data,
+        "wdi_exports/infrastructure_data.pkl": infrastructure_data,
+        "wdi_exports/poverty_data.pkl": poverty_data,
+        "wdi_exports/wdi_data.pkl": wdi_data
+    }
+    for destination, source in data.items():
+        store_data(destination, source)
