@@ -35,14 +35,23 @@ In this task, you're going to do the following:
 * Merge multiple pandas DataFrames together
 * Store the new DataFrames created into `.pkl` files
 
-### How to Print All Columns in a DataFrame
+### How to Print All Columns in a pandas DataFrame
 ```python
 import pandas
 
 data = pandas.read_csv("wdi_data/worldDevInds2017-education.csv")
 columns = pandas.DataFrame(data.head())
 for column in columns:
-  print(column)
+    print(column)
+```
+
+### How to Print All Sheet Names in a XLSX File Using Pandas
+```python
+import pandas
+
+workbook = pandas.ExcelFile("wdi_data/healthWorld-2017-worldBank.xlsx")
+for name in sorted(workbook.sheet_names):
+    print(name)
 ```
 
 ## Task 2
