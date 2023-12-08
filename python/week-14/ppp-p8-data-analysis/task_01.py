@@ -72,13 +72,28 @@ def get_infrastructure_data(source_file: str="wdi_data/2017infra.json"):
     return infrastructure_data
 
 def get_poverty_data(source_file: str="wdi_data/World_Development_Indicators_Poverty_2017.xml"):
-    data = pd.read_xml(source_file, parser="lxml", xpath="/countries/country/field[3]")
-    filters = [
-        "Gini index (World Bank estimate)",
-        "Income share held by highest 10%",
-        "Survey mean consumption or income per capita, total population (2011 PPP $ per day)"
-    ]
-    print(data)
+    countries = pd.read_xml(
+        path_or_buffer=source_file,
+        xpath="/countries/country",
+        attrs_only=True
+    )["name"].to_list()
+    poverty_data = pd.DataFrame(
+        data={
+            "Gini index": pd.read_xml(
+                path_or_buffer=source_file,
+                xpath="/countries/country/field[@metric='Gini index (World Bank estimate)']",
+            )["field"],
+            "Income share of highest 10%": pd.read_xml(
+                path_or_buffer=source_file,
+                xpath="/countries/country/field[@metric='Income share held by highest 10%']",
+            )["field"],
+            "Daily consumption per capita (USD)": pd.read_xml(
+                path_or_buffer=source_file,
+                xpath="/countries/country/field[@metric='Survey mean consumption or income per capita, total population (2011 PPP $ per day)']",
+            )["field"]
+        }
+    )
+    print(poverty_data)
 
 def merge_data():
     pass
