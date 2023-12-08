@@ -52,3 +52,4 @@ urllib3==2.1.0
 wcwidth==0.2.12
 wheel==0.42.0
 dependencies/submitter_utils_ppp_p8-1.0.tar.gz
+lxml
