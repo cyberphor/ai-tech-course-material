@@ -52,7 +52,13 @@ In this task, you're going to do the following:
 **Step 1.** Run [the provided script](/python/week-14/ppp-p8-data-analysis/task_01.py).
 
 ## Task 2
+In this task, you're going to do the following:
+* Text goes here.
+
 **Step 1.** Run [the provided script](/python/week-14/ppp-p8-data-analysis/task_02.py).
 
 ## Task 3
+In this task, you're going to do the following:
+* Text goes here.
+
 **Step 1.** Run [the provided script](/python/week-14/ppp-p8-data-analysis/task_03.py).
