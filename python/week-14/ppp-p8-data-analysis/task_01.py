@@ -46,6 +46,7 @@ def get_health_data(source_file: str="wdi_data/healthWorld-2017-worldBank.xlsx")
         return health_data
 
 def get_infrastructure_data(source_file: str="wdi_data/2017infra.json"):
+    """Function to get infrastructure data"""
     data           = pd.read_json(source_file)                            # original df
     countries      = data.axes[1]                                         # axis 1 = column names, axis 0 = row names
     transportation = pd.json_normalize(data.iloc[0]).set_index(countries) # create new df using 1st series in original df 
@@ -72,6 +73,7 @@ def get_infrastructure_data(source_file: str="wdi_data/2017infra.json"):
     return infrastructure_data
 
 def get_poverty_data(source_file: str="wdi_data/World_Development_Indicators_Poverty_2017.xml"):
+    """Function to get poverty data"""
     poverty_data = pd.DataFrame(
         data={
             "Country": pd.read_xml(
@@ -111,7 +113,7 @@ if __name__ == "__main__":
     health_data         = get_health_data()
     infrastructure_data = get_infrastructure_data()
     poverty_data        = get_poverty_data()
-    wdi_data            = education_data.join(health_data).join(infrastructure_data).join(poverty_data)
+    wdi_data            = education_data.join(health_data).join(infrastructure_data).join(poverty_data).rename_axis(index=None)
     data = {
         "wdi_exports/education_data.pkl": education_data,
         "wdi_exports/health_data.pkl": health_data,
