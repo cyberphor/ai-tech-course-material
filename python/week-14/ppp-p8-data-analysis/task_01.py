@@ -72,31 +72,32 @@ def get_infrastructure_data(source_file: str="wdi_data/2017infra.json"):
     return infrastructure_data
 
 def get_poverty_data(source_file: str="wdi_data/World_Development_Indicators_Poverty_2017.xml"):
-    countries = pd.read_xml(
-        path_or_buffer=source_file,
-        xpath="/countries/country",
-        attrs_only=True
-    )["name"].to_list()
     poverty_data = pd.DataFrame(
         data={
+            "Country": pd.read_xml(
+                path_or_buffer=source_file,
+                xpath="/countries/country",
+                attrs_only=True,
+                parser="lxml"
+            )["name"],
             "Gini index": pd.read_xml(
                 path_or_buffer=source_file,
                 xpath="/countries/country/field[@metric='Gini index (World Bank estimate)']",
+                parser="lxml"
             )["field"],
             "Income share of highest 10%": pd.read_xml(
                 path_or_buffer=source_file,
                 xpath="/countries/country/field[@metric='Income share held by highest 10%']",
+                parser="lxml"
             )["field"],
             "Daily consumption per capita (USD)": pd.read_xml(
                 path_or_buffer=source_file,
                 xpath="/countries/country/field[@metric='Survey mean consumption or income per capita, total population (2011 PPP $ per day)']",
+                parser="lxml"
             )["field"]
         }
-    )
-    print(poverty_data)
-
-def merge_data():
-    pass
+    ).set_index("Country").rename_axis(index=None)
+    return poverty_data
 
 def store_data(destination: str, source: pd.DataFrame):
     """Function to store a pandas DataFrame"""
@@ -106,4 +107,9 @@ def store_data(destination: str, source: pd.DataFrame):
     source.to_pickle(destination)
 
 if __name__ == "__main__":
-    get_poverty_data()
+    education_data      = get_education_data()
+    health_data         = get_health_data()
+    infrastructure_data = get_infrastructure_data()
+    poverty_data        = get_poverty_data()
+    wdi_data = education_data.join(health_data).join(infrastructure_data).join(poverty_data)
+    store_data(destination="wdi_exports/wdi_data.pkl", source=wdi_data)
