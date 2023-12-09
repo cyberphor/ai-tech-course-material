@@ -31,7 +31,6 @@ def get_statistic_centric_usability(source="wdi_exports/wdi_data.pkl", destinati
     wdi_data = pd.read_pickle(source)
     statistics = []
     for column in range(len(wdi_data.iloc[0,:])):
-        statistic = wdi_data.iloc[:,column].name
         missing_values = wdi_data.iloc[:,column].isna().sum()
         if missing_values > 180:
           usability = "None"
@@ -44,7 +43,7 @@ def get_statistic_centric_usability(source="wdi_exports/wdi_data.pkl", destinati
         else:
           usability = "Excellent"
         statistics.append({
-            "Statistic Name": statistic,
+            "Statistic Name": wdi_data.iloc[:,column].name,
             "Missing Values": missing_values,
             "Usability": usability
         })
