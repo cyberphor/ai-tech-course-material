@@ -71,7 +71,6 @@ def get_descriptive_statistics(source="wdi_exports/wdi_data.pkl", destination="w
             pd.DataFrame({"Top 10": statistic.sort_values(ascending=False)[:10].sort_index().sort_values(ascending=False)}),
             pd.DataFrame({"Bottom 10": statistic.sort_values(ascending=True)[0:10].sort_index().sort_values(ascending=True)})
         ])
-        break
     for statistic in descriptive_statistics[0]:
       print(statistic)
 
