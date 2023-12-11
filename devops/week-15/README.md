@@ -33,6 +33,15 @@ let appInsights = require("applicationinsights");
 appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING).start();
 ```
 
+**Azure Application Insights Web Test**  
+An AAI Web Test is a resource used to check if your web app is responding as expected. It's like a heartbeat monitor, periodically sending requests. If your web app fails to respond in time, an Azure Monitor Metric Alert is triggered. 
+
+**Azure Monitor Metric Alert**  
+An Azure Monitor Metric Alert is a resource used to define conditions that require notification (they're like detection rules, they generate alerts).  
+
+**Azure Monitor Action Group**  
+An Azure Monitor Action Group is a resource used to define response actions (e.g., who to notify, how to notify them, and what to do next). 
+
 ### Continuous Monitoring
 **Telemetry**  
 Telemetry is the remote measurement of variables.
@@ -56,3 +65,6 @@ DevOps benefits from continuous monitoring for the reasons listed below.
 * [Task 1](/devops/week-14/HOWTO.md#task-1)
 * [Task 2](/devops/week-14/HOWTO.md#task-2)
 * [Task 3](/devops/week-14/HOWTO.md#task-3)
+
+## Visual Aids
+![azure-application-insights.png](/devops/week-15/azure-application-insights.png)

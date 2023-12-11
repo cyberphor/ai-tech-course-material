@@ -52,7 +52,7 @@ In this task, you're going to do the following:
 
 **Step 3.** Replace the default GitHub Actions workflow configuration file with [the one provided](/devops/week-15/task-02/main.yml). 
 
-**Step 4.** Commit the changes made so far. 
+**Step 4.** Commit the changes you just made. 
 ```bash
 git add .
 git commit -m "Task 2"
@@ -68,6 +68,32 @@ curl "https://${WEB_APP_NAME}.azurewebsites.net/todos/2"
 
 ## Task 3
 In this task, you're going to do the following:
-* Text goes here
+* Update an existing Terraform configuration file by adding the following resources to it
+  * Azure Application Insights Web Test (i.e., heartbeat monitor)
+  * Azure Monitor Metric Alert (i.e., conditions that require notification)
+  * Azure Monitor Action Group (i.e., response actions)
 
-**Step 1.** Text goes here.
+**Step 1.** Update your existing Terraform configuration using [the one provided](/devops/week-15/task-03/main.tf). This one is different from the one before because it includes declarations for the resources listed above. 
+
+**Step 2.** Apply the new Terraform configuration. 
+```bash
+terraform apply
+```
+
+**Step 3.** Wait 15 minutes and then check your email for a notification. The notification is an indicator of a bug in your web app. The bug was not discovered until the AAI Web Test was added. The AAI Web Test resource detected an issue, raised an alert, and executed the response actions included in the updated Terraform configuration. 
+
+**Step 4.** After you receive the notification, login to Azure and review to the AAI instance within your resource group. 
+* Azure Application Insights
+  * Investigate > Transaction search
+    * See all data in the last 24 hours
+      * Filter for "Exception" and "Availability" events (you should see an error relating to a database query)
+      * Review the Call Stack (you should see the file that caused the error and needs to be fixed)
+
+**Step 5.** Replace the existing "todos.js" file (contained in the "routes" directory) with [the one provided](/devops/week-15/task-03/todos.js)
+
+**Step 6.** Commit the changes you just made. 
+```bash
+git add .
+git commit -m "Fixed a bug"
+git push
+```
