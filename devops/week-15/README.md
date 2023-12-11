@@ -18,7 +18,20 @@ An Azure App Service Plan is a resource used to define the app attributes listed
 * Pricing tier (Free, Shared, Basic, Standard, Premium, etc.)
 
 **Azure Application Insights**  
-Azure Application Insights is a feature included with Azure Monitor, a PaaS offering for monitoring apps. An instance of Azure Application Insights is necessary to monitor your app. 
+Azure Application Insights (AAI) is a feature included with Azure Monitor, a PaaS offering for monitoring apps. An AAI instance is necessary to monitor your app. 
+
+**Azure Application Insight Software Development Kits**
+Use the Software Development Kits (SDK) below to get telemetry data from your app into an AAI instance. 
+* JavaScript
+* Python
+* Go (not officially supported)
+
+Below is an example of how you would use the JavaScript SDK to wire your app and AAI instance together. 
+```javascript
+// APPLICATIONINSIGHTS_CONNECTION_STRING is an environment variable
+let appInsights = require("applicationinsights");
+appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING).start();
+```
 
 ### Continuous Monitoring
 **Telemetry**  
