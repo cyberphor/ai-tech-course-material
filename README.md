@@ -32,14 +32,18 @@
 * [Week 12: Containers](/devops/week-12/README.md)
 * [Week 13: Serverless Functions](/devops/week-13/README.md)
 * [Week 14: Infrastructure as Code](/devops/week-14/README.md)
+* [Week 15: Incident Response](/devops//week-15/README.md)
 
-### Installation Guides
-* [How to Install the Azure CLI within a GitHub Codespace](/INSTALL.md#how-to-install-the-azure-cli-within-a-github-codespace)
-* [How to Install Terraform within a GitHub Codespace](/INSTALL.md#how-to-install-terraform-within-a-github-codespace)
-* [How to Install sqlcmd within a GitHub Codespace](/INSTALL.md#how-to-install-sqlcmd-within-a-github-codespace)
-* [How to Install Ansible within a GitHub Namespace](/INSTALL.md#how-to-install-ansible-within-a-github-namespace)
-* [How to Create a GitHub Personal Access Token](/INSTALL.md#how-to-create-a-github-personal-access-token)
-* [How to Create an Azure DevOps Personal Access Token](/INSTALL.md#how-to-create-an-azure-devops-personal-access-token)
+### Setup Guides
+* [Create SSH Keys](/SETUP.md#how-to-create-ssh-keys)
+* [Setup Single Sign-On (SSO) Using SSH](/SETUP.md#how-to-setup-single-sign-on-using-ssh)
+* [Add a SSH Public Key to GitHub](/SETUP.md#how-to-add-your-ssh-public-key-to-github)
+* [Create a GitHub Personal Access Token](/SETUP.md#how-to-create-a-github-personal-access-token)
+* [Create Azure DevOps Personal Access Token](/SETUP.md#how-to-create-an-azure-devops-personal-access-token)
+* [Install the Azure CLI](/SETUP.md#how-to-install-the-azure-cli)
+* [Install Terraform](/SETUP.md#how-to-install-terraform)
+* [Install Ansible](/SETUP.md#how-to-install-ansible)
+* [Install sqlcmd](/SETUP.md#how-to-install-sqlcmd)
 
 ## Copyright
 This project is licensed under the terms of the [MIT license](/LICENSE).
