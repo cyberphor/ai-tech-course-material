@@ -105,7 +105,7 @@ az login --tenant "${TENANT_ID}" --use-device-code
 
 **Step 4.** Set your default subscription. 
 ```bash
-az account set --subscription "${SUBSCRIPTION_NAME}"
+az account set --subscription "${SUBSCRIPTION_ID}"
 ```
 
 ### How to Install Terraform
