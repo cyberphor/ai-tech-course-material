@@ -1,5 +1,8 @@
 ## Contents
 
+### Data Engineering
+* [Week 01: Introduction to Data Engineering](/data-engineering/week-01/README.md)
+
 ### Cloud
 * [Week 01: Getting Started with Azure](/cloud/week-01/README.md)
 * [Week 02: Azure Resource Groups](/cloud/week-02/README.md)
