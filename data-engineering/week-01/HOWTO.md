@@ -5,6 +5,7 @@
 terraform -chdir=terraform init
 terraform -chdir=terraform plan
 terraform -chdir=terraform apply -auto-approve
+ssh clouduser@$VM_IP_ADDRESS
 ```
 
 **Step 2.** Download, unzip, and change directories to the provided data set for Task 1. 
@@ -46,4 +47,12 @@ sed -r 's/\b[0-9]{3}\W*[0-9]{3}\W*[0-9]{4}\b/<PHONE_REMOVED>/gI' anon_"$file_nam
 **Step 8.** Update the `find_course.sh` script so it includes the command below. 
 ```bash
 awk -F '\t' '$2 ~ /Python/ && $4 == "False" {print $2}' udemy_courses_v2.csv 
+```
+
+## Task 02
+**Step 1.** Download, unzip, and change directories to the provided data set for Task 2. 
+```bash
+wget https://principlesofcomputing.blob.core.windows.net/data-exploration-dataset-zip/dataset.zip
+unzip dataset.zip
+cd dataset
 ```
