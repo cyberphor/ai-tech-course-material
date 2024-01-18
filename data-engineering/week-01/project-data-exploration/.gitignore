@@ -1,4 +1,6 @@
 task1/anon_emails/
 task1/emails/
 task1/udemy_courses_v2.csv
+task2/__pycache__
+task2/*.csv
 submitter

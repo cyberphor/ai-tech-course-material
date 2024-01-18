@@ -50,9 +50,42 @@ awk -F '\t' '$2 ~ /Python/ && $4 == "False" {print $2}' udemy_courses_v2.csv
 ```
 
 ## Task 02
-**Step 1.** Download, unzip, and change directories to the provided data set for Task 2. 
+**Step 1.** Download, unzip, and move the data set for Task 2 to the "project-data-exploration" folder.  
 ```bash
 wget https://principlesofcomputing.blob.core.windows.net/data-exploration-dataset-zip/dataset.zip
 unzip dataset.zip
-cd dataset
+mv airlines.csv airports.csv flights.csv project-data-exploration/task2
+```
+
+**Step 2.** Change directories to the Task 2 folder. 
+```bash
+cd project-data-exploration/task2
+```
+
+**Step 3.** Open `flights_delay_explore.ipynb`. 
+
+**Step 4.** For `TODO1`, replace `YOUR_SOLUTION_HERE` with the code below. 
+```python
+    for i in zip(csv_paths, table_names, index_cols):
+        df_dict[i[1]] = pd.read_csv(filepath_or_buffer=i[0], index_col=i[2], dtype=)
+```
+
+**Step 5.** For `TODO2`, replace `YOUR_SOLUTION_HERE` with the code below. 
+```python
+    print(f"- {name} ({df.shape[0]} rows, {df.shape[1]} columns)")
+```
+
+**Step 6.** For `TODO3`, replace `YOUR_SOLUTION_HERE` with the code below. 
+```python
+
+```
+
+**Step 7.** For `TODO4`, replace `YOUR_SOLUTION_HERE` with the code below. 
+```python
+
+```
+
+**Step 8.** For `TODO4`, replace `YOUR_SOLUTION_HERE` with the code below. 
+```python
+
 ```
