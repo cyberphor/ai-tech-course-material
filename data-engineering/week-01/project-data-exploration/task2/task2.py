@@ -12,7 +12,7 @@ def generate_pandas_df_dict(csv_paths, table_names=None, index_cols=None):
         index_cols = (None,) * len(csv_paths)
     df_dict = {}
     for i in zip(csv_paths, table_names, index_cols):
-        df_dict[i[1]] = pd.read_csv(filepath_or_buffer=i[0], index_col=i[2], encoding="latin-1", engine="python")
+        df_dict[i[1]] = pd.read_csv(filepath_or_buffer=i[0], index_col=i[2])
     return df_dict
 
 def show_tables(df_dict):
