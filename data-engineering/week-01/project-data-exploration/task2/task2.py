@@ -11,8 +11,8 @@ def generate_pandas_df_dict(csv_paths, table_names=None, index_cols=None):
     if index_cols is None:
         index_cols = (None,) * len(csv_paths)
     df_dict = {}
-    for i in zip(csv_paths, table_names, index_cols):
-        df_dict[i[1]] = pd.read_csv(filepath_or_buffer=i[0], index_col=i[2])
+    for csv_path, table_name, index_col in zip(csv_paths, table_names, index_cols):
+        df_dict[table_name] = pd.read_csv(csv_path, index_col=index_col)
     return df_dict
 
 def show_tables(df_dict):
@@ -25,11 +25,12 @@ def describe_table(df):
     print('=== COLUMNS ===')
     for column, dtype in sorted(zip(df.columns, df.dtypes)):
         series = df[column]
-        shape = f'- {column} {dtype} ({series.count()}/{series.size}) ' 
         if dtype == int64 or dtype == float64:
-            print(shape + f'[Max: {series.max()}, Mean: {series.mean()}, Min: {series.min()}]')
+            print(f'- {column} {dtype} ({series.count()}/{series.size}) ' +
+                  f'[Max: {series.max()}, Mean: {series.mean()}, Min: {series.min()}]')
         else:
-            print(shape + f'[{len(series.unique())} unique]')
+            print(f'- {column} {dtype} ({series.count()}/{series.size}) ' +
+                   f'[{len(series.unique())} unique]')
     print(f'TOTAL {df.shape[0]}')
 
 def assess_useless_columns(df):
