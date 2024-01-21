@@ -50,7 +50,6 @@ awk -F '\t' '$2 ~ /Python/ && $4 == "False" {print $2}' udemy_courses_v2.csv
 ```
 
 ## Task 02
-<<<<<<< HEAD
 **Step 1.** Download, unzip, and move the data set for Task 2 to the "project-data-exploration" folder.  
 ```bash
 wget https://principlesofcomputing.blob.core.windows.net/data-exploration-dataset-zip/dataset.zip
@@ -137,11 +136,4 @@ def generate_delays_per_arriving_airport_csv(df_dict, csv_path):
     )[['AIRLINE', 'ARRIVAL_DELAY']]
     delays_per_airline.sort_values(by='ARRIVAL_DELAY', ascending=False, ignore_index=True, inplace=True)
     delays_per_airline.to_csv(csv_path, index=False)
-=======
-**Step 1.** Download, unzip, and change directories to the provided data set for Task 2. 
-```bash
-wget https://principlesofcomputing.blob.core.windows.net/data-exploration-dataset-zip/dataset.zip
-unzip dataset.zip
-cd dataset
->>>>>>> e9fb3e6d81a7fd08a1e8d9adadc03501ddddb83f
 ```
