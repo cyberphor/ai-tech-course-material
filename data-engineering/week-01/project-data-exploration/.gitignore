@@ -4,4 +4,5 @@ task1/emails/
 task1/udemy_courses_v2.csv
 task2/__pycache__
 task2/*.csv
+task2/dataset.zip
 submitter
