@@ -1,9 +1,8 @@
-project-data-exploration/*.zip
 project-data-exploration/task1/anon_emails/
 project-data-exploration/task1/emails/
 project-data-exploration/task1/udemy_courses_v2.csv
 project-data-exploration/task2/__pycache__
 project-data-exploration/task2/*.csv
-project-data-exploration/submitter
+project-data-exploration/task2/*.zip
 terraform/*terraform*
 terraform/.terraform*
