@@ -2,7 +2,9 @@ project-data-exploration/task1/anon_emails/
 project-data-exploration/task1/emails/
 project-data-exploration/task1/udemy_courses_v2.csv
 project-data-exploration/task2/__pycache__
-project-data-exploration/task2/*.csv
+project-data-exploration/task2/airlines.csv
+project-data-exploration/task2/airports.csv
+project-data-exploration/task2/flights.csv
 project-data-exploration/task2/*.zip
 terraform/*terraform*
 terraform/.terraform*
