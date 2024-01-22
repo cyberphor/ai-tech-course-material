@@ -53,14 +53,14 @@ def generate_delays_per_airline_csv(df_dict, csv_path):
 
 def generate_delays_per_arriving_airport_csv(df_dict, csv_path):
     delays_per_airline = pd.merge(
-        left=df_dict['flights'][['AIRLINE','ARRIVAL_DELAY']].groupby(['AIRLINE']).mean(),
-        right=df_dict['airlines'],
+        left=df_dict['flights'][['DESTINATION_AIRPORT','ARRIVAL_DELAY']].groupby(['DESTINATION_AIRPORT']).mean(),
+        right=df_dict['airports'],
         left_on='DESTINATION_AIRPORT',
-        right_on='IATA_CODE'
-    )[['AIRLINE', 'ARRIVAL_DELAY']]
+        right_on='AIRPORT'
+    )[['AIRPORT', 'ARRIVAL_DELAY']]
     delays_per_airline.sort_values(by='ARRIVAL_DELAY', ascending=False, ignore_index=True, inplace=True)
     delays_per_airline.to_csv(csv_path, index=False)
 
 if __name__ == "__main__":
     df_dict = generate_pandas_df_dict((AIRLINES_CSV_PATH, AIRPORTS_CSV_PATH, FLIGHTS_CSV_PATH), ('airlines', 'airports', 'flights'), (0, 0, None))
-    generate_delays_per_airline_csv(df_dict, 'out.csv')
+    generate_delays_per_arriving_airport_csv(df_dict, 'out.csv')
