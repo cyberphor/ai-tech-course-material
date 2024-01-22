@@ -128,12 +128,12 @@ def generate_delays_per_airline_csv(df_dict, csv_path):
 **Step 8.** For `TODO5`, replace the code block with the one below. 
 ```python
 def generate_delays_per_arriving_airport_csv(df_dict, csv_path):
-    delays_per_airline = pd.merge(
-        left=df_dict['flights'][['AIRLINE','ARRIVAL_DELAY']].groupby(['AIRLINE']).mean(),
-        right=df_dict['airlines'],
+    delays_by_airport = pd.merge(
+        left=df_dict['flights'][['DESTINATION_AIRPORT','ARRIVAL_DELAY']].groupby(['DESTINATION_AIRPORT']).mean(), 
+        right=df_dict['airports'],
         left_on='DESTINATION_AIRPORT',
         right_on='IATA_CODE'
-    )[['AIRLINE', 'ARRIVAL_DELAY']]
-    delays_per_airline.sort_values(by='ARRIVAL_DELAY', ascending=False, ignore_index=True, inplace=True)
-    delays_per_airline.to_csv(csv_path, index=False)
+    )[['AIRPORT', 'ARRIVAL_DELAY']]
+    delays_by_airport.sort_values(by='ARRIVAL_DELAY', ascending=False, ignore_index=True, inplace=True)
+    delays_by_airport.to_csv(csv_path, index=False)
 ```
