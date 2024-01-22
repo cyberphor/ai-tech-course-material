@@ -42,24 +42,24 @@ def assess_useless_columns(df):
             print(f'The column {column} appears to have only one value.')
 
 def generate_delays_per_airline_csv(df_dict, csv_path):
-    delays_per_airline = pd.merge(
+    delays_by_airline = pd.merge(
         left=df_dict['flights'][['AIRLINE','ARRIVAL_DELAY']].groupby(['AIRLINE']).mean(),
         right=df_dict['airlines'],
         left_index=True,
         right_index=True
     )[['AIRLINE', 'ARRIVAL_DELAY']]
-    delays_per_airline.sort_values(by='ARRIVAL_DELAY', ascending=False, ignore_index=True, inplace=True)
-    delays_per_airline.to_csv(csv_path, index=False)
+    delays_by_airline.sort_values(by='ARRIVAL_DELAY', ascending=False, ignore_index=True, inplace=True)
+    delays_by_airline.to_csv(csv_path, index=False)
 
 def generate_delays_per_arriving_airport_csv(df_dict, csv_path):
-    delays_per_airline = pd.merge(
-        left=df_dict['flights'][['DESTINATION_AIRPORT','ARRIVAL_DELAY']].groupby(['DESTINATION_AIRPORT']).mean(),
+    delays_by_airport = pd.merge(
+        left=df_dict['flights'][['DESTINATION_AIRPORT','ARRIVAL_DELAY']].groupby(['DESTINATION_AIRPORT']).mean(), 
         right=df_dict['airports'],
         left_on='DESTINATION_AIRPORT',
-        right_on='AIRPORT'
+        right_on='IATA_CODE'
     )[['AIRPORT', 'ARRIVAL_DELAY']]
-    delays_per_airline.sort_values(by='ARRIVAL_DELAY', ascending=False, ignore_index=True, inplace=True)
-    delays_per_airline.to_csv(csv_path, index=False)
+    delays_by_airport.sort_values(by='ARRIVAL_DELAY', ascending=False, ignore_index=True, inplace=True)
+    delays_by_airport.to_csv(csv_path, index=False)
 
 if __name__ == "__main__":
     df_dict = generate_pandas_df_dict((AIRLINES_CSV_PATH, AIRPORTS_CSV_PATH, FLIGHTS_CSV_PATH), ('airlines', 'airports', 'flights'), (0, 0, None))
