@@ -58,9 +58,7 @@ ssh-add ~/.ssh/id_rsa  # add your SSH private key to the SSH authentication agen
 
 ## Register Virtual Machines as Deployment Group Targets
 ```bash
-cd ansible/
-ansible-playbook playbook.yaml -i inventory.yaml --ssh-common-args='-o StrictHostKeyChecking=no'
-cd ..
+ansible-playbook ansible/playbook.yaml -i $VM #--ssh-common-args='-o StrictHostKeyChecking=no'
 ```
 
 ## Create a Release Pipeline
