@@ -3,15 +3,15 @@
   tasks:
     - name: Install Terraform
       ansible.builtin.script: scripts/Install-Terraform.sh
+    - name: Install Packer
+      ansible.builtin.script: scripts/Install-Packer.sh
     - name: Install the Azure CLI
       ansible.builtin.script: scripts/Install-AzureCLI.sh
-    - name: Install Maven, JDK 17, and jq
-      ansible.builtin.script: scripts/Install-Maven.sh
     - name: Install Kubectl
       ansible.builtin.script: scripts/Install-Kubectl.sh
     - name: Install Helm
       ansible.builtin.script: scripts/Install-Helm.sh
+    - name: Install Maven, JDK 17, and jq
+      ansible.builtin.script: scripts/Install-Maven.sh
     - name: Download the Handout
       ansible.builtin.script: scripts/Get-Handout.sh
-    - name: Install Packer
-      ansible.builtin.script: scripts/Install-Packer.sh

@@ -1,8 +1,18 @@
-## Contents
+## Setup Guides
+* [Create SSH Keys](/SETUP.md#how-to-create-ssh-keys)
+* [Setup Single Sign-On (SSO) Using SSH](/SETUP.md#how-to-setup-single-sign-on-using-ssh)
+* [Add Your SSH Public Key to GitHub](/SETUP.md#how-to-add-your-ssh-public-key-to-github)
+* [Create a GitHub Personal Access Token](/SETUP.md#how-to-create-a-github-personal-access-token)
+* [Create an Azure DevOps Personal Access Token](/SETUP.md#how-to-create-an-azure-devops-personal-access-token)
+* [Install the Azure CLI](/SETUP.md#how-to-install-the-azure-cli)
+* [Install Terraform](/SETUP.md#how-to-install-terraform)
+* [Install Ansible](/SETUP.md#how-to-install-ansible)
+* [Install sqlcmd](/SETUP.md#how-to-install-sqlcmd)
 
+## Content
 | Course       | Topic | Training Objectives |
 | ------------ | ----- | ------------------- |
-| Cloud-Native | [Monolith to Microservices](/cloud-native/week-01/README.md) | Deploy a monolithic application using Packer and a "VM-per-service" design pattern <br> Deploy a Java application using Docker <br> Create a container registry and push images to it <br> Deploy containers using the Azure Kubernetes Service <br> Deploy Helm charts to manage a Kubernetes cluster |
+| Cloud-Native | [Monolith to Microservices](/cloud-native/week-01/README.md) | Deploy a virtual machine and monolithic application using Packer <br> Deploy a Java application using Docker <br> Create a container registry and push images to it <br> Deploy containers using the Azure Kubernetes Service <br> Deploy Helm charts to manage a Kubernetes cluster |
 | Data Engineering | [Introduction to Data Engineering](/data-engineering/week-01/README.md) | Use `grep`, `sed`, and `awk` to clean data <br> Use `pandas` to extract data <br> Use `pandas` to analyze data <br> Use `pandas` to transform data |
 | Azure | [Getting Started with Azure](/azure/week-01/README.md)
 | Azure | [Azure Resource Groups](/azure/week-02/README.md)
@@ -32,17 +42,3 @@
 | DevOps | [Serverless Functions](/devops/week-13/README.md)
 | DevOps | [Infrastructure as Code](/devops/week-14/README.md)
 | DevOps | [Incident Response](/devops//week-15/README.md)
-
-## Setup Guides
-* [Create SSH Keys](/SETUP.md#how-to-create-ssh-keys)
-* [Setup Single Sign-On (SSO) Using SSH](/SETUP.md#how-to-setup-single-sign-on-using-ssh)
-* [Add Your SSH Public Key to GitHub](/SETUP.md#how-to-add-your-ssh-public-key-to-github)
-* [Create a GitHub Personal Access Token](/SETUP.md#how-to-create-a-github-personal-access-token)
-* [Create an Azure DevOps Personal Access Token](/SETUP.md#how-to-create-an-azure-devops-personal-access-token)
-* [Install the Azure CLI](/SETUP.md#how-to-install-the-azure-cli)
-* [Install Terraform](/SETUP.md#how-to-install-terraform)
-* [Install Ansible](/SETUP.md#how-to-install-ansible)
-* [Install sqlcmd](/SETUP.md#how-to-install-sqlcmd)
-
-## Copyright
-This project is licensed under the terms of the [MIT license](/LICENSE).

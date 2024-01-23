@@ -1,26 +1,74 @@
 ---
-tags: ["azure", "terraform", "kubernetes"]
+tags: ["azure", "terraform", "kubernetes", "packer", "ansible"]
 ---
 
 ## Cloud-Native
 ## Setup
-**Step 1.** Install Ansible. 
+**Step 1.** Start an SSH authentication agent and add your SSH private to it. 
+```bash
+eval "$(ssh-agent -s)" # starts the SSH authentication agent
+ssh-add ~/.ssh/id_rsa  # adds your SSH private key to the SSH authentication agent
+```
+
+**Step 2.** Install Ansible if you don't already have it installed.
 ```bash
 sudo python -m pip install ansible
 ```
 
 ## Task 01
-**Step 1.** Deploy a virtual machine in Azure using Terraform.
+**Step 1.** Deploy a virtual machine in Azure using the provided Terraform files. Notably, they also create a resource group, service principal, and role assignment for Packer.   
 ```bash
 terraform -chdir=terraform init
 terraform -chdir=terraform plan
 terraform -chdir=terraform apply -auto-approve
 export USERNAME=$(terraform -chdir=terraform output -raw username)
+export IP_ADDRESS=$(terraform -chdir=terraform output -raw ip_address)
+export TENANT_ID=$(terraform -chdir=terraform output -raw tenant_id)
+export SUBSCRIPTION_ID=$(terraform -chdir=terraform output -raw subscription_id)
+export PACKER_CLIENT_ID=$(terraform -chdir=terraform output -raw service_principal_client_id)
+export PACKER_CLIENT_SECRET=$(terraform -chdir=terraform output -raw service_principal_client_secret)
 ```
 
-**Step 2.** Configure to the virtual machine using Ansible.
+**Step 2.** Configure to the virtual machine using Ansible. The playbook provided references multiple scripts in the [`ansible/scripts`](ansible/scripts/) folder. They include installing Terraform, Packer, Azure CLI, Kubectl, Helm, etc. The source code for this week's project is also automatically downloaded.  
 ```bash
 ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --ssh-common-args='-o StrictHostKeyChecking=no'
+```
+
+**Step 3.** Login the virtual machine. 
+```bash
+ssh $USERNAME@$IP_ADDRESS
+```
+
+**Step 4.** Login to the Azure CLI from the virtual machine and set your subscription.
+```bash
+az login --use-device-code
+az account set --subscription "AI2C Subscription 1"
+```
+
+**Step 5.** Change directories to `handout/cloudchat/terraform-setup/task1-monolith_data_tier`.
+```bash
+cd handout/cloudchat/terraform-setup/task1-monolith_data_tier
+```
+
+**Step 6.** Initialize a Terraform configuration and create an execution plan. Provide a database administrator password when prompted (e.g., `Password123!`). 
+```bash
+terraform init
+terraform plan
+```
+
+**Step 7.** Apply the Terraform execution plan and use `secret.tfvars` as the source of your variables. 
+```bash
+terraform apply -var-file="secret.tfvars" -auto-approve
+```
+
+**Step 8.** Use the output of the previous step to define new environment variables. 
+```bash
+export MYSQL_HOST=$(terraform output -raw mysql_fqdn)
+export MYSQL_USER=$(terraform output -raw mysql_admin_username)
+export MYSQL_PASSWORD=$(terraform output -raw mysql_admin_password)
+export SPRING_REDIS_HOST=$(terraform output -raw redis_hostname) 
+export SPRING_REDIS_PASSWORD=$(terraform output -raw redis_primary_access_key)
+export SPRING_REDIS_PORT=$(terraform output -raw redis_port)
 ```
 
 ## Task 02

@@ -9,6 +9,7 @@ resource "azurerm_resource_group" "main" {
 }
 
 resource "azurerm_virtual_network" "main" {
+  depends_on          = [ azurerm_resource_group.main ]
   name                = random_pet.main.id
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -16,6 +17,7 @@ resource "azurerm_virtual_network" "main" {
 }
 
 resource "azurerm_subnet" "main" {
+  depends_on          = [ azurerm_resource_group.main ]
   name                 = random_pet.main.id
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.main.name
@@ -89,7 +91,7 @@ resource "azurerm_network_interface_security_group_association" "main" {
 }
 
 resource "azurerm_linux_virtual_machine" "main" {
-  name                            = var.vm_name
+  name                            = random_pet.main.id
   resource_group_name             = var.resource_group_name
   location                        = var.location
   size                            = var.vm_size
@@ -104,7 +106,7 @@ resource "azurerm_linux_virtual_machine" "main" {
   os_disk {
     caching                       = "ReadWrite"
     storage_account_type          = "Standard_LRS"
-    name                          = var.vm_name
+    name                          = random_pet.main.id
   }
   source_image_reference {
     publisher                     = var.vm_image_publisher
