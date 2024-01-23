@@ -8,11 +8,6 @@ variable "resource_group_name" {
   default = "cloud-native-week-01"
 }
 
-variable "vm_name" {
-  type    = string
-  default = "virtual-machine"
-}
-
 variable "vm_size" {
   type    = string
   default = "Standard_B2ms"
