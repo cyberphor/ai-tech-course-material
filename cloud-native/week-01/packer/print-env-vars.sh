@@ -1,0 +1,6 @@
+echo "export MYSQL_HOST=$(terraform output -raw mysql_fqdn)"
+echo "export MYSQL_USER=$(terraform output -raw mysql_admin_username)"
+echo "export MYSQL_PASSWORD=$(terraform output -raw mysql_admin_password)"
+echo "export SPRING_REDIS_HOST=$(terraform output -raw redis_hostname)"
+echo "export SPRING_REDIS_PASSWORD=$(terraform output -raw redis_primary_access_key)"
+echo "export SPRING_REDIS_PORT=$(terraform output -raw redis_port)"
