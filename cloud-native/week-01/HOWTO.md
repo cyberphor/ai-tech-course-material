@@ -29,7 +29,7 @@ export PACKER_CLIENT_ID=$(terraform -chdir=terraform output -raw service_princip
 export PACKER_CLIENT_SECRET=$(terraform -chdir=terraform output -raw service_principal_client_secret)
 ```
 
-**Step 2.** Configure to the virtual machine using Ansible. The playbook provided references multiple scripts in the [`ansible/scripts`](ansible/scripts/) folder. They include installing Terraform, Packer, Azure CLI, Kubectl, Helm, etc. The source code for this week's project is also automatically downloaded.  
+**Step 2.** Configure the virtual machine using Ansible. The playbook provided references multiple scripts in the [`ansible/scripts`](ansible/scripts/) folder. They include installing Terraform, Packer, Azure CLI, Kubectl, Helm, etc. The source code for this week's project is also automatically downloaded.  
 ```bash
 ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --ssh-common-args='-o StrictHostKeyChecking=no'
 ```
