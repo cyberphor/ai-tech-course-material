@@ -1,7 +1,7 @@
 data "azurerm_client_config" "main" {}
 
 resource "azurerm_resource_group" "packer" {
-  name     = "${var.resource_group_name}-packer"
+  name     = "${var.resource_group_name}-task-01-packer"
   location = var.location
 }
 
