@@ -1,27 +1,21 @@
-# echo $TENANT_ID
 variable "tenant_id" {
   type      = string
-  default   = "da3cb2a3-95dd-4a37-b857-c1264e363deb"
-  sensitive = true
+  default   = null
 }
 
-# echo $SUBSCRIPTION_ID
 variable "subscription_id" {
   type    = string
-  default = "17408d59-f3b6-43a5-a48c-c3667527f330" 
+  default = null
 }
 
-# echo $PACKER_CLIENT_ID
 variable "client_id" {
   type    = string
-  default = "e146372a-dea4-4274-88b2-e7735ec4deec"
+  default = null
 }
 
-# echo $PACKER_CLIENT_SECRET
 variable "client_secret" {
-  type      = string
-  default   = "i2U8Q~LO_0kT6EYbShDV8-SHmRMIMWrSxrybhbsD"
-  sensitive = true
+  type    = string
+  default = null
 }
 
 variable "location" {
@@ -31,7 +25,12 @@ variable "location" {
 
 variable "resource_group" {
   type    = string
-  default = "cloud-native-week-01-packer"
+  default = "cloud-native-week-01-packer" # this should exist already
+}
+
+variable "managed_image_name" {
+  type    = string
+  default = "template_image"
 }
 
 variable "vm_os_type" {
