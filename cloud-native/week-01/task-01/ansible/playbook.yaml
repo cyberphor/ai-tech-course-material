@@ -7,6 +7,8 @@
       ansible.builtin.script: scripts/Install-Packer.sh
     - name: Install the Azure CLI
       ansible.builtin.script: scripts/Install-AzureCLI.sh
+    - name: Install Docker
+      ansible.builtin.script: scripts/Install-Docker.sh
     - name: Install Kubectl
       ansible.builtin.script: scripts/Install-Kubectl.sh
     - name: Install Helm
