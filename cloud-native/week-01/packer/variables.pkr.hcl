@@ -57,3 +57,33 @@ variable "vm_size" {
   type    = string
   default = "Standard_B2s"
 }
+
+variable "mysql_host" {
+  type    = string
+  default = null
+}
+
+variable "mysql_user" {
+  type    = string
+  default = null
+}
+
+variable "mysql_password" {
+  type    = string
+  default = null
+}
+
+variable "spring_redis_host" {
+  type    = string
+  default = null
+}
+
+variable "spring_redis_port" {
+  type    = string
+  default = null
+}
+
+variable "spring_redis_password" {
+  type    = string
+  default = null
+}
