@@ -130,6 +130,7 @@ packer validate -var-file="secret.pkrvars.hcl" -var "resource_group=cloud-native
 ```bash
 packer build -var-file="secret.pkrvars.hcl" -var "resource_group=cloud-native-week-01-packer" -var "managed_image_name=demo-01" .
 ```
+
 ```bash
 # debugging
 # az ad sp create-for-rbac \
