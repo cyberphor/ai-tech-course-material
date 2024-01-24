@@ -67,26 +67,26 @@ vim print-env-vars.sh
 ```
 ```bash
 # copy and paste the commands below to the file above
-echo "export MYSQL_HOST=$(terraform output -raw mysql_fqdn)"
-echo "export MYSQL_USER=$(terraform output -raw mysql_admin_username)"
-echo "export MYSQL_PASSWORD=$(terraform output -raw mysql_admin_password)"
-echo "export SPRING_REDIS_HOST=$(terraform output -raw redis_hostname)"
-echo "export SPRING_REDIS_PASSWORD=$(terraform output -raw redis_primary_access_key)"
-echo "export SPRING_REDIS_PORT=$(terraform output -raw redis_port)"
+echo "export MYSQL_HOST='$(terraform output -raw mysql_fqdn)'"
+echo "export MYSQL_USER='$(terraform output -raw mysql_admin_username)'"
+echo "export MYSQL_PASSWORD='$(terraform output -raw mysql_admin_password)'"
+echo "export SPRING_REDIS_HOST='$(terraform output -raw redis_hostname)'"
+echo "export SPRING_REDIS_PASSWORD='$(terraform output -raw redis_primary_access_key)'"
+echo "export SPRING_REDIS_PORT='$(terraform output -raw redis_port)'"
 ```
 
-**Step 9**. Run the BASH script. Then, copy the output to `run_monolith.sh` in the `handout/cloudchat/task1-monolith/packer` directory.
+**Step 9**. Run the BASH script from the `task1-monolith_data_tier` directory. Then, copy the output to `run_monolith.sh` in the `handout/cloudchat/task1-monolith/packer` directory.
 ```bash
 bash print-env-vars.sh
 ```
 ```bash
 # output
-export MYSQL_HOST=shared-mysql-fs-cpwkwjpr.mysql.database.azure.com
-export MYSQL_USER=Monolithic_CloudChat_123
-export MYSQL_PASSWORD=Monolithic_CloudChat_123
-export SPRING_REDIS_HOST=redis-cache-vpxufblg.redis.cache.windows.net
-export SPRING_REDIS_PASSWORD=d5OkJ91ujR320LQJcziHXBTlozDdKultqAzCaENFU28=
-export SPRING_REDIS_PORT=6379
+export MYSQL_HOST='shared-mysql-fs-cpwkwjpr.mysql.database.azure.com'
+export MYSQL_USER='Monolithic_CloudChat_123'
+export MYSQL_PASSWORD='Monolithic_CloudChat_123'
+export SPRING_REDIS_HOST='redis-cache-vpxufblg.redis.cache.windows.net'
+export SPRING_REDIS_PASSWORD='d5OkJ91ujR320LQJcziHXBTlozDdKultqAzCaENFU28='
+export SPRING_REDIS_PORT='6379'
 ```
 
 **Step 10.** Change directories to `handout/cloudchat/task1-monolith/packer`.
@@ -104,15 +104,9 @@ vim azure-packer.pkr.hcl
 vim variables.pkr.hcl
 ```
 
-
 **Step 13.** Edit `secret.pkrvars.hcl` using the [provided example](packer/secret.pkvars.hcl).
 ```bash
 vim secret.pkrvars.hcl 
-```
-
-**Step 13.** Edit `run_monolith.sh` using the [provided example](packer/run_monolith.sh).
-```bash
-vim run_monolith.sh
 ```
 
 **Step 14.** Initialize Packer.
@@ -123,20 +117,30 @@ packer init .
 
 **Step 15.** Validate your Packer configuration.
 ```bash
-packer validate -var-file="secret.pkrvars.hcl" -var "resource_group=cloud-native-week-01-packer" -var "managed_image_name=demo-01" .
+packer validate -var-file="secret.pkrvars.hcl" -var "managed_image_name=demo-01" .
 ```
 
-**Step 16.** Build your Packer configuration.
+**Step 16.** Build your Packer configuration. The image will be put into the resource group defined in your `variables.pkr.hcl` file (e.g., `cloud-native-week-01-packer`).
 ```bash
-packer build -var-file="secret.pkrvars.hcl" -var "resource_group=cloud-native-week-01-packer" -var "managed_image_name=demo-01" .
+packer build -var-file="secret.pkrvars.hcl" -var "managed_image_name=demo-01" .
 ```
 
+**Step 17.** Verify the virtual machine image works.  
 ```bash
-# debugging
-# az ad sp create-for-rbac \
-#  --role "Contributor" \
-#  --scopes "/subscriptions/17408d59-f3b6-43a5-a48c-c3667527f330" \
-#  --query "{ client_id: appId, client_secret: password, tenant_id: tenant }"
+az vm create \
+  --resource-group "cloud-native-week-01-packer" \
+  --name "myVM" \
+  --image "demo-01" \
+  --admin-username "azureuser" \
+  --generate-ssh-keys
+```
+
+**Step 18.** Change directories to `~/handout`, download the correct submitter, make it executable, and then, run it.
+```bash
+cd ~/handout
+wget https://cloudnativehandout.blob.core.windows.net/project1/submitter
+chmod +x submitter
+./submitter -task1
 ```
 
 ## Task 02
