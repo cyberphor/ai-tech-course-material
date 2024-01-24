@@ -1,0 +1,12 @@
+# FILL ME IN!
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-profile-service
+spec:
+  selector:
+    app: profile
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: LoadBalancer
