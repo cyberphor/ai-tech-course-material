@@ -129,7 +129,7 @@ packer build -var-file="secret.pkrvars.hcl" -var "managed_image_name=demo-01" .
 ```bash
 az vm create \
   --resource-group "cloud-native-week-01-packer" \
-  --name "myVM" \
+  --name "demo-01" \
   --image "demo-01" \
   --admin-username "azureuser" \
   --generate-ssh-keys
