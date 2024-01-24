@@ -16,6 +16,8 @@ sudo python -m pip install ansible
 ```
 
 ## Task 01
+In this task, you're going to deploy and configure a virtual machine in Azure using Terraform and Ansible. Next, you're going login to it and use Packer to create custom a virtual machine image. Then, you're going to deploy a new virtual machine instance using the custom image. 
+
 **Step 1.** Deploy a virtual machine in Azure using the provided Terraform files. Notably, they also create a resource group, service principal, and role assignment for Packer.   
 ```bash
 terraform -chdir=terraform init
