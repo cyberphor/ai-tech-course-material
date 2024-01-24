@@ -34,7 +34,7 @@ export PACKER_CLIENT_SECRET=$(terraform -chdir=terraform output -raw service_pri
 ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --ssh-common-args='-o StrictHostKeyChecking=no'
 ```
 
-**Step 3.** Login the virtual machine. 
+**Step 3.** Login to the virtual machine. 
 ```bash
 ssh $USERNAME@$IP_ADDRESS
 ```
