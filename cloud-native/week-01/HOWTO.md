@@ -4,7 +4,7 @@ tags: ["azure", "terraform", "kubernetes", "packer", "ansible"]
 
 ## Cloud-Native
 ## Setup
-**Step 1.** Start an SSH authentication agent and add your SSH private to it. 
+**Step 1.** Start an SSH authentication agent and add your SSH private key to it. 
 ```bash
 # these commands are meant to be ran on your personal computer
 eval "$(ssh-agent -s)" # starts the SSH authentication agent
@@ -48,7 +48,7 @@ ssh $USERNAME@$IP_ADDRESS
 
 **Step 4.** Login to the Azure CLI from the virtual machine and set your subscription.
 ```bash
-# this command is meant to be ran on the virtual machine created by Terraform during Step 1 above
+# the remaining commands in this task are meant to be ran on the virtual machine created by Terraform during Step 1 above
 az login --use-device-code
 az account set --subscription "AI2C Subscription 3"
 ```
@@ -77,26 +77,44 @@ vim print-env-vars.sh
 # copy and paste the commands below to the file above
 echo "export MYSQL_HOST='$(terraform output -raw mysql_fqdn)'"
 echo "export MYSQL_USER='$(terraform output -raw mysql_admin_username)'"
-echo "export MYSQL_PASSWORD='$(terraform output -raw mysql_admin_password)'""
+echo "export MYSQL_PASSWORD='$(terraform output -raw mysql_admin_password)'"
+echo "export SPRING_REDIS_HOST='$(terraform output -raw redis_hostname)'"
+echo "export SPRING_REDIS_PASSWORD='$(terraform output -raw redis_primary_access_key)'"
+echo "export SPRING_REDIS_PORT='$(terraform output -raw redis_port)'"
 ```
 
-**Step 9**. Run the BASH script from the `task1-monolith_data_tier` directory and copy the output to `run_monolith.sh` in the `~/handout/cloudchat/task1-monolith/packer` directory.
+**Step 9**. Run the BASH script you just created. 
 ```bash
 bash print-env-vars.sh
 ```
 ```bash
 # output
-export MYSQL_HOST='shared-mysql-fs-cpwkwjpr.mysql.database.azure.com'
+export MYSQL_HOST='shared-mysql-fs-aqcjgslk.mysql.database.azure.com'
 export MYSQL_USER='Monolithic_CloudChat_123'
 export MYSQL_PASSWORD='Monolithic_CloudChat_123'
-export SPRING_REDIS_HOST='redis-cache-vpxufblg.redis.cache.windows.net'
-export SPRING_REDIS_PASSWORD='d5OkJ91ujR320LQJcziHXBTlozDdKultqAzCaENFU28='
+export SPRING_REDIS_HOST='redis-cache-npupfurd.redis.cache.windows.net'
+export SPRING_REDIS_PASSWORD='hTEupVAvFqOm1hdYHNV9twBKRTVnjxtZtAzCaB4Gpqc='
 export SPRING_REDIS_PORT='6379'
 ```
 
-**Step 10.** Change directories to `~/handout/cloudchat/task1-monolith/packer`.
+**Step 10.** Change directories to `~/handout/cloudchat/task1-monolith/packer` and then copy the output of the previous step to `run_monolith.sh`.
 ```bash
 cd ~/handout/cloudchat/task1-monolith/packer
+vim run_monolith.sh
+```
+ 
+The `run_monolith.sh` file should look like this afterwards. 
+```bash
+#!/bin/bash
+#TODO: Add in other environment variables and fill from terraform output.
+export MYSQL_HOST='shared-mysql-fs-aqcjgslk.mysql.database.azure.com'
+export MYSQL_USER='Monolithic_CloudChat_123'
+export MYSQL_PASSWORD='Monolithic_CloudChat_123'
+export SPRING_REDIS_HOST='redis-cache-npupfurd.redis.cache.windows.net'
+export SPRING_REDIS_PASSWORD='hTEupVAvFqOm1hdYHNV9twBKRTVnjxtZtAzCaB4Gpqc='
+export SPRING_REDIS_PORT='6379'
+cd /home/packer/
+/bin/java -jar ./target/cloudchat-1.0.0.jar
 ```
 
 **Step 11.** Edit `azure-packer.pkr.hcl` using the [provided example](task-01/packer/azure-packer.pkr.hcl).
