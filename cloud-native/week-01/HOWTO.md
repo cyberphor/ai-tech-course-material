@@ -6,37 +6,41 @@ tags: ["azure", "terraform", "kubernetes", "packer", "ansible"]
 ## Setup
 **Step 1.** Start an SSH authentication agent and add your SSH private to it. 
 ```bash
+# these commands are meant to be ran on your personal computer
 eval "$(ssh-agent -s)" # starts the SSH authentication agent
 ssh-add ~/.ssh/id_rsa  # adds your SSH private key to the SSH authentication agent
 ```
 
 **Step 2.** Install Ansible if you don't already have it installed.
 ```bash
+# this command is meant to be ran on your personal computer
 sudo python -m pip install ansible
 ```
 
 ## Task 01
 In this task, you're going to deploy and configure a virtual machine in Azure using Terraform and Ansible. Next, you're going login to it and use Packer to create custom a virtual machine image. Then, you're going to deploy a new virtual machine instance using the custom image. 
 
-**Step 1.** Deploy a virtual machine in Azure using the [provided Terraform files](setup/). Notably, they also create a resource group, service principal, and role assignment for Packer.   
+**Step 1.** Deploy a virtual machine in Azure using the [provided Terraform files](setup/terraform). Notably, they also create a resource group, service principal, and role assignment for Packer.   
 ```bash
-terraform -chdir=setup init
-terraform -chdir=setup plan
-terraform -chdir=setup apply -auto-approve
-export USERNAME=$(terraform -chdir=setup output -raw username)
-export IP_ADDRESS=$(terraform -chdir=setup output -raw ip_address)
-export TENANT_ID=$(terraform -chdir=setup output -raw tenant_id)
-export SUBSCRIPTION_ID=$(terraform -chdir=setup output -raw subscription_id)
-export PACKER_CLIENT_ID=$(terraform -chdir=setup output -raw service_principal_client_id)
-export PACKER_CLIENT_SECRET=$(terraform -chdir=setup output -raw service_principal_client_secret)
+# these commands are meant to be ran from /cloud-native/week-01/setup in the "vic-code" repo on your personal computer
+terraform -chdir=terraform init
+terraform -chdir=terraform plan
+terraform -chdir=terraform apply -auto-approve
+export USERNAME=$(terraform -chdir=terraform output -raw username)
+export IP_ADDRESS=$(terraform -chdir=terraform output -raw ip_address)
+export TENANT_ID=$(terraform -chdir=terraform output -raw tenant_id)
+export SUBSCRIPTION_ID=$(terraform -chdir=terraform output -raw subscription_id)
+export PACKER_CLIENT_ID=$(terraform -chdir=terraform output -raw service_principal_client_id)
+export PACKER_CLIENT_SECRET=$(terraform -chdir=terraform output -raw service_principal_client_secret)
 ```
 
-**Step 2.** Configure to the virtual machine using Ansible. The playbook provided references multiple scripts in the [`ansible/scripts`](task-01/ansible/scripts/) folder. They include installing Terraform, Packer, Azure CLI, Docker, Kubectl, Helm, etc. The source code for this week's project is also automatically downloaded.  
+**Step 2.** Configure to the virtual machine using Ansible. The [Ansible playbook](ansible/playbook.yaml) provided and used references multiple scripts in the [`ansible/scripts`](ansible/scripts/) folder. They include installing Terraform, Packer, Azure CLI, Docker, Kubectl, Helm, etc. The source code for this week's project is also automatically downloaded.  
 ```bash
+# these commands are meant to be ran from /cloud-native/week-01/setup in the "vic-code" repo on your personal computer
 ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --ssh-common-args='-o StrictHostKeyChecking=no'
 ```
 
-**Step 3.** Login to the virtual machine. 
+**Step 3.** Login to the virtual machine created by Terraform during Step 1 above. 
 ```bash
 ssh $USERNAME@$IP_ADDRESS
 ```
@@ -404,4 +408,39 @@ ssh $USERNAME@$IP_ADDRESS
 ```bash
 az login --use-device-code
 az account set --subscription "AI2C Subscription 1"
+```
+
+**Step 3.** Change directories to `~/handout/cloudchat/terraform-setup/task4-login_data_tier`. 
+```bash
+cd ~/handout/cloudchat/terraform-setup/task4-login_data_tier
+```
+
+**Step 4.** Initialize the Terraform configuration in the `task4-login_data_tier` directory and create an execution plan. Provide a database administrator password when prompted (e.g., `Password123!`). 
+```bash
+terraform init
+terraform plan
+```
+
+**Step 5.** Apply the Terraform execution plan and use `secret.tfvars` as the source of your variables. 
+```bash
+terraform apply -var-file="secret.tfvars" -auto-approve
+terraform output -raw mysql_fqdn
+terraform output -raw mysql_admin_username
+terraform output -raw mysql_admin_password
+```
+
+**Step 6.** Change directories to `~/handout/cloudchat/terraform-setup/task4-chat_data_tier`. 
+```bash
+cd ~/handout/cloudchat/terraform-setup/task4-chat_data_tier
+```
+
+**Step 7.** Initialize the Terraform configuration in the `task4-chat_data_tier` directory and create an execution plan. Provide a database administrator password when prompted (e.g., `Password123!`). 
+```bash
+terraform init
+terraform plan
+```
+
+**Step 8.** Apply the Terraform execution plan and use `secret.tfvars` as the source of your variables. 
+```bash
+terraform apply -var-file="secret.tfvars" -auto-approve
 ```
