@@ -55,8 +55,8 @@ build {
 
   provisioner "shell" {
     environment_vars = [
-      # these are needed to build the monolith app (mvn clean package)
-      # they are also added to "run_monolith.sh" so they're available when the monolith application is actually ran
+      # these environment variable are needed for the "mvn clean package" sentence below
+      # they were also added to the "run_monolith.sh" file when the app is ran
       "MYSQL_HOST=${var.mysql_host}",
       "MYSQL_USER=${var.mysql_user}",
       "MYSQL_PASSWORD=${var.mysql_password}",

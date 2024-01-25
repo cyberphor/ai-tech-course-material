@@ -25,7 +25,7 @@ variable "location" {
 
 variable "resource_group" {
   type    = string
-  default = "cloud-native-week-01-packer" # this should exist already
+  default = null # "cloud-native-week-01-packer" should exist already
 }
 
 variable "managed_image_name" {
@@ -87,3 +87,14 @@ variable "spring_redis_password" {
   type    = string
   default = null
 }
+
+# tenant_id = "da3cb2a3-95dd-4a37-b857-c1264e363deb"
+# subscription_id = "17408d59-f3b6-43a5-a48c-c3667527f330" 
+# 
+# mysql_host = "shared-mysql-fs-aqcjgslk.mysql.database.azure.com"
+# mysql_user = "Monolithic_CloudChat_123"
+# mysql_password = "Monolithic_CloudChat_123"
+# 
+# spring_redis_host = "redis-cache-npupfurd.redis.cache.windows.net"
+# spring_redis_port = "6379"
+# spring_redis_password = "hTEupVAvFqOm1hdYHNV9twBKRTVnjxtZtAzCaB4Gpqc="
