@@ -42,13 +42,15 @@ ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --
 
 **Step 3.** Login to the virtual machine created by Terraform during Step 1 above. 
 ```bash
+# this command is meant to be ran on your personal computer
 ssh $USERNAME@$IP_ADDRESS
 ```
 
 **Step 4.** Login to the Azure CLI from the virtual machine and set your subscription.
 ```bash
+# this command is meant to be ran on the virtual machine created by Terraform during Step 1 above
 az login --use-device-code
-az account set --subscription "AI2C Subscription 1"
+az account set --subscription "AI2C Subscription 3"
 ```
 
 **Step 5.** Change directories to `~/handout/cloudchat/terraform-setup/task1-monolith_data_tier`.
