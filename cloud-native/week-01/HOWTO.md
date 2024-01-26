@@ -20,7 +20,7 @@ sudo python -m pip install ansible
 ## Task 01
 In this task, you're going to deploy and configure a virtual machine in Azure using Terraform and Ansible. Next, you're going login to it and use Packer to create custom a virtual machine image. Then, you're going to deploy a new virtual machine instance using the custom image. 
 
-**Step 1.** Deploy a virtual machine in Azure using the [provided Terraform files](setup/terraform). Notably, they also create a resource group, service principal, and role assignment for Packer.   
+**Step 1.** Deploy a virtual machine in Azure using the [provided Terraform files](setup/terraform). Notably, they also create a resource group, service principal, and role assignment for Packer. The `PACKER_CLIENT_ID` and `PACKER_CLIENT_SECRET` variables will become important near the end of this task. 
 ```bash
 # these commands are meant to be ran from /cloud-native/week-01/setup in the "vic-code" repo on your personal computer
 terraform -chdir=terraform init
@@ -83,7 +83,7 @@ echo "export SPRING_REDIS_PASSWORD='$(terraform output -raw redis_primary_access
 echo "export SPRING_REDIS_PORT='$(terraform output -raw redis_port)'"
 ```
 
-**Step 9**. Run the BASH script you just created. 
+**Step 9**. Run the BASH script you just created and copy the output to memory.
 ```bash
 bash print-env-vars.sh
 ```
@@ -97,7 +97,7 @@ export SPRING_REDIS_PASSWORD='hTEupVAvFqOm1hdYHNV9twBKRTVnjxtZtAzCaB4Gpqc='
 export SPRING_REDIS_PORT='6379'
 ```
 
-**Step 10.** Change directories to `~/handout/cloudchat/task1-monolith/packer` and then copy the output of the previous step to `run_monolith.sh`.
+**Step 10.** Change directories to `~/handout/cloudchat/task1-monolith/packer` and then paste the output of the previous step to `run_monolith.sh`.
 ```bash
 cd ~/handout/cloudchat/task1-monolith/packer
 vim run_monolith.sh
@@ -119,46 +119,58 @@ cd /home/packer/
 
 **Step 11.** Edit `azure-packer.pkr.hcl` using the [provided example](task-01/packer/azure-packer.pkr.hcl).
 ```bash
+# the "shell" provisioner block in this file needs the
+# same environment variables added to "run_monolith.sh"
 vim azure-packer.pkr.hcl
 ```
 
 **Step 12.** Create `variables.pkr.hcl` using the [provided example](task-01/packer/variables.pkr.hcl).
 ```bash
+# this file defines all variables, but only fills in some variables
 vim variables.pkr.hcl
 ```
 
 **Step 13.** Edit `secret.pkrvars.hcl` using the [provided example](task-01/packer/secret.pkvars.hcl).
 ```bash
+# this file fills in sensitive values for variables that have already been declared
 vim secret.pkrvars.hcl 
 ```
 
 **Step 14.** Initialize Packer.
 ```bash
-# make sure you're in this folder: handout/cloudchat/task1-monolith/packer
+# make sure you're in this folder when you run this command: handout/cloudchat/task1-monolith/packer
 packer init .
 ```
 
 **Step 15.** Validate your Packer configuration.
 ```bash
-packer validate -var-file="secret.pkrvars.hcl" -var "managed_image_name=demo-01" .
+packer validate -var-file="secret.pkrvars.hcl" .
 ```
 
-**Step 16.** Build your Packer configuration. The image will be put into the resource group defined in your `variables.pkr.hcl` file (e.g., `cloud-native-week-01-packer`).
+**Step 16.** Build your Packer configuration. The image will be put into the resource group defined in your `variables.pkr.hcl` file (e.g., `cloud-native-week-01-task-01-packer`).
 ```bash
-packer build -var-file="secret.pkrvars.hcl" -var "managed_image_name=demo-01" .
+packer build -var-file="secret.pkrvars.hcl" .
 ```
 
-**Step 17.** Verify the virtual machine image works.  
+**Step 17.** Verify the image works by using it to create a new virtual machine. Use the output for the next step.
 ```bash
+# this command will deploy a virtual machine in the 
+# same resource group where the image is stored
 az vm create \
-  --resource-group "cloud-native-week-01-packer" \
-  --name "demo-01" \
-  --image "demo-01" \
+  --resource-group "cloud-native-week-01-task-01-packer" \
+  --name "vm-01" \
+  --image "template-image" \
   --admin-username "azureuser" \
   --generate-ssh-keys
 ```
 
-**Step 18.** Change directories to `~/handout`, download the correct submitter, make it executable, and then, run it.
+**Step 18.** Verify you can access the application.
+```bash
+# the ip address you use will be whatever was printed by the last step
+ssh azureuser@20.7.35.215
+```
+
+**Step 19.** Change directories to `~/handout`, download the correct submitter, make it executable, and then, run it.
 ```bash
 cd ~/handout
 wget https://cloudnativehandout.blob.core.windows.net/project1/submitter
