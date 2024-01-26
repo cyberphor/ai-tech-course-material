@@ -48,7 +48,8 @@ ssh $USERNAME@$IP_ADDRESS
 
 **Step 4.** Login to the Azure CLI from the virtual machine and set your subscription.
 ```bash
-# the remaining commands in this task are meant to be ran on the virtual machine created by Terraform during Step 1 above
+# most of the remaining commands in this task are meant to be ran 
+# on the virtual machine created by Terraform during Step 1 above
 az login --use-device-code
 az account set --subscription "AI2C Subscription 3"
 ```
@@ -164,13 +165,19 @@ az vm create \
   --generate-ssh-keys
 ```
 
-**Step 18.** Verify you can access the application.
+**Step 18.** Login to the virtual machine.
 ```bash
 # the ip address you use will be whatever was printed by the last step
 ssh azureuser@20.7.35.215
 ```
 
-**Step 19.** Change directories to `~/handout`, download the correct submitter, make it executable, and then, run it.
+**Step 19.** Verify you can query the application. If you can't, run `sudo systemctl status myapp` and start troubleshooting.
+```bash
+# this command is meant to be ran on the virtual machine
+curl localhost:8080/login
+```
+
+**Step 20.** Change directories to `~/handout`, download the correct submitter, make it executable, and then, run it.
 ```bash
 cd ~/handout
 wget https://cloudnativehandout.blob.core.windows.net/project1/submitter
