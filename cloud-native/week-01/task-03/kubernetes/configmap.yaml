@@ -4,5 +4,5 @@ kind: ConfigMap
 metadata:
   name: spring-profile-configmap
 data:
-  mysql_db_host: "profile-mysql-fs-tywshqsk.mysql.database.azure.com"
+  mysql_db_host: "profile-mysql-fs-hjywhtmm.mysql.database.azure.com"
   mysql_db_port: "3306"

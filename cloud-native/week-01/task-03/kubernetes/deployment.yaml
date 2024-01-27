@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: profile
-        image: discretegobbler.azurecr.io/cloudchat/profile:v1.0.0
+        image: richroughy.azurecr.io/cloudchat/profile:v1.0.0
         env:
           - name: MYSQL_DB_HOST
             valueFrom:
