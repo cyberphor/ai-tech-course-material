@@ -382,24 +382,24 @@ Merged "task-03-aks" as current context in /home/clouduser/.kube/config
 cd ~/handout/cloudchat/task2-4-microservices/profile/task3-k8s/
 ```
 
-**Step 14.** Edit `deployment.yaml` in the `task3-k8s` directory using the [provided example](task-03/kubernetes/deployment.yaml).
+**Step 14.** Edit `deployment.yaml` in the `task3-k8s` directory using the [provided example](task-03/kubernetes/deployment.yaml). For the `image` field, use the same value you used Step 6 (the one with using your ACR as the prefix).
 ```bash
-vim task3-k8s/deployment.yaml
+vim deployment.yaml
 ```
 
 **Step 15.** Edit `service.yaml` in the `task3-k8s` directory using the [provided example](task-03/kubernetes/service.yaml).
 ```bash
-vim task3-k8s/service.yaml
+vim service.yaml
 ```
 
-**Step 16.** Edit `configmap.yaml` in the `task3-k8s` directory using the [provided example](task-03/kubernetes/configmap.yaml).
+**Step 16.** Edit `configmap.yaml` in the `task3-k8s` directory using the [provided example](task-03/kubernetes/configmap.yaml). For the `mysql_db_host` and `mysql_db_port` fields, use the same values you used in Task 2 (they were saved in the `.env` file). 
 ```bash
-vim task3-k8s/configmap.yaml
+vim configmap.yaml
 ```
 
-**Step 17.** Edit `secret.yaml` in the `task3-k8s` directory using the [provided example](task-03/kubernetes/secret.yaml).
+**Step 17.** Edit `secret.yaml` in the `task3-k8s` directory using the [provided example](task-03/kubernetes/secret.yaml).  For the `mysql_db_username` and `mysql_db_password` fields, use the same values you used in Task 2 (they were saved in the `.env` file). 
 ```bash
-vim task3-k8s/secret.yaml
+vim secret.yaml
 ```
 
 **Step 18.** Deploy the `profile` service you just defined to your AKS instance.
@@ -426,13 +426,13 @@ kubectl get svc
 ```bash
 # output
 NAME                     TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)        AGE
-kubernetes               ClusterIP      10.0.0.1      <none>         443/TCP        96m
-spring-profile-service   LoadBalancer   10.0.187.15   4.246.255.37   80:30269/TCP   7m13s
+kubernetes               ClusterIP      10.0.0.1      <none>         443/TCP        31h
+spring-profile-service   LoadBalancer   10.0.213.10   4.246.233.47   80:31472/TCP   4m46s
 ```
 
 **Step 21.** Verify the application is working. 
 ```bash
-curl 4.246.255.37/profile?username="goober"
+curl 4.246.233.47/profile?username="goober"
 # the word "null" will be printed to the console 
 ```
 
