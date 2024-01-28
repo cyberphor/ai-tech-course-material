@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-chat-deployment
+  labels:
+    app: chat
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: chat
+  template:
+    metadata:
+      labels:
+        app: chat
+    spec:
+      containers:
+      - name: chat
+        image: richroughy.azurecr.io/cloudchat/chat:v1.0.0
+        ports:
+        - containerPort: 80
+        envFrom:
+        - configMapRef:
+            name: spring-chat-configmap
+        - secretRef:
+            name: spring-chat-secret

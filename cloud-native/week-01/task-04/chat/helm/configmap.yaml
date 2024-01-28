@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-chat-configmap
+data:
+  MYSQL_DB_HOST: "chat-mysql-fs-nonsnzho.mysql.database.azure.com"
+  SPRING_REDIS_HOST: "chat-redis-cache-odbyibrq.redis.cache.windows.net"
