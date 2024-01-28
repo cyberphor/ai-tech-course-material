@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-profile-deployment
+  labels:
+    app: profile
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: profile
+  template:
+    metadata:
+      labels:
+        app: profile
+    spec:
+      containers:
+      - name: profile
+        image: richroughy.azurecr.io/cloudchat/profile:v1.0.0
+        ports:
+        - containerPort: 80
+        envFrom:
+        - configMapRef:
+            name: spring-profile-configmap
+        - secretRef:
+            name: spring-profile-secret     

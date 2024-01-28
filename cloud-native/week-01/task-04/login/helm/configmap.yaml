@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-login-configmap
+data:
+  MYSQL_DB_HOST: "login-mysql-fs-jzpjtvpu.mysql.database.azure.com"
+  CHAT_ENDPOINT: "4.236.250.252"
