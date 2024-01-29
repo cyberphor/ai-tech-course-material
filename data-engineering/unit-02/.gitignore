@@ -1,0 +1,3 @@
+setup/terraform/.terraform*
+setup/terraform/terraform.*
+setup/ansible/inventory.yaml

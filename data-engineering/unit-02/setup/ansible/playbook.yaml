@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+    - name: Add BASH Aliases
+      ansible.builtin.script: scripts/Add-BashAliases.sh
+    - name: Download the Handout
+      ansible.builtin.script: scripts/Get-Handout.sh
