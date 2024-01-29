@@ -58,6 +58,10 @@ def dirname2etf(dirname):
     # TODO 4: Implement the function that extracts the right most subdirectory
     #         of the provided `dirname` path. If the name of the subdirectory
     #         is "ETFs" then the function returns "Y" else it returns "N".
+    if dirname.split("/")[-1] == "ETFs":
+        return "Y"
+    else:
+        return "N"
     # Do not change the code below.
     # === YOUR SOLUTION ENDS HERE ===
 
@@ -116,12 +120,24 @@ def build_security_dfs():
     return (frame_time_series, frame_tickers)
 
 if __name__ == "__main__":
+    # TODO 1:
     assert normalize_filename("abcd-ws")  == "ABCD+"
-    assert normalize_filename('ab-ws-z')  == "AB+Z"
-    assert normalize_filename('abd-ws-u') == "ABD+U"
-    assert normalize_filename('cd-cl')    == "CD*"
-    assert normalize_filename('cd_a-cl')  == "CD-A*"
-    assert normalize_filename('def-u')    == "DEF="
-    assert normalize_filename('def-a')    == "DEF.A"
-    assert normalize_filename('def_a')    == "DEF-A"
+    assert normalize_filename("ab-ws-z")  == "AB+Z"
+    assert normalize_filename("abd-ws-u") == "ABD+U"
+    assert normalize_filename("cd-cl")    == "CD*"
+    assert normalize_filename("cd_a-cl")  == "CD-A*"
+    assert normalize_filename("def-u")    == "DEF="
+    assert normalize_filename("def-a")    == "DEF.A"
+    assert normalize_filename("def_a")    == "DEF-A"
+
+    # TODO 2 and TODO 3:
     file2df("./Data/ETFs", "schz.us.txt", 1)
+    
+    # TODO 4:
+    assert dirname2etf("./Data/ETFs")   == "Y"
+    assert dirname2etf("./Data/Stocks") == "N"
+
+    # TODO 4:
+    assert filename2ticker("inda.us.txt")   == "INDA"
+    assert filename2ticker("c-ws-a.us.txt") == "C+A"
+    assert filename2ticker("cof_c.us.txt")  == "COF-C"
