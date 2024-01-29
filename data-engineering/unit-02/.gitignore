@@ -1,4 +1,11 @@
 setup/terraform/.terraform*
 setup/terraform/terraform.*
 setup/ansible/inventory.yaml
-task-01/relational-databases-1/
+task-01/relational-databases-1/Data/
+task-01/relational-databases-1/venv/
+task-01/relational-databases-1/*.deb
+task-01/relational-databases-1/*.sh
+task-01/relational-databases-1/*.sql
+task-01/relational-databases-1/*.txt
+task-01/relational-databases-1/runner
+task-01/relational-databases-1/submitter
