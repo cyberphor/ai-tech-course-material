@@ -1,6 +1,8 @@
 ---
 - hosts: all
   tasks:
+    - name: Update Python
+      ansible.builtin.script: scripts/Update-Python.sh
     - name: Add BASH Aliases
       ansible.builtin.script: scripts/Add-BashAliases.sh
     - name: Download the Handout
