@@ -114,12 +114,11 @@ def build_security_dfs():
     return (frame_time_series, frame_tickers)
 
 if __name__ == "__main__":
-    print(normalize_filename("abcd-ws"))
-    print(normalize_filename('abcd-ws'))
-    print(normalize_filename('ab-ws-z'))
-    print(normalize_filename('abd-ws-u'))
-    print(normalize_filename('cd-cl'))
-    print(normalize_filename('cd_a-cl'))
-    print(normalize_filename('def-u'))
-    print(normalize_filename('def-a'))
-    print(normalize_filename('def_a'))
+    assert normalize_filename("abcd-ws")  == "ABCD+"
+    assert normalize_filename('ab-ws-z')  == "AB+Z"
+    assert normalize_filename('abd-ws-u') == "ABD+U"
+    assert normalize_filename('cd-cl')    == "CD*"
+    assert normalize_filename('cd_a-cl')  == "CD-A*"
+    assert normalize_filename('def-u')    == "DEF="
+    assert normalize_filename('def-a')    == "DEF.A"
+    assert normalize_filename('def_a')    == "DEF-A"
