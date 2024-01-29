@@ -14,9 +14,11 @@ git clone https://github.com/AFC-AI2C-Cohort-04/vic-code
 cd vic-code/data-engineering/unit-02/
 ```
 
-**Step 2.** Run the provided [`Get-Handouts.sh`](setup/ansible/scripts/Get-Handouts.sh) script. 
+**Step 2.** Run the [provided scripts](setup/ansible/scripts/). 
 ```bash
+bash setup/ansible/scripts/Install-Unzip.sh
 bash setup/ansible/scripts/Get-Handouts.sh
+bash setup/ansible/scripts/Update-Python.sh
 ```
 
 **Step 3.** Move the handout into the `task-01` folder. 
