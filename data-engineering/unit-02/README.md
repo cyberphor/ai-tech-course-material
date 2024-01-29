@@ -4,7 +4,7 @@
 * [Task 02](#task-02)
 
 ## Setup
-**Step 1.** Download this the `vic-code` GitHub repository and change directories to this week's task. 
+**Step 1.** Download the `vic-code` GitHub repository and change directories to this week's task. 
 ```bash
 # this command is meant to be ran on your personal computer (or GitHub Codespace)
 git clone https://github.com/AFC-AI2C-Cohort-04/vic-code
