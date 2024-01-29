@@ -40,8 +40,10 @@ def file2df(dirname, filename, security_id):
     #
     # TODO 2: Add a column named ID that will have a constant
     #         value equal to the `securityID` argument.
+    df["ID"] = security_id
     # TODO 3: Use pandas `to_datetime` function to parse the
     #         `Date` column to datetimes.
+    df["Date"] = pd.to_datetime(df["Date"])
     # Do not change the code below.
     # === YOUR SOLUTION ENDS HERE ===
     return df
@@ -122,3 +124,4 @@ if __name__ == "__main__":
     assert normalize_filename('def-u')    == "DEF="
     assert normalize_filename('def-a')    == "DEF.A"
     assert normalize_filename('def_a')    == "DEF-A"
+    file2df("./Data/ETFs", "schz.us.txt", 1)
