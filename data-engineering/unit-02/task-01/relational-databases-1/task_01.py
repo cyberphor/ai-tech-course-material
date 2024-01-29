@@ -115,5 +115,11 @@ def build_security_dfs():
 
 if __name__ == "__main__":
     print(normalize_filename("abcd-ws"))
-    print(normalize_filename("abcd-cl"))
-    print(normalize_filename("abcd-u"))
+    print(normalize_filename('abcd-ws'))
+    print(normalize_filename('ab-ws-z'))
+    print(normalize_filename('abd-ws-u'))
+    print(normalize_filename('cd-cl'))
+    print(normalize_filename('cd_a-cl'))
+    print(normalize_filename('def-u'))
+    print(normalize_filename('def-a'))
+    print(normalize_filename('def_a'))
