@@ -71,12 +71,14 @@ cd relational-databases-1/
 
 **Step 5.** Create and invoke a Python virtual environment.
 ```bash
+# these commands are meant to be ran on the virtual machine created above
 python3 -m venv venv
 source venv/bin/activate
 ```
 
 **Step 6.** Install the Python requirements listed and upgrade Jupyter.
 ```bash
+# these commands are meant to be ran on the virtual machine created above
 python3 -m pip install -r requirements.txt
 python3 -m pip install Jupyter --upgrade
 python3 -m pip install Jupyter-core --upgrade
