@@ -1,3 +1,37 @@
+## Content
+| Course       | Topic | Training Objectives |
+| ------------ | ----- | ------------------- |
+| Cloud-Native | [Monolith to Microservices](/cloud-native/unit-01/README.md) | Deploy a virtual machine and monolithic application using Packer <br> Deploy a Java application using Docker <br> Create a container registry and push images to it <br> Deploy containers using the Azure Kubernetes Service <br> Deploy Helm charts to manage a Kubernetes cluster |
+| Data Engineering | [Introduction to Data Engineering](/data-engineering/unit-01/README.md) | Use `grep`, `sed`, and `awk` to clean data <br> Use `pandas` to extract data <br> Use `pandas` to analyze data <br> Use `pandas` to transform data |
+| Cloud Administrator | [Getting Started with Azure](/cloud-admin/unit-01/README.md)
+| Cloud Administrator | [Azure Resource Groups](/cloud-admin/unit-02/README.md)
+| Cloud Administrator | [Azure Active Directory](/cloud-admin/unit-03/README.md)
+| Cloud Administrator | [Azure Virtual Networks](/cloud-admin/unit-04/README.md)
+| Cloud Administrator | [Azure Virtual Machine Scale Sets](/cloud-admin/unit-05/README.md)
+| Cloud Administrator | [Terraform](/cloud-admin/unit-06/README.md)
+| Cloud Administrator | [Azure Availability Tests](/cloud-admin/unit-07/README.md)
+| Cloud Administrator | [Azure SQL Server Auditing](/cloud-admin/unit-08/README.md)
+| Cloud Administrator | [Azure Backup](/cloud-admin/unit-09/README.md)
+| Cloud Administrator | [Docker and Kubernetes](/cloud-admin/unit-10/README.md)
+| Python | [Types, Variables, and Functions](/python/unit-01/README.md)
+| Python | [Strings](/python/unit-02/README.md)
+| Python | [Data Structures](/python/unit-04/README.md)
+| Python | [Files](/python/unit-06/README.md)
+| Python | [Object-Oriented Programming](/python/unit-08/README.md)
+| Python | [Debugging, Refactoring, Testing, and Packaging](/python/unit-10/)
+| Python | [Data Stores](/python/unit-12/README.md)
+| Python | [Web Scraping](/python/unit-13/README.md)
+| Python | [Data Analysis](/python/unit-14/README.md)
+| DevOps | [Getting Started with DevOps](/devops/unit-03/README.md)
+| DevOps | [Continuous Integration (CI)](/devops/unit-05/README.md)
+| DevOps | [Continuous Deployment (CD)](/devops/unit-07/README.md)
+| DevOps | [Azure DevOps Pipelines](/devops/unit-09/README.md)
+| DevOps | [GitHub Actions](/devops/unit-11/README.md)
+| DevOps | [Containers](/devops/unit-12/README.md)
+| DevOps | [Serverless Functions](/devops/unit-13/README.md)
+| DevOps | [Infrastructure as Code](/devops/unit-14/README.md)
+| DevOps | [Incident Response](/devops//unit-15/README.md)
+
 ## Setup Guides
 * [Create SSH Keys](/SETUP.md#how-to-create-ssh-keys)
 * [Setup Single Sign-On (SSO) Using SSH](/SETUP.md#how-to-setup-single-sign-on-using-ssh)
@@ -8,37 +42,3 @@
 * [Install Terraform](/SETUP.md#how-to-install-terraform)
 * [Install Ansible](/SETUP.md#how-to-install-ansible)
 * [Install sqlcmd](/SETUP.md#how-to-install-sqlcmd)
-
-## Content
-| Course       | Topic | Training Objectives |
-| ------------ | ----- | ------------------- |
-| Cloud-Native | [Monolith to Microservices](/cloud-native/week-01/README.md) | Deploy a virtual machine and monolithic application using Packer <br> Deploy a Java application using Docker <br> Create a container registry and push images to it <br> Deploy containers using the Azure Kubernetes Service <br> Deploy Helm charts to manage a Kubernetes cluster |
-| Data Engineering | [Introduction to Data Engineering](/data-engineering/week-01/README.md) | Use `grep`, `sed`, and `awk` to clean data <br> Use `pandas` to extract data <br> Use `pandas` to analyze data <br> Use `pandas` to transform data |
-| Azure | [Getting Started with Azure](/azure/week-01/README.md)
-| Azure | [Azure Resource Groups](/azure/week-02/README.md)
-| Azure | [Azure Active Directory](/azure/week-03/README.md)
-| Azure | [Azure Virtual Networks](/azure/week-04/README.md)
-| Azure | [Azure Virtual Machine Scale Sets](/azure/week-05/README.md)
-| Azure | [Terraform](/azure/week-06/README.md)
-| Azure | [Azure Availability Tests](/azure/week-07/README.md)
-| Azure | [Azure SQL Server Auditing](/azure/week-08/README.md)
-| Azure | [Azure Backup](/azure/week-09/README.md)
-| Azure | [Docker and Kubernetes](/azure/week-10/README.md)
-| Python | [Types, Variables, and Functions](/python/week-01/README.md)
-| Python | [Strings](/python/week-02/README.md)
-| Python | [Data Structures](/python/week-04/README.md)
-| Python | [Files](/python/week-06/README.md)
-| Python | [Object-Oriented Programming](/python/week-08/README.md)
-| Python | [Debugging, Refactoring, Testing, and Packaging](/python/week-10/)
-| Python | [Data Stores](/python/week-12/README.md)
-| Python | [Web Scraping](/python/week-13/README.md)
-| Python | [Data Analysis](/python/week-14/README.md)
-| DevOps | [Getting Started with DevOps](/devops/week-03/README.md)
-| DevOps | [Continuous Integration (CI)](/devops/week-05/README.md)
-| DevOps | [Continuous Deployment (CD)](/devops/week-07/README.md)
-| DevOps | [Azure DevOps Pipelines](/devops/week-09/README.md)
-| DevOps | [GitHub Actions](/devops/week-11/README.md)
-| DevOps | [Containers](/devops/week-12/README.md)
-| DevOps | [Serverless Functions](/devops/week-13/README.md)
-| DevOps | [Infrastructure as Code](/devops/week-14/README.md)
-| DevOps | [Incident Response](/devops//week-15/README.md)
