@@ -76,6 +76,7 @@ def filename2ticker(filename):
     #         provided filename (i.e., up till the first dot). The earlier
     #         implemented `normalize_filename` function is then used on the
     #         extracted part to create the desired result.
+    return normalize_filename(filename.split(".")[0])
     # Do not change the code below.
     # === YOUR SOLUTION ENDS HERE ===
 
@@ -104,6 +105,7 @@ def build_security_dfs():
                 #         earlier to generate a dataframe object. Append
                 #         the generated dataframe to the end of
                 #         `data_time_series` list.
+                data_time_series.append(file2df(dirname, filename, id_cntr))
                 # TODO 7: Use `filename` as the argument in the
                 #         `filename2ticker` that you implemented earlier
                 #         to generate a normalized ticker. Append the
@@ -113,8 +115,11 @@ def build_security_dfs():
                 #         `ticker_inf` dictionary. Append the `type_ind`
                 #         to the list under the `ETF` key of the
                 #         `ticker_inf` dictionary.
+                ticker_inf["id"].append(id_cntr)
+                ticker_inf["ticker"].append(filename2ticker(filename))
+                ticker_inf["ETF"].append(type_ind)
                 # TODO 8: Increment the value of `id_ctr` variable by 1.
-                pass
+                id_cntr +=1 
     frame_time_series = pd.concat(data_time_series)
     frame_tickers = pd.DataFrame(data=ticker_inf)
     return (frame_time_series, frame_tickers)
@@ -137,7 +142,11 @@ if __name__ == "__main__":
     assert dirname2etf("./Data/ETFs")   == "Y"
     assert dirname2etf("./Data/Stocks") == "N"
 
-    # TODO 4:
+    # TODO 5:
     assert filename2ticker("inda.us.txt")   == "INDA"
     assert filename2ticker("c-ws-a.us.txt") == "C+A"
     assert filename2ticker("cof_c.us.txt")  == "COF-C"
+
+    # TODO 6: 
+    data_timeSeries, data_tickers = build_security_dfs()
+    print(data_timeSeries.head())
