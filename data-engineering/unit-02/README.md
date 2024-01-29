@@ -63,5 +63,13 @@ ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --
 ssh $USERNAME@$IP_ADDRESS
 ```
 
+**Step 4.** Change directories to this week's handout, install the Python requirements listed, and create a Python virtual environment. 
+```bash
+# these command are meant to be ran on the virtual machine created above
+cd relational-databases-1/
+sudo apt install python3-venv -y
+python3 -m venv venv
+```
+
 ## Task 02
 Text goes here.
