@@ -116,5 +116,10 @@ python3 -m pip install Jupyter --upgrade
 python3 -m pip install Jupyter-core --upgrade
 ```
 
+**Step 4.** Run Jupyter Notebook in the background (use the URL and token printed to the console to access your Jupyter Notebook).
+```bash
+jupyter notebook &
+```
+
 ## Task 02
 Text goes here.
