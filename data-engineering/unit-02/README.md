@@ -25,7 +25,7 @@ bash setup/ansible/scripts/Update-Python.sh
 ### Not Using GitHub Codespaces
 Complete the steps below if you are NOT using GitHub Codespaces. 
 
-**Step 1.** Download the `vic-code` GitHub repository and change directories to this week's project. This command is meant to be ran on your personal computer.
+**Step 1.** Download the `vic-code` GitHub repository and change directories to this week's project. These commands are meant to be ran on your personal computer.
 ```bash
 git clone https://github.com/AFC-AI2C-Cohort-04/vic-code
 cd vic-code/data-engineering/unit-02/setup/
