@@ -63,12 +63,23 @@ ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --
 ssh $USERNAME@$IP_ADDRESS
 ```
 
-**Step 4.** Change directories to this week's handout, install the Python requirements listed, and create a Python virtual environment. 
+**Step 4.** Change directories to this week's handout. 
 ```bash
-# these command are meant to be ran on the virtual machine created above
+# these commands are meant to be ran on the virtual machine created above
 cd relational-databases-1/
-sudo apt install python3-venv -y
+```
+
+**Step 5.** Create and invoke a Python virtual environment.
+```bash
 python3 -m venv venv
+source venv/bin/activate
+```
+
+**Step 6.** Install the Python requirements listed and upgrade Jupyter.
+```bash
+python3 -m pip install -r requirements.txt
+python3 -m pip install Jupyter --upgrade
+python3 -m pip install Jupyter-core --upgrade
 ```
 
 ## Task 02
