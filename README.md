@@ -31,16 +31,6 @@
 | [Azure Backup](/cloud-admin/unit-09/README.md)                     |
 | [Docker and Kubernetes](/cloud-admin/unit-10/README.md)            |
 
-## Cloud-Native
-| Topic                                                        | Training Objectives |
-| ------------------------------------------------------------ | ------------------- |
-| [Monolith to Microservices](/cloud-native/unit-01/README.md) | Deploy a virtual machine and monolithic application using Packer <br> Deploy a Java application using Docker <br> Create a container registry and push images to it <br> Deploy containers using the Azure Kubernetes Service <br> Deploy Helm charts to manage a Kubernetes cluster 
-
-## Data Engineering
-| Topic                                                                   | Training Objectives |
-| ----------------------------------------------------------------------- | ------------------- |
-| [Introduction to Data Engineering](/data-engineering/unit-01/README.md) | Use `grep`, `sed`, and `awk` to clean data <br> Use `pandas` to extract data <br> Use `pandas` to analyze data <br> Use `pandas` to transform data |
-
 ## Python
 | Topic                                                              | Training Objectives |
 | ------------------------------------------------------------------ | ------------------- |
@@ -66,3 +56,14 @@
 | [Serverless Functions](/devops/unit-13/README.md)        |
 | [Infrastructure as Code](/devops/unit-14/README.md)      |
 | [Incident Response](/devops//unit-15/README.md)          |
+
+## Cloud-Native
+| Topic                                                        | Training Objectives |
+| ------------------------------------------------------------ | ------------------- |
+| [Monolith to Microservices](/cloud-native/unit-01/README.md) | <ul><li>Deploy a virtual machine and monolithic application using Packer</li><li>Deploy a Java application using Docker</li><li>Create a container registry and push images to it</li><li>Deploy containers using the Azure Kubernetes Service</li><li>Deploy Helm charts to manage a Kubernetes cluster</li></ul>
+
+## Data Engineering
+| Topic                                                                   | Training Objectives |
+| ----------------------------------------------------------------------- | ------------------- |
+| [Introduction to Data Engineering](/data-engineering/unit-01/README.md) | <ul><li>Use `grep`, `sed`, and `awk` to clean data</li><li>Use `pandas` to extract data</li><li>Use `pandas` to analyze data</li><li>Use `pandas` to transform data</li></ul>
+| [Relational Databases](/data-engineering/unit-02/README.md) | <ul> <li>Use `pandas` to clean, transform, and prepare data</li></li><li>Load data into a MySQL database</li><li>Perform SQL queries</li><li>Create and loads records into a SQL database table</li><li>Modify a SQL database tables (e.g., add and remove columns)</li><li>Query and filter records from SQL database tables</li><li>Merge multiple SQL database tables</li></ul>
