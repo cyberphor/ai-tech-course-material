@@ -22,16 +22,6 @@ bash setup/ansible/scripts/Get-Handouts.sh
 bash setup/ansible/scripts/Update-Python.sh
 ```
 
-**Step 3.** Move the handout into the `task-01` folder. 
-```bash
-mv relational-databases-1 task-01/
-```
-
-**Step 4.** Change directories to `task-01`.
-```bash
-cd task-01/
-```
-
 ### Not Using GitHub Codespaces
 Complete the steps below if you are NOT using GitHub Codespaces. 
 
@@ -105,6 +95,13 @@ python3 -m pip install Jupyter-core --upgrade
 **Step 4.** Run Jupyter Notebook in the background (use the URL and token printed to the console to access your Jupyter Notebook).
 ```bash
 jupyter notebook &
+```
+
+**Step 5.** Edit `data_cleaning.ipynb` using the [provided example](task-01/relational-databases-1/data_cleaning.ipynb).
+
+**Step 6.** Before submiting your work for Task 01, run the command below. 
+```bash
+jupyter nbconvert --to script data_cleaning.ipynb
 ```
 
 ## Task 02
