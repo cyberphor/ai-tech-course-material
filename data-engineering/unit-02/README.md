@@ -51,7 +51,7 @@ export USERNAME=$(terraform -chdir=terraform output -raw username)
 export IP_ADDRESS=$(terraform -chdir=terraform output -raw ip_address)
 ```
 
-**Step 2.** Configure the virtual machine using Ansible. The [Ansible playbook](ansible/playbook.yaml) provided references multiple scripts in the [`ansible/scripts`](ansible/scripts/) folder. They include installing software and downloading this week's handout.  
+**Step 2.** Configure the virtual machine using Ansible. The [Ansible playbook](ansible/playbook.yaml) provided references multiple scripts in the [`ansible/scripts`](ansible/scripts/) folder. The scripts install software and download this week's handout.  
 ```bash
 # this command is meant to be ran on your personal computer (or GitHub Codespace)
 ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --ssh-common-args='-o StrictHostKeyChecking=no'
