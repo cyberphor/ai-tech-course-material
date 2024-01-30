@@ -26,3 +26,11 @@ load data local infile 'nasdaqlistedMod.txt'
     set id=null;
 
 -- TODO: load data into the other_exchange_info table
+load data local infile 'otherlistedMod.txt'
+    into table other_exchange_info
+    fields terminated by '|'
+    enclosed by ''
+    lines terminated by '\n'
+    ignore 1 rows
+    (symbol, security_name, market_category, test_issue, financial_status, round_lot_size, etf, next_shares)
+    set id=null;

@@ -162,7 +162,7 @@ source create_security_database.sql;
 source load_tickerInfo_time_series.sql;
 ```
 
-If you get the error `ERROR 2 (HY000) at line 7: File 'tickerInfo.csv' not found (OS errno 2 - No such file or directory)`, copy your `data_cleaning.ipynb` to your your virtual machine. Then, run the commands below. 
+If you get the error `ERROR 2 (HY000) at line 7: File 'tickerInfo.csv' not found (OS errno 2 - No such file or directory)`, copy your `data_cleaning.ipynb` to your your virtual machine. Then, run the commands below one at a time. 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
@@ -173,10 +173,12 @@ jupyter nbconvert --to script data_cleaning.ipynb
 python3 data_cleaning.py
 ```
 
-**Step 9.** Run the commands below one at a time to verify the previous step worked.
+**Step 9.** Select the `security_db` SQL database.
 ```sql
 USE security_db;
 ```
+
+**Step 10.** Run the commands below one at a time to verify Step 8 worked.
 ```sql
 SELECT * FROM ticker_info ORDER BY ticker LIMIT 10;
 ```
