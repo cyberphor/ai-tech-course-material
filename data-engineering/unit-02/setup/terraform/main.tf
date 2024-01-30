@@ -4,22 +4,22 @@ resource "random_pet" "main" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = var.resource_group_name
+  name     = random_pet.main.id
   location = var.location
 }
 
 resource "azurerm_virtual_network" "main" {
   depends_on          = [ azurerm_resource_group.main ]
   name                = random_pet.main.id
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
   address_space       = ["10.0.0.0/16"]
 }
 
 resource "azurerm_subnet" "main" {
   depends_on          = [ azurerm_resource_group.main ]
   name                 = random_pet.main.id
-  resource_group_name  = var.resource_group_name
+  resource_group_name  = azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = ["10.0.0.0/24"]
 }
@@ -27,16 +27,16 @@ resource "azurerm_subnet" "main" {
 resource "azurerm_public_ip" "main" {
   depends_on          = [ azurerm_resource_group.main ]
   name                = random_pet.main.id
-  resource_group_name = var.resource_group_name
-  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
   allocation_method   = "Static"
   sku                 = "Standard"
 }
 
 resource "azurerm_network_interface" "main" {
   name                            = random_pet.main.id
-  location                        = var.location
-  resource_group_name             = var.resource_group_name
+  location                        = azurerm_resource_group.main.location
+  resource_group_name             = azurerm_resource_group.main.name
   ip_configuration {
     name                          = random_pet.main.id
     subnet_id                     = azurerm_subnet.main.id
@@ -80,9 +80,9 @@ resource "azurerm_network_interface_security_group_association" "main" {
 }
 
 resource "azurerm_linux_virtual_machine" "main" {
-  name                            = var.vm_name
-  resource_group_name             = var.resource_group_name
-  location                        = var.location
+  name                            = random_pet.main.id
+  resource_group_name             = azurerm_resource_group.main.name
+  location                        = azurerm_resource_group.main.location
   size                            = var.vm_size
   network_interface_ids           = [
     azurerm_network_interface.main.id

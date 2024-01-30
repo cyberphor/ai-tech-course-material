@@ -5,17 +5,17 @@ variable "location" {
 
 variable "resource_group_name" {
   type    = string
-  default = "relational-databases"
+  default = null
 }
 
 variable "vm_name" {
   type    = string
-  default = "dataengg2"
+  default = null
 }
 
 variable "vm_size" {
   type    = string
-  default = "Standard_B2ms"
+  default = "Standard_B4ms"
 }
 
 variable "vm_image_publisher" {
