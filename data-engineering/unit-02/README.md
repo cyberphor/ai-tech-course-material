@@ -18,6 +18,8 @@ cd vic-code/data-engineering/unit-02/
 **Step 2.** Run the [provided scripts](setup/ansible/scripts/). 
 ```bash
 bash setup/ansible/scripts/Install-Unzip.sh
+bash setup/ansible/scripts/Install-MySQL.sh
+bash setup/ansible/scripts/Install-sqlcmd.sh 
 bash setup/ansible/scripts/Get-Handouts.sh
 bash setup/ansible/scripts/Update-Python.sh
 ```
@@ -105,4 +107,55 @@ jupyter nbconvert --to script data_cleaning.ipynb
 ```
 
 ## Task 02
-Text goes here.
+**Step 1.** Login to your MySQL server using super-user privileges (it was installed earlier by script).
+```bash
+sudo mysql
+```
+
+**Step 2.** Create a new privileged MySQL user. 
+```sql
+use mysql;
+CREATE USER 'clouduser'@'localhost' IDENTIFIED BY 'dbroot';                                   
+GRANT ALL PRIVILEGES ON *.* TO 'clouduser'@'localhost' WITH GRANT OPTION;
+CREATE USER 'clouduser'@'%' IDENTIFIED BY 'dbroot';                                   
+GRANT ALL PRIVILEGES ON *.* TO 'clouduser'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+exit;
+```
+
+**Step 3.** Edit your MySQL server's configuration using the commands below. These commands are only meant to be ran once.
+```bash
+sudo cp /etc/mysql/mysql.conf.d/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf.backup
+sudo sed -i 's/^[^#]*bind-address/#&/' /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo sed -i '/^\[mysqld\]/alocal_infile = 1' /etc/mysql/mysql.conf.d/mysqld.cnf
+echo "[client]" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
+echo "local_infile = 1" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
+set global local-infile=1
+```
+
+**Step 4.** Restart your MySQL server.
+```bash
+sudo service mysql restart
+```
+
+**Step 5.** Define the environment variables below.
+```bash
+export DB_VM_IP="127.0.0.1"
+export DB_PASSWORD="dbroot"
+```
+
+**Step 6.** Make sure you're still in the `relational-databases-1/` directory. Then, login to your MySQL server using the MySQL privileged user you created above (the password is `dbroot`).
+```bash
+cd relational-databases-1/
+mysql -h "${DB_VM_IP}" -u clouduser -p
+```
+
+**Step 7.** Load the `create_security_database.sql` file.
+```sql
+source create_security_database.sql;
+```
+
+**Step 8.** Load the `load_tickerInfo_time_series.sql` file (this will take about 20 minutes).
+```sql
+source load_tickerInfo_time_series.sql;
+```
