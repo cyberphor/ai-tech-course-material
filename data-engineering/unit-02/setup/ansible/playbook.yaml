@@ -1,15 +1,13 @@
 ---
 - hosts: all
   tasks:
-    - name: Install Unzip
-      ansible.builtin.script: scripts/Install-Unzip.sh
-    - name: Install MySQL
-      ansible.builtin.script: scripts/Install-MySQL.sh
-    - name: Install sqlcmd
-      ansible.builtin.script: scripts/Install-sqlcmd.sh
     - name: Update Python
       ansible.builtin.script: scripts/Update-Python.sh
-    - name: Add BASH Aliases
-      ansible.builtin.script: scripts/Add-BashAliases.sh
+    - name: Install Unzip
+      ansible.builtin.script: scripts/Install-Unzip.sh
     - name: Download Handouts
       ansible.builtin.script: scripts/Get-Handouts.sh
+    - name: Install MySQL
+      ansible.builtin.script: scripts/Install-MySQL.sh
+    - name: Add BASH Aliases
+      ansible.builtin.script: scripts/Add-BashAliases.sh
