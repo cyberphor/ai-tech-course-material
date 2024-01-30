@@ -157,7 +157,7 @@ mysql -h "${DB_VM_IP}" -u clouduser -p
 source create_security_database.sql;
 ```
 
-**Step 8.** Load the `load_tickerInfo_time_series.sql` file (this will take about 20 minutes). 
+**Step 8.** Load the `load_tickerInfo_time_series.sql` file (this will take about 25 minutes). 
 ```sql
 source load_tickerInfo_time_series.sql;
 ```
@@ -173,10 +173,29 @@ jupyter nbconvert --to script data_cleaning.ipynb
 python3 data_cleaning.py
 ```
 
-**Step 9.** Run the commands below to verify the previous step worked.
+**Step 9.** Run the commands below one at a time to verify the previous step worked.
+```sql
+USE security_db;
+```
 ```sql
 SELECT * FROM ticker_info ORDER BY ticker LIMIT 10;
+```
+```sql
 SELECT COUNT(*) FROM ticker_info;
+```
+```sql
 SELECT * FROM time_series ORDER BY id LIMIT 10;
+```
+```sql
 SELECT COUNT(*) FROM time_series;
 ```
+
+**Step 10.** Edit `q6.sql` using the [provided example](task-02/q6.sql).
+
+**Step 11.** Edit `q7.sql` using the [provided example](task-02/q7.sql).
+
+**Step 12.** Edit `q8.sql` using the [provided example](task-02/q8.sql).
+
+**Step 13.** Edit `q9.sql` using the [provided example](task-02/q9.sql).
+
+**Step 14.** Edit `q10.sql` using the [provided example](task-02/q10.sql).
