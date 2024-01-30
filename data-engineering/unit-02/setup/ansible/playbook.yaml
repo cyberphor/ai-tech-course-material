@@ -3,6 +3,10 @@
   tasks:
     - name: Install Unzip
       ansible.builtin.script: scripts/Install-Unzip.sh
+    - name: Install MySQL
+      ansible.builtin.script: scripts/Install-MySQL.sh
+    - name: Install sqlcmd
+      ansible.builtin.script: scripts/Install-sqlcmd.sh
     - name: Update Python
       ansible.builtin.script: scripts/Update-Python.sh
     - name: Add BASH Aliases
