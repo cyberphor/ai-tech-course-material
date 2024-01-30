@@ -107,6 +107,8 @@ jupyter nbconvert --to script data_cleaning.ipynb
 ```
 
 ## Task 02
+Use an Azure virtual machine instead of GitHub Codespaces for this task. Execute the setup steps 1 through 8 in the [Not Using GitHub Codespaces](#not-using-github-codespaces) instructions above. Then, login to the virtual machine using SSH (`ssh $USERNAME@$IP_ADDRESS`).
+
 **Step 1.** Login to your MySQL server using super-user privileges (it was installed earlier by script).
 ```bash
 sudo mysql
@@ -155,7 +157,26 @@ mysql -h "${DB_VM_IP}" -u clouduser -p
 source create_security_database.sql;
 ```
 
-**Step 8.** Load the `load_tickerInfo_time_series.sql` file (this will take about 20 minutes).
+**Step 8.** Load the `load_tickerInfo_time_series.sql` file (this will take about 20 minutes). 
 ```sql
 source load_tickerInfo_time_series.sql;
+```
+
+If you get the error `ERROR 2 (HY000) at line 7: File 'tickerInfo.csv' not found (OS errno 2 - No such file or directory)`, copy your `data_cleaning.ipynb` to your your virtual machine. Then, run the commands below. 
+```bash
+python3 -m venv venv
+source venv/bin/activate
+python3 -m pip install -r requirements.txt
+python3 -m pip install Jupyter --upgrade
+python3 -m pip install Jupyter-core --upgrade
+jupyter nbconvert --to script data_cleaning.ipynb
+python3 data_cleaning.py
+```
+
+**Step 9.** Run the commands below to verify the previous step worked.
+```sql
+SELECT * FROM ticker_info ORDER BY ticker LIMIT 10;
+SELECT COUNT(*) FROM ticker_info;
+SELECT * FROM time_series ORDER BY id LIMIT 10;
+SELECT COUNT(*) FROM time_series;
 ```
