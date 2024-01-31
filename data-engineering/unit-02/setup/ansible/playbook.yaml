@@ -11,3 +11,5 @@
       ansible.builtin.script: scripts/Set-BashAliases.sh
     - name: Get Handouts
       ansible.builtin.script: scripts/Get-Handouts.sh
+    - name: Set MySQL Server Configuration
+      ansible.builtin.script: scripts/Set-MySqlServerConfig.sh

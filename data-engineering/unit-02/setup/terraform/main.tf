@@ -61,17 +61,6 @@ resource "azurerm_network_security_group" "main" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-  security_rule {
-    name                       = "AllowMySQL"
-    priority                   = 1002
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "3306"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
 }
 
 resource "azurerm_network_interface_security_group_association" "main" {
@@ -94,7 +83,7 @@ resource "azurerm_linux_virtual_machine" "main" {
   }
   os_disk {
     caching                       = "ReadWrite"
-    storage_account_type          = "Standard_LRS"
+    storage_account_type          = var.vm_os_disk_storage_type
     name                          = random_pet.main.id
   }
   source_image_reference {
