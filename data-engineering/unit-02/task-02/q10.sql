@@ -22,15 +22,21 @@ use security_db;
  * prior to this question.
  */
 
- -- filter out test issue securities from both tables (nasdaq_info and
- -- other_exchange_info)
- delete from nasdaq_info where test_issue='Y';
+-- filter out test issue securities from both tables (nasdaq_info and
+-- other_exchange_info)
+DELETE FROM nasdaq_info WHERE test_issue='Y';
+DELETE FROM other_exchange_info WHERE test_issue='Y';
+ 
+-- drop test issue column from nasdaq_info
+ALTER TABLE nasdaq_info DROP COLUMN test_issue;
+ALTER TABLE other_exchange_info DROP COLUMN test_issue;
 
- -- drop test issue column from nasdaq_info
-
- -- insert records from other_exchange_info into nasdaq_info
- -- EXAMPLE:
- -- #################################################
- -- # insert into users (user_id, date_joined)
- -- # select id,date_joined
- -- # from dashboard.auth_user;
+-- insert records from other_exchange_info into nasdaq_info
+-- EXAMPLE:
+-- #################################################
+-- # insert into users (user_id, date_joined)
+-- # select id,date_joined
+-- # from dashboard.auth_user;
+INSERT INTO nasdaq_info (symbol, security_name, market_category, financial_status, round_lot_size, etf, next_shares, exchange) 
+SELECT nasdaq_symbol, security_name, null, null, round_lot_size, etf, null, exchange
+FROM other_exchange_info;
