@@ -122,27 +122,77 @@ Use an Azure virtual machine instead of GitHub Codespaces for this task. Execute
 cd relational-databases-1/
 ```
 
-**Step 3.** Load the `load_tickerInfo_time_series.sql` file. 
+**Step 2.** Using the command below, load the `load_tickerInfo_time_series.sql` file. This could take up to an hour to finish. I included the `date` command to help track how much time has passed. 
 ```bash
 date && mysql -u clouduser -pdbroot < load_tickerInfo_time_series.sql && date
 ```
 
-**Step 4.** Run the command below verify the `tickerInfo.csv` was loaded into the local SQL database.
+**Step 3.** Run the command below to verify the `tickerInfo.csv` was loaded into the local SQL database.
 ```bash
 mysql -u clouduser -pdbroot -e "SELECT COUNT(*) FROM security_db.ticker_info;"
 ```
 
-**Step 5.** Run the command below verify the `outputTimeSeries.csv` was loaded into the local SQL database.
+**Step 4.** Run the command below to verify the `outputTimeSeries.csv` was loaded into the local SQL database.
 ```bash
 mysql -u clouduser -pdbroot -e "SELECT COUNT(*) FROM security_db.time_series;"
 ```
 
-**Step 6.** Edit `q6.sql` using the [provided example](task-02/q6.sql).
+**Step 5.** Edit `q6.sql` using the [provided example](task-02/q6.sql).
 
-**Step 7.** Edit `q7.sql` using the [provided example](task-02/q7.sql).
+**Step 6.** Using the command below, load the `nasdaqlistedMod.txt` and `otherlistedMod.txt` files. 
+```bash
+mysql -u clouduser -pdbroot < q6.sql
+```
 
-**Step 8.** Edit `q8.sql` using the [provided example](task-02/q8.sql).
+**Step 7.** Run the command below to verify the previous step worked. 
+```bash
+mysql -u clouduser -pdbroot -e "SELECT * FROM security_db.nasdaq_info ORDER BY id LIMIT 10;"
+```
 
-**Step 9.** Edit `q9.sql` using the [provided example](task-02/q9.sql).
+**Step 8.** Edit `q7.sql` using the [provided example](task-02/q7.sql).
 
-**Step 10.** Edit `q10.sql` using the [provided example](task-02/q10.sql).
+**Step 9.** Using the command below, drop the `open_int` column from the `time_series` table. 
+```bash
+mysql -u clouduser -pdbroot < q7.sql
+```
+
+**Step 10.** Run the command below to verify the previous step worked.
+```bash
+mysql -u clouduser -pdbroot -e "DESCRIBE security_db.time_series;"
+```
+
+**Step 11.** Edit `q8.sql` using the [provided example](task-02/q8.sql).
+
+**Step 12.** Using the command below, delete records in the `other_exchange_info` table where the `exchange` column has `Z` (BATS Global Markets) or `V` (Investors' Exchange, LLC) in it. This mapping is documented in the [Other Exchange-Listed Securities](http://www.nasdaqtrader.com/trader.aspx?id=symboldirdefs) section on "NASDAQ Trader's" website.
+```bash
+mysql -u clouduser -pdbroot < q8.sql
+```
+
+**Step 13.** Run the command below to verify the previous step worked.
+```bash
+mysql -u clouduser -pdbroot -e "SELECT COUNT(*) FROM security_db.other_exchange_info;"
+```
+
+**Step 14.** Edit `q9.sql` using the [provided example](task-02/q9.sql).
+
+**Step 15.** Using the command below, add a column called `exchange` to the `nasdaq_info` table. The data type for this column must be `enum`. Also the acceptable options for it `A, N, P, Q` (`Q` should be the default value).
+```bash
+mysql -u clouduser -pdbroot < q9.sql
+```
+
+**Step 16.** Run the command below to verify the previous step worked.
+```bash
+mysql -u clouduser -pdbroot -e "DESCRIBE security_db.nasdaq_info;"
+```
+
+**Step 17.** Edit `q10.sql` using the [provided example](task-02/q10.sql).
+
+**Step 18.** Using the command below, 
+```bash
+mysql -u clouduser -pdbroot < q10.sql
+```
+
+**Step 19.** Run the command below verify the previous step worked.
+```bash
+mysql -u clouduser -pdbroot -e "SELECT COUNT(*) FROM security_db.nasdaq_info;"
+```

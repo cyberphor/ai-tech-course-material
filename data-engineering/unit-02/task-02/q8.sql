@@ -14,3 +14,4 @@ use security_db;
  */
 
 -- TODO: Delete the records in other_exchange_info that correspond to securities listed on BATS and IEXG
+DELETE FROM other_exchange_info WHERE exchange IN ("Z", "V");

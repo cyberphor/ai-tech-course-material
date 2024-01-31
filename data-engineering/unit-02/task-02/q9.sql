@@ -15,3 +15,4 @@ use security_db;
 -- TODO: add a column called `exchange` to nasdaq_info with an enumerated type having options
 -- 'A', 'N', 'P', 'Q'. For each record in nasdaq_info_q9, its value for `exchange` should be Q.
 -- alter table nasdaq_info add column exchange enum(<FILL_IN>) default <FILL_IN>;
+ALTER TABLE nasdaq_info ADD COLUMN exchange enum("A", "N", "P", "Q") default "Q";
