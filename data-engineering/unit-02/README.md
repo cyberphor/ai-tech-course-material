@@ -17,11 +17,20 @@ cd vic-code/data-engineering/unit-02/
 
 **Step 2.** Run the [provided scripts](setup/ansible/scripts/). 
 ```bash
-bash setup/ansible/scripts/Install-Unzip.sh
-bash setup/ansible/scripts/Install-MySQL.sh
-bash setup/ansible/scripts/Install-sqlcmd.sh 
-bash setup/ansible/scripts/Get-Handouts.sh
 bash setup/ansible/scripts/Update-Python.sh
+bash setup/ansible/scripts/Install-Unzip.sh
+bash setup/ansible/scripts/Install-Mysql.sh
+bash setup/ansible/scripts/Get-Handouts.sh
+```
+
+**Step 3.** Create a Python virtual environment.
+```bash
+cd relational-databases-1/
+python3 -m venv venv
+source venv/bin/activate
+python3 -m pip install -r requirements.txt
+python3 -m pip install Jupyter --upgrade
+python3 -m pip install Jupyter-core --upgrade
 ```
 
 ### Not Using GitHub Codespaces
@@ -73,131 +82,84 @@ ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --
 
 **Step 9.** Using your personal computer and the `Remote Development Extension Pack` VS Code extension, login to the virtual machine created above.
 
-## Task 01
-The steps below assume you've already downloaded this week's handout manually or automatically while executing the steps outlined above. 
-
-**Step 1.** Change directories to this week's handout. This command is meant to be ran on the virtual machine created above or GitHub Codespaces.
+**Step 10.** Create a Python virtual environment.
 ```bash
 cd relational-databases-1/
-```
-
-**Step 2.** Create and invoke a Python virtual environment. These commands are meant to be ran on the virtual machine created above or GitHub Codespaces.
-```bash
 python3 -m venv venv
 source venv/bin/activate
-```
-
-**Step 3.** Install the Python requirements listed and upgrade Jupyter. This command is meant to be ran on the virtual machine created above or GitHub Codespaces.
-```bash
 python3 -m pip install -r requirements.txt
 python3 -m pip install Jupyter --upgrade
 python3 -m pip install Jupyter-core --upgrade
 ```
 
-**Step 4.** Run Jupyter Notebook in the background (use the URL and token printed to the console to access your Jupyter Notebook).
+## Task 01
+The steps below assume you've already downloaded this week's handout manually or automatically while executing the steps outlined above. 
+
+**Step 1.** Change directories to this week's handout and invoke your Python virtual environment if you haven't already. This command is meant to be ran on the virtual machine created above or GitHub Codespaces.
+```bash
+cd relational-databases-1/
+source venv/bin/activate
+```
+
+**Step 2.** Run Jupyter Notebook in the background (use the URL and token printed to the console to access your Jupyter Notebook).
 ```bash
 jupyter notebook &
 ```
 
-**Step 5.** Edit `data_cleaning.ipynb` using the [provided example](task-01/relational-databases-1/data_cleaning.ipynb).
+**Step 4.** Edit `data_cleaning.ipynb` using the [provided example](task-01/relational-databases-1/data_cleaning.ipynb).
 
-**Step 6.** Before submiting your work for Task 01, run the command below. 
+**Step 4.** Before submiting your work for Task 01, run the command below. 
 ```bash
 jupyter nbconvert --to script data_cleaning.ipynb
 ```
 
 ## Task 02
-Use an Azure virtual machine instead of GitHub Codespaces for this task. Execute the setup steps 1 through 8 in the [Not Using GitHub Codespaces](#not-using-github-codespaces) instructions above. Then, login to the virtual machine using SSH (`ssh $USERNAME@$IP_ADDRESS`).
+Use an Azure virtual machine instead of GitHub Codespaces for this task. Execute the setup steps in the [Not Using GitHub Codespaces](#not-using-github-codespaces) instructions above. Then, login to the virtual machine using SSH (`ssh $USERNAME@$IP_ADDRESS`).
 
-**Step 1.** Login to your MySQL server using super-user privileges (it was installed earlier by script).
+**Step 1.** Change directories to `relational-databases-1/`. 
 ```bash
-sudo mysql
+cd relational-databases-1/
 ```
 
-**Step 2.** Create a new privileged MySQL user. 
-```sql
-use mysql;
-CREATE USER 'clouduser'@'localhost' IDENTIFIED BY 'dbroot';                                   
-GRANT ALL PRIVILEGES ON *.* TO 'clouduser'@'localhost' WITH GRANT OPTION;
-CREATE USER 'clouduser'@'%' IDENTIFIED BY 'dbroot';                                   
-GRANT ALL PRIVILEGES ON *.* TO 'clouduser'@'%' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
-exit;
-```
-
-**Step 3.** Edit your MySQL server's configuration using the commands below. These commands are only meant to be ran once.
+**Step 2.** Run the commands below to configure the local MySQL server.
 ```bash
+sudo mysql -e "use mysql; CREATE USER 'clouduser'@'localhost' IDENTIFIED BY 'dbroot'; GRANT ALL PRIVILEGES ON *.* TO 'clouduser'@'localhost' WITH GRANT OPTION; CREATE USER 'clouduser'@'%' IDENTIFIED BY 'dbroot'; GRANT ALL PRIVILEGES ON *.* TO 'clouduser'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 sudo cp /etc/mysql/mysql.conf.d/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf.backup
 sudo sed -i 's/^[^#]*bind-address/#&/' /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo sed -i '/^\[mysqld\]/alocal_infile = 1' /etc/mysql/mysql.conf.d/mysqld.cnf
 echo "[client]" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
 echo "local_infile = 1" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
 set global local-infile=1
-```
-
-**Step 4.** Restart your MySQL server.
-```bash
 sudo service mysql restart
+sudo mysql -u clouduser -pdbroot < create_security_database.sql
 ```
 
-**Step 5.** Define the environment variables below.
+**Step 3.** Load the `load_tickerInfo_time_series.sql` file. 
 ```bash
-export DB_VM_IP="127.0.0.1"
-export DB_PASSWORD="dbroot"
-```
-
-**Step 6.** Make sure you're still in the `relational-databases-1/` directory. Then, login to your MySQL server using the MySQL privileged user you created above (the password is `dbroot`).
-```bash
-cd relational-databases-1/
-mysql -h "${DB_VM_IP}" -u clouduser -p
-```
-
-**Step 7.** Load the `create_security_database.sql` file.
-```sql
-source create_security_database.sql;
-```
-
-**Step 8.** Load the `load_tickerInfo_time_series.sql` file (this will take about 25 minutes). 
-```sql
-source load_tickerInfo_time_series.sql;
+mysql -u clouduser -pdbroot < load_tickerInfo_time_series.sql
 ```
 
 If you get the error `ERROR 2 (HY000) at line 7: File 'tickerInfo.csv' not found (OS errno 2 - No such file or directory)`, copy your `data_cleaning.ipynb` to your your virtual machine. Then, run the commands below one at a time. 
 ```bash
-python3 -m venv venv
 source venv/bin/activate
-python3 -m pip install -r requirements.txt
-python3 -m pip install Jupyter --upgrade
-python3 -m pip install Jupyter-core --upgrade
 jupyter nbconvert --to script data_cleaning.ipynb
 python3 data_cleaning.py
 ```
 
-**Step 9.** Select the `security_db` SQL database.
-```sql
-USE security_db;
+**Step 4.** Run the commands below one at a time to verify the previous step worked.
+```bash
+mysql -u clouduser -pdbroot -e "USE security_db; SELECT COUNT(*) FROM ticker_info;"
+```
+```bash
+mysql -u clouduser -pdbroot -e "USE security_db; SELECT COUNT(*) FROM time_series;"
 ```
 
-**Step 10.** Run the commands below one at a time to verify Step 8 worked.
-```sql
-SELECT * FROM ticker_info ORDER BY ticker LIMIT 10;
-```
-```sql
-SELECT COUNT(*) FROM ticker_info;
-```
-```sql
-SELECT * FROM time_series ORDER BY id LIMIT 10;
-```
-```sql
-SELECT COUNT(*) FROM time_series;
-```
+**Step 5.** Edit `q6.sql` using the [provided example](task-02/q6.sql).
 
-**Step 10.** Edit `q6.sql` using the [provided example](task-02/q6.sql).
+**Step 6.** Edit `q7.sql` using the [provided example](task-02/q7.sql).
 
-**Step 11.** Edit `q7.sql` using the [provided example](task-02/q7.sql).
+**Step 7.** Edit `q8.sql` using the [provided example](task-02/q8.sql).
 
-**Step 12.** Edit `q8.sql` using the [provided example](task-02/q8.sql).
+**Step 8.** Edit `q9.sql` using the [provided example](task-02/q9.sql).
 
-**Step 13.** Edit `q9.sql` using the [provided example](task-02/q9.sql).
-
-**Step 14.** Edit `q10.sql` using the [provided example](task-02/q10.sql).
+**Step 9.** Edit `q10.sql` using the [provided example](task-02/q10.sql).
