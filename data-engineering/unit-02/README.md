@@ -21,6 +21,7 @@ bash setup/ansible/scripts/Update-Python.sh
 bash setup/ansible/scripts/Install-Unzip.sh
 bash setup/ansible/scripts/Install-Mysql.sh
 bash setup/ansible/scripts/Get-Handouts.sh
+bash setup/ansible/scripts/Set-MySqlServerConfig.sh
 ```
 
 **Step 3.** Create a Python virtual environment.
@@ -114,52 +115,34 @@ jupyter nbconvert --to script data_cleaning.ipynb
 ```
 
 ## Task 02
-Use an Azure virtual machine instead of GitHub Codespaces for this task. Execute the setup steps in the [Not Using GitHub Codespaces](#not-using-github-codespaces) instructions above. Then, login to the virtual machine using SSH (`ssh $USERNAME@$IP_ADDRESS`).
+Use an Azure virtual machine instead of GitHub Codespaces for this task. Execute the setup steps in the [Not Using GitHub Codespaces](#not-using-github-codespaces) instructions above. Then, login to the virtual machine. 
 
-**Step 1.** Change directories to `relational-databases-1/`. 
+**Step 1.** Change directories to `relational-databases-1/` if you're not already there.
 ```bash
 cd relational-databases-1/
 ```
 
-**Step 2.** Run the commands below to configure the local MySQL server.
-```bash
-sudo mysql -e "use mysql; CREATE USER 'clouduser'@'localhost' IDENTIFIED BY 'dbroot'; GRANT ALL PRIVILEGES ON *.* TO 'clouduser'@'localhost' WITH GRANT OPTION; CREATE USER 'clouduser'@'%' IDENTIFIED BY 'dbroot'; GRANT ALL PRIVILEGES ON *.* TO 'clouduser'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
-sudo cp /etc/mysql/mysql.conf.d/mysqld.cnf /etc/mysql/mysql.conf.d/mysqld.cnf.backup
-sudo sed -i 's/^[^#]*bind-address/#&/' /etc/mysql/mysql.conf.d/mysqld.cnf
-sudo sed -i '/^\[mysqld\]/alocal_infile = 1' /etc/mysql/mysql.conf.d/mysqld.cnf
-echo "[client]" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
-echo "local_infile = 1" | sudo tee -a /etc/mysql/mysql.conf.d/mysqld.cnf
-set global local-infile=1
-sudo service mysql restart
-sudo mysql -u clouduser -pdbroot < create_security_database.sql
-```
-
 **Step 3.** Load the `load_tickerInfo_time_series.sql` file. 
 ```bash
-mysql -u clouduser -pdbroot < load_tickerInfo_time_series.sql
+date && mysql -u clouduser -pdbroot < load_tickerInfo_time_series.sql && date
 ```
 
-If you get the error `ERROR 2 (HY000) at line 7: File 'tickerInfo.csv' not found (OS errno 2 - No such file or directory)`, copy your `data_cleaning.ipynb` to your your virtual machine. Then, run the commands below one at a time. 
+**Step 4.** Run the command below verify the `tickerInfo.csv` was loaded into the local SQL database.
 ```bash
-source venv/bin/activate
-jupyter nbconvert --to script data_cleaning.ipynb
-python3 data_cleaning.py
+mysql -u clouduser -pdbroot -e "SELECT COUNT(*) FROM security_db.ticker_info;"
 ```
 
-**Step 4.** Run the commands below one at a time to verify the previous step worked.
+**Step 5.** Run the command below verify the `outputTimeSeries.csv` was loaded into the local SQL database.
 ```bash
-mysql -u clouduser -pdbroot -e "USE security_db; SELECT COUNT(*) FROM ticker_info;"
-```
-```bash
-mysql -u clouduser -pdbroot -e "USE security_db; SELECT COUNT(*) FROM time_series;"
+mysql -u clouduser -pdbroot -e "SELECT COUNT(*) FROM security_db.time_series;"
 ```
 
-**Step 5.** Edit `q6.sql` using the [provided example](task-02/q6.sql).
+**Step 6.** Edit `q6.sql` using the [provided example](task-02/q6.sql).
 
-**Step 6.** Edit `q7.sql` using the [provided example](task-02/q7.sql).
+**Step 7.** Edit `q7.sql` using the [provided example](task-02/q7.sql).
 
-**Step 7.** Edit `q8.sql` using the [provided example](task-02/q8.sql).
+**Step 8.** Edit `q8.sql` using the [provided example](task-02/q8.sql).
 
-**Step 8.** Edit `q9.sql` using the [provided example](task-02/q9.sql).
+**Step 9.** Edit `q9.sql` using the [provided example](task-02/q9.sql).
 
-**Step 9.** Edit `q10.sql` using the [provided example](task-02/q10.sql).
+**Step 10.** Edit `q10.sql` using the [provided example](task-02/q10.sql).
