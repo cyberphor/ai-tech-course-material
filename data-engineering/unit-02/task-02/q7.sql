@@ -18,3 +18,4 @@ use security_db;
  */
 
 -- TODO: write a SQL query that will drop the open_int column from the table time_series
+ALTER TABLE time_series DROP COLUMN open_int;

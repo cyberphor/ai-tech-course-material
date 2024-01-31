@@ -32,5 +32,5 @@ load data local infile 'otherlistedMod.txt'
     enclosed by ''
     lines terminated by '\n'
     ignore 1 rows
-    (symbol, security_name, market_category, test_issue, financial_status, round_lot_size, etf, next_shares)
+    (act_symbol, security_name, exchange, cqs_symbol, etf, round_lot_size, test_issue, nasdaq_symbol)
     set id=null;
