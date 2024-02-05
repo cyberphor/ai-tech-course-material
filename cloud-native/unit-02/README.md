@@ -41,7 +41,14 @@ ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --
 ```
 
 ## Task 1
-**Step 1.** Text goes here.
+**Step 1.** Connect to the virtual machine you just created. 
+
+**Step 2.** Invoke the Python virtual environment created by Ansible. 
+```bash
+source venv/bin/activate
+```
+
+**Step 3.** Edit the `simplellm.py` file using the [provided example](task-01/simplellm.py).
 
 ## Task 2
 **Step 1.** Text goes here.
