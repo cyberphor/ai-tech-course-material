@@ -9,6 +9,7 @@ N_BATCH = 1
 TEMPERATURE = 0.0
 MAX_TOKENS = None
 
+llm = Llama(model_path=MODEL_PATH, n_ctx=N_CTX, n_batch=N_BATCH)
 app = Flask(__name__)
 
 @app.route("/healthcheck")
@@ -21,5 +22,4 @@ def api():
     system_message = "You are a helpful assistant."
     prompt = request.args.get("message")
     template = f"<|system|>\n{system_message}</s>\n<|user|>{prompt}</s><|assistant|>"
-    llm = Llama(model_path=MODEL_PATH, n_ctx=N_CTX, n_batch=N_BATCH)
     return llm(template, temperature=TEMPERATURE, max_tokens=MAX_TOKENS)

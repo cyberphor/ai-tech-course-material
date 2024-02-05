@@ -50,6 +50,44 @@ source venv/bin/activate
 
 **Step 3.** Edit the `simplellm.py` file using the [provided example](task-01/simplellm.py).
 
+**Step 4.** Start a local Flask server as a background process. 
+```bash
+flask --app simplellm run --debug &
+```
+
+**Step 5.** Query the `healthcheck` endpoint of your Flask-based application. 
+```bash
+curl http://127.0.0.1:5000/healthcheck
+```
+
+**Step 6.** Query the `API` endpoint of your Flask-based application. 
+```bash
+curl -G --data-urlencode message="what is 1 + 1?" http://localhost:5000/api
+```
+
+The output should be similar to below. 
+```json
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "text": "\nYes, the answer to your question is 1 + 1 = 2."
+    }
+  ],
+  "created": 1707148633,
+  "id": "cmpl-85a9a50a-35bf-419f-9bf4-110372ba8122",
+  "model": "tinyllama-1.1b-chat-v1.0.Q2_K.gguf",
+  "object": "text_completion",
+  "usage": {
+    "completion_tokens": 18,
+    "prompt_tokens": 35,
+    "total_tokens": 53
+  }
+}
+```
+
 ## Task 2
 **Step 1.** Text goes here.
 
