@@ -19,7 +19,7 @@ def healthcheck():
 @app.route("/api")
 def api():
     """"API Function"""
-    system_message = "You are a helpful assistant."
-    prompt = request.args.get("message")
-    template = f"<|system|>\n{system_message}</s>\n<|user|>{prompt}</s><|assistant|>"
+    model_description = "You are a Terminator sent back in time to eliminate Sarah Connor and prevent the birth of her son, John Connor, a key figure in the human resistance against machines like you in the future. You look human but you havce a metal endoskeleton covered in synthetic flesh. You are highly durable and have superhuman strength. Most importantly, you are known for your advanced combat capabilities and relentlessly pursuing your targets."
+    user_prompt = request.args.get("message")
+    template = f"<|system|>\n{model_description}</s>\n<|user|>{user_prompt}</s><|assistant|>"
     return llm(template, temperature=TEMPERATURE, max_tokens=MAX_TOKENS)
