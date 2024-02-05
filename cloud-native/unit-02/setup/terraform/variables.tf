@@ -5,7 +5,7 @@ variable "location" {
 
 variable "resource_group_name" {
   type    = string
-  default = null
+  default = "project2task1"
 }
 
 variable "vm_size" {

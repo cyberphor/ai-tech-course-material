@@ -124,7 +124,7 @@ curl -G --data-urlencode message="what is 1 + 1?" http://localhost:8080/api
 
 **Step 13.** Use the [provided Dockerfile example](task-01/docker/Dockerfile) to containerize the application. 
 
-**Step 14.** Build a container image using the Dockerfile you just created. 
+**Step 14.** Build a container image using the Dockerfile you just created. If you have issues running `docker` as a non-privileged user, reboot your virtual machine and try again. Also, don't forget, your working directory should be `~/llmservice-handout/worker/`.
 ```bash
 docker build -t griffin/simplellm:v1.0.0 -f docker/Dockerfile .
 ```
@@ -179,8 +179,8 @@ docker image push $ACR_REGISTRY_ID/worker:v1
 
 **Step 23.** Deploy a container using the image you just pushed to your Azure Container Registry (use your existing resource group).
 ```bash
-RESOURCE_GROUP="readyeft"
-ACI_NAME="readyeft"
+RESOURCE_GROUP="project2task1"
+ACI_NAME=$(echo ${ACR_REGISTRY_ID} | cut -d. -f1)
 az container create \
   --resource-group $RESOURCE_GROUP \
   --name $ACI_NAME \
@@ -201,7 +201,72 @@ curl http://${ACI_NAME}.eastus2.azurecontainer.io:8080/healthcheck
 ```
 
 ## Task 2
-**Step 1.** Text goes here.
+**Step 1.** From the virtual machine, create a Azure Kubernetes Service (AKS) cluster resource.
+```bash
+az aks create \
+  --resource-group project2task1 \
+  --name project2cluster \
+  --enable-managed-identity \
+  --node-count 3 --generate-ssh-keys
+```
+
+**Step 2.** Attach your Azure Container Registry to your AKS cluster. 
+```bash
+az aks update \
+  --resource-group project2task1 \
+  --name project2cluster \
+  --attach-acr $ACI_NAME
+```
+
+**Step 3.** Save your AKS cluster's credentials to a file so `kubectl` can use them.
+```bash
+az aks get-credentials \
+  --resource-group project2task1 \
+  --name project2cluster
+```
+
+**Step 4.** Verify your AKS cluster is working. 
+```bash
+kubectl get nodes
+```
+
+Your output should be similar to below.
+```bash
+NAME                                STATUS   ROLES   AGE     VERSION
+aks-nodepool1-19130009-vmss000000   Ready    agent   5m43s   v1.27.7
+aks-nodepool1-19130009-vmss000001   Ready    agent   5m32s   v1.27.7
+aks-nodepool1-19130009-vmss000002   Ready    agent   5m49s   v1.27.7
+```
+
+**Step 5.** Enable the "Vertical Pod Autoscaler" feature on your AKS cluster.
+```bash
+az aks update \
+  --resource-group project2task1 \
+  --name project2cluster \
+  --enable-vpa
+```
+
+**Step 6.** Create a folder called `k8s` under `~/llmservice-handout/worker/` and then change directories to it. 
+```bash
+mkdir ~/llmservice-handout/worker/k8s/
+cd ~/llmservice-handout/worker/k8s/
+```
+
+**Step 7.** Create a `deployment.yaml` file using the [provided example](task-02/kubernetes/deployment.yaml).
+
+**Step 8.** Create a `service.yaml` file using the [provided example](task-02/kubernetes/service.yaml).
+
+**Step 9.** Create a `vpa.yaml` file using the [provided example](task-02/kubernetes/vpa.yaml).
+
+**Step 10.** Deploy the `simplellm` service defined by the files you just created. 
+```bash
+kubectl apply -f .
+```
+
+**Step 11.** Load test your application using `locust`.
+```bash
+locust --headless -H http://$LOAD_BALANCER
+```
 
 ## Task 3
 **Step 1.** Text goes here.

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simplellm-deployment
+  annotations:
+    goldilocks.fairwinds.com/enabled: "true"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: simplellm 
+  template:
+    metadata:
+      labels:
+        app: simplellm 
+    spec:
+      containers:
+      - name: simplellm
+        image: amazingant.azurecr.io/worker:v1 
+        ports:
+        - containerPort: 8080
