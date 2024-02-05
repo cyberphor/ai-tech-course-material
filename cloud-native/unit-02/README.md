@@ -41,11 +41,15 @@ ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --
 ```
 
 ## Task 1
-**Step 1.** Connect to the virtual machine you just created. 
+**Step 1.** Connect to the virtual machine you just created and change directories to `llmservice-handout`. 
+```bash
+cd llmservice-handout/
+```
 
-**Step 2.** Invoke the Python virtual environment created by Ansible. 
+**Step 2.** Invoke the Python virtual environment created by Ansible and then change directories to `worker/src`. 
 ```bash
 source venv/bin/activate
+cd worker/src
 ```
 
 **Step 3.** Edit the `simplellm.py` file using the [provided example](task-01/simplellm.py).
@@ -65,7 +69,7 @@ curl http://127.0.0.1:5000/healthcheck
 curl -G --data-urlencode message="what is 1 + 1?" http://localhost:5000/api
 ```
 
-The output should be similar to below. 
+The output should be similar to below. If these queries worked, stop your Flask server. 
 ```json
 {
   "choices": [
@@ -86,6 +90,34 @@ The output should be similar to below.
     "total_tokens": 53
   }
 }
+```
+
+**Step 7.** Edit the `pyproject.toml` file using the [provided example](task-01/pyproject.toml).
+
+**Step 8.** Change directories to `worker` (the parent directory of `src`, your current working directory).
+```bash
+cd ../
+```
+
+**Step 9.** Build your Flask-based application and save the artifact in folder called `dist/`.
+```bash
+python3 -m pip wheel src/ -w dist/
+```
+
+**Step 10.** Validate your artifact was built correctly by importing it using `pip` 
+```bash
+python3 -m pip install dist/simplellm-1.0.0-py2.py3-none-any.whl
+```
+
+**Step 11.** Change directories back to `src` and serve your imported artifact as a background process using `waitress`. 
+```bash
+cd src/
+waitress-serve simplellm:app &
+```
+
+**Step 12.** Test your imported artifact now that it's being served by `waitress`. Pay attention to the change in port number. 
+```bash
+curl -G --data-urlencode message="what is 1 + 1?" http://localhost:8080/api
 ```
 
 ## Task 2
