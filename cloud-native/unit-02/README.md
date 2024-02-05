@@ -52,7 +52,7 @@ source venv/bin/activate
 cd worker/src
 ```
 
-**Step 3.** Edit the `simplellm.py` file using the [provided example](task-01/simplellm.py).
+**Step 3.** Edit the `simplellm.py` file using the [provided example](task-01/src/simplellm.py).
 
 **Step 4.** Start a local Flask server as a background process. 
 ```bash
@@ -92,7 +92,7 @@ The output should be similar to below. If these queries worked, stop your Flask 
 }
 ```
 
-**Step 7.** Edit the `pyproject.toml` file using the [provided example](task-01/pyproject.toml).
+**Step 7.** Edit the `pyproject.toml` file using the [provided example](task-01/src/pyproject.toml).
 
 **Step 8.** Change directories to `worker` (the parent directory of `src`, your current working directory).
 ```bash
@@ -118,6 +118,29 @@ waitress-serve simplellm:app &
 **Step 12.** Test your imported artifact now that it's being served by `waitress`. Pay attention to the change in port number. 
 ```bash
 curl -G --data-urlencode message="what is 1 + 1?" http://localhost:8080/api
+```
+
+**Step 13.** Use the [provided Dockerfile example](task-01/docker/Dockerfile) to containerize the application. 
+
+**Step 14.** Build a container image using the Dockerfile you just created. 
+```bash
+docker build -t griffin/simplellm:v1.0.0 -f docker/Dockerfile .
+```
+
+**Step 15.** Create a container using the image you just created.
+```bash
+docker run --name demo -d -p 8080:8080 griffin/simplellm:v1.0.0
+```
+
+**Step 16.** Test your application now that it's been containerized.
+```bash
+curl -G --data-urlencode message="what is 1 + 1?" http://localhost:8080/api
+```
+
+**Step 17.** Stop the container and remove it. 
+```bash
+docker container stop demo
+docker container rm demo
 ```
 
 ## Task 2
