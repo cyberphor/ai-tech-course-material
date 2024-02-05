@@ -61,6 +61,7 @@
 | Topic                                                        | Training Objectives |
 | ------------------------------------------------------------ | ------------------- |
 | [Monolith to Microservices](/cloud-native/unit-01/README.md) | <ul><li>Deploy a virtual machine and monolithic application using Packer</li><li>Deploy a Java application using Docker</li><li>Create a container registry and push images to it</li><li>Deploy containers using the Azure Kubernetes Service</li><li>Deploy Helm charts to manage a Kubernetes cluster</li></ul>
+| [Serverless Deployment and Autoscaling](/cloud-native/unit-02/README.md) | <ul><li>Develop simple Python-based REST APIs</li><li>Utilize best practices to package and containerize a Python microservice application</li><li>Configure and deploy containers on Azure Container Instances</li><li>Orchestrate Kubernetes Pod resource limits of a developed microservice</li><li>Configure and deploy function triggers with Terraform given a stream of events</li><li>Utilize Goldilocks and vertical pod autoscaling to minimize resource costs</li><li>Develop simple scaling policies to ensure high uptime</li></ul>
 
 ## Data Engineering
 | Topic                                                                   | Training Objectives |
