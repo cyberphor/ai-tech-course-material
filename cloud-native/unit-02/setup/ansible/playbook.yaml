@@ -1,0 +1,19 @@
+---
+- hosts: all
+  tasks:
+    - name: Install Docker
+      ansible.builtin.script: scripts/Install-Docker.sh
+    - name: Install Terraform
+      ansible.builtin.script: scripts/Install-Terraform.sh
+    - name: Install the Azure CLI
+      ansible.builtin.script: scripts/Install-AzureCLI.sh
+    - name: Install Kubectl
+      ansible.builtin.script: scripts/Install-Kubectl.sh
+    - name: Install Helm
+      ansible.builtin.script: scripts/Install-Helm.sh
+    - name: Get Handout
+      ansible.builtin.script: scripts/Get-Handout.sh
+    - name: Update Python
+      ansible.builtin.script: scripts/Update-Python.sh
+    - name: Set BASH Aliases
+      ansible.builtin.script: scripts/Set-BashAliases.sh
