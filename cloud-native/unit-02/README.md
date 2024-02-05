@@ -195,7 +195,7 @@ az container create \
   --ports 8080
 ```
 
-**Step 24.** Test your application now that it's been containerized and deployed as an Azure Container Instance. 
+**Step 24.** Test your application now that it's been containerized and deployed as an Azure Container Instance (make sure to use the correct region). 
 ```bash
 curl http://${ACI_NAME}.eastus2.azurecontainer.io:8080/healthcheck
 ```

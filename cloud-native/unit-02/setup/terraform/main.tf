@@ -10,7 +10,7 @@ resource "azurerm_resource_group" "main" {
 
 resource "azurerm_virtual_network" "main" {
   depends_on          = [ azurerm_resource_group.main ]
-  name                = azurerm_resource_group.main.name
+  name                = random_pet.main.id
   location            = var.location
   resource_group_name = azurerm_resource_group.main.name
   address_space       = ["10.0.0.0/16"]
@@ -18,7 +18,7 @@ resource "azurerm_virtual_network" "main" {
 
 resource "azurerm_subnet" "main" {
   depends_on          = [ azurerm_resource_group.main ]
-  name                 = azurerm_resource_group.main.name
+  name                 = random_pet.main.id
   resource_group_name  = azurerm_resource_group.main.name
   virtual_network_name = azurerm_virtual_network.main.name
   address_prefixes     = ["10.0.0.0/24"]
@@ -26,7 +26,7 @@ resource "azurerm_subnet" "main" {
 
 resource "azurerm_public_ip" "main" {
   depends_on          = [ azurerm_resource_group.main ]
-  name                = azurerm_resource_group.main.name
+  name                = random_pet.main.id
   resource_group_name = azurerm_resource_group.main.name
   location            = var.location
   allocation_method   = "Static"
@@ -34,11 +34,11 @@ resource "azurerm_public_ip" "main" {
 }
 
 resource "azurerm_network_interface" "main" {
-  name                            = azurerm_resource_group.main.name
+  name                            = random_pet.main.id
   location                        = var.location
   resource_group_name             = azurerm_resource_group.main.name
   ip_configuration {
-    name                          = azurerm_resource_group.main.name
+    name                          = random_pet.main.id
     subnet_id                     = azurerm_subnet.main.id
     private_ip_address_allocation = "Static"
     private_ip_address            = "10.0.0.5"
@@ -47,7 +47,7 @@ resource "azurerm_network_interface" "main" {
 }
 
 resource "azurerm_network_security_group" "main" {
-  name                = azurerm_resource_group.main.name
+  name                = random_pet.main.id
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   security_rule {
@@ -69,7 +69,7 @@ resource "azurerm_network_interface_security_group_association" "main" {
 }
 
 resource "azurerm_linux_virtual_machine" "main" {
-  name                            = azurerm_resource_group.main.name
+  name                            = random_pet.main.id
   resource_group_name             = azurerm_resource_group.main.name
   location                        = var.location
   size                            = var.vm_size
@@ -84,7 +84,7 @@ resource "azurerm_linux_virtual_machine" "main" {
   os_disk {
     caching                       = "ReadWrite"
     storage_account_type          = var.vm_os_disk_storage_type
-    name                          = var.resource_group_name
+    name                          = random_pet.main.id
   }
   source_image_reference {
     publisher                     = var.vm_image_publisher
@@ -97,13 +97,13 @@ resource "azurerm_linux_virtual_machine" "main" {
 resource "azurerm_container_registry" "main" {
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
-  name                = azurerm_resource_group.main.name
+  name                = random_pet.main.id
   sku                 = "Basic" 
   admin_enabled       = true
 }
 
 resource "azuread_application" "main" {
-  display_name = "${azurerm_resource_group.main.name}-service-principal"
+  display_name = "${random_pet.main.id}-service-principal"
 }
 
 resource "azuread_service_principal" "main" {
