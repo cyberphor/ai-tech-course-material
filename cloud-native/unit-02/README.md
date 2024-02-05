@@ -1,4 +1,6 @@
 # Cloud Native
+
+## Setup
 **Step 1.** Download the `vic-code` GitHub repository and change directories to this week's project. These commands are meant to be ran on your personal computer.
 ```bash
 git clone https://github.com/AFC-AI2C-Cohort-04/vic-code
@@ -27,7 +29,7 @@ az login --use-device-code
 az account set --subscription "AI2C Subscription 3"
 ```
 
-**Step 6.** Deploy a virtual machine in Azure using the [provided Terraform files](setup/terraform). These commands are meant to be ran on your personal computer.
+**Step 6.** Deploy a virtual machine in Azure using the [provided Terraform files](setup/terraform). These commands are meant to be ran on your personal computer. 
 ```bash
 terraform -chdir=terraform init
 terraform -chdir=terraform apply -auto-approve
@@ -141,6 +143,61 @@ curl -G --data-urlencode message="what is 1 + 1?" http://localhost:8080/api
 ```bash
 docker container stop demo
 docker container rm demo
+```
+
+**Step 18.** In a separate terminal on your personal computer, change directories to the `setup` folder used in the [Setup](#setup) section, and run the Terraform commands below. 
+```bash
+export ACR_REGISTRY_ID=$(terraform -chdir=terraform output -raw acr_registry_id)
+export SERVICE_PRINCIPAL_NAME=$(terraform -chdir=terraform output -raw service_principal_username)
+export SERVICE_PRINCIPAL_PASSWORD=$(terraform -chdir=terraform output -raw service_principal_password)
+```
+
+**Step 19.** Run the commands below and copy the output to memory. 
+```bash
+echo "export ACR_REGISTRY_ID=${ACR_REGISTRY_ID}" && echo "export SERVICE_PRINCIPAL_NAME=${SERVICE_PRINCIPAL_NAME}" && echo "export SERVICE_PRINCIPAL_PASSWORD=${SERVICE_PRINCIPAL_PASSWORD}"
+```
+
+**Step 20.** Go back to your virtual machine and paste the output from the previous step. 
+```bash
+export ACR_REGISTRY_ID=readyeft.azurecr.io
+export SERVICE_PRINCIPAL_NAME=0fea5dad-9a5e-455e-a2af-3a6dafabcc50
+export SERVICE_PRINCIPAL_PASSWORD=MZd8Q~lxqF-zC~b5Woo1VpOG1M3PwpXyPqmEPbJH
+```
+
+**Step 21.** Login to Azure, set your subscription, and login to the Azure Container Registry created automatically in the [Setup](#setup) section.
+```bash
+az login --use-device-code
+az account set --subscription "AI2C Subscription 3"
+az acr login -n $ACR_REGISTRY_ID
+```
+
+**Step 22.** Tag and push the container image you created earlier. 
+```bash
+docker image tag griffin/simplellm:v1.0.0 $ACR_REGISTRY_ID/worker:v1
+docker image push $ACR_REGISTRY_ID/worker:v1
+```
+
+**Step 23.** Deploy a container using the image you just pushed to your Azure Container Registry (use your existing resource group).
+```bash
+RESOURCE_GROUP="readyeft"
+ACI_NAME="readyeft"
+az container create \
+  --resource-group $RESOURCE_GROUP \
+  --name $ACI_NAME \
+  --image $ACR_REGISTRY_ID/worker:v1 \
+  --cpu 2 \
+  --memory 2 \
+  --registry-login-server $ACR_REGISTRY_ID \
+  --registry-username $SERVICE_PRINCIPAL_NAME \
+  --registry-password $SERVICE_PRINCIPAL_PASSWORD \
+  --ip-address Public \
+  --dns-name-label $ACI_NAME \
+  --ports 8080
+```
+
+**Step 24.** Test your application now that it's been containerized and deployed as an Azure Container Instance. 
+```bash
+curl http://${ACI_NAME}.eastus2.azurecontainer.io:8080/healthcheck
 ```
 
 ## Task 2

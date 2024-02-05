@@ -94,3 +94,28 @@ resource "azurerm_linux_virtual_machine" "main" {
   }
 }
 
+resource "azurerm_container_registry" "main" {
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  name                = azurerm_resource_group.main.name
+  sku                 = "Basic" 
+  admin_enabled       = true
+}
+
+resource "azuread_application" "main" {
+  display_name = "${azurerm_resource_group.main.name}-service-principal"
+}
+
+resource "azuread_service_principal" "main" {
+  client_id = azuread_application.main.application_id
+}
+
+resource "azuread_service_principal_password" "main" {
+  service_principal_id = azuread_service_principal.main.object_id
+}
+
+resource "azurerm_role_assignment" "main" {
+  scope                = azurerm_container_registry.main.id
+  role_definition_name = "AcrPush"
+  principal_id         = azuread_service_principal.main.object_id
+}
