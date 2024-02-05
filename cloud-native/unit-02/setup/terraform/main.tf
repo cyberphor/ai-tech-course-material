@@ -4,7 +4,7 @@ resource "random_pet" "main" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = random_pet.main.id
+  name     = var.resource_group_name
   location = var.location
 }
 
