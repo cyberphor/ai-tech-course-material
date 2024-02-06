@@ -281,12 +281,12 @@ simplellm-deployment-9b7587974-zp7qf   1/1     Running   0          2m35s
 git clone https://github.com/FairwindsOps/goldilocks.git
 ```
 
-**Step 14.** In the `default` namespace, deploy a "Goldilocks controller" service object using the manifest files you just downloaded. 
+**Step 13.** In the `default` namespace, deploy a "Goldilocks controller" object using the manifest files you just downloaded. 
 ```bash
 kubectl -n default apply -f goldilocks/hack/manifests/controller
 ```
 
-**Step 15.** In the `default` namespace, deploy a "Goldilocks dashboard" service object using the manifest files you just downloaded. 
+**Step 15.** In the `default` namespace, deploy a "Goldilocks dashboard" object using the manifest files you just downloaded. 
 ```bash
 kubectl -n default apply -f goldilocks/hack/manifests/dashboard
 ```
@@ -296,9 +296,19 @@ kubectl -n default apply -f goldilocks/hack/manifests/dashboard
 kubectl annotate namespace default goldilocks.fairwinds.com/enabled=true
 ```
 
-**Step 17.** Forward port 80 of the "Goldilocks dashboard" service object to port 8080. 
+**Step 17.** Expose the "Goldilocks dashboard" object. 
 ```bash
-kubectl -n default port-forward svc/goldilocks-dashboard --address 0.0.0.0 8080:80
+kubectl expose deployment goldilocks-dashboard --type=LoadBalancer --name=goldilocks-service
+```
+
+**Step 18.** Determine the external IP address of the `goldilocks-service` object created in the previous step.
+```bash
+export GOLDILOCKS=$(kubectl -n default get svc | grep "goldilocks-service" | cut -d" " -f13)
+```
+
+**Step 19.** Verify the "Goldilocks dashboard" is accessible from a public IP address.
+```bash
+curl http://$GOLDILOCKS:8080/namespaces/default
 ```
 
 **Step 99.** Load test your application using `locust`.
