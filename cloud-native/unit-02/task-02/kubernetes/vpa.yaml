@@ -2,7 +2,8 @@ apiVersion: autoscaling.k8s.io/v1
 kind: VerticalPodAutoscaler
 metadata:
   name: simplellm-vpa
-  namespace: default
+  labels:
+    app: simplellm
 spec:
   targetRef:
     apiVersion: "apps/v1"
