@@ -291,7 +291,12 @@ kubectl -n default apply -f goldilocks/hack/manifests/controller
 kubectl -n default apply -f goldilocks/hack/manifests/dashboard
 ```
 
-**Step 16.** Forward port 80 of the "Goldilocks dashboard" service object to port 8080. 
+**Step 16.** Configure `goldilocks` to provide suggestions for your `default` Kubernetes namespace. 
+```bash
+kubectl annotate namespace default goldilocks.fairwinds.com/enabled=true
+```
+
+**Step 17.** Forward port 80 of the "Goldilocks dashboard" service object to port 8080. 
 ```bash
 kubectl -n default port-forward svc/goldilocks-dashboard --address 0.0.0.0 8080:80
 ```
