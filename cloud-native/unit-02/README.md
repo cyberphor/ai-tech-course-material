@@ -201,7 +201,7 @@ curl http://${ACI_NAME}.eastus2.azurecontainer.io:8080/healthcheck
 ```
 
 ## Task 2
-**Step 1.** From the virtual machine, create a Azure Kubernetes Service (AKS) cluster resource.
+**Step 1.** From the virtual machine, create a Azure Kubernetes Service (AKS) cluster.
 ```bash
 az aks create \
   --resource-group project2task1 \
@@ -225,12 +225,12 @@ az aks get-credentials \
   --name project2cluster
 ```
 
-**Step 4.** Verify your AKS cluster is working. 
+**Step 4.** Verify all nodes in your AKS cluster are working. 
 ```bash
-kubectl get nodes
+kubectl -n default get nodes
 ```
 
-Your output should be similar to below.
+Your output should be similar to below. 
 ```bash
 NAME                                STATUS   ROLES   AGE     VERSION
 aks-nodepool1-19130009-vmss000000   Ready    agent   5m43s   v1.27.7
@@ -238,7 +238,7 @@ aks-nodepool1-19130009-vmss000001   Ready    agent   5m32s   v1.27.7
 aks-nodepool1-19130009-vmss000002   Ready    agent   5m49s   v1.27.7
 ```
 
-**Step 5.** Enable the "Vertical Pod Autoscaler" feature on your AKS cluster.
+**Step 5.** Enable the "Vertical Pod Autoscaler" feature on your AKS pod.
 ```bash
 az aks update \
   --resource-group project2task1 \
@@ -260,10 +260,43 @@ cd ~/llmservice-handout/worker/k8s/
 
 **Step 10.** Deploy the `simplellm` service defined by the files you just created. 
 ```bash
-kubectl apply -f .
+kubectl -n default apply -f .
 ```
 
-**Step 11.** Load test your application using `locust`.
+**Step 11.** Verify all the pods you just deployed onto your AKS cluster are working. 
+```bash
+kubectl -n default get pods
+```
+
+Your output should be similar to below. 
+```bash
+NAME                                   READY   STATUS    RESTARTS   AGE
+simplellm-deployment-9b7587974-rpd8g   1/1     Running   0          2m36s
+simplellm-deployment-9b7587974-stl5h   1/1     Running   0          2m33s
+simplellm-deployment-9b7587974-zp7qf   1/1     Running   0          2m35s
+```
+
+**Step 12.** Download Kubernetes manifest files for `goldilocks`. 
+```bash
+git clone https://github.com/FairwindsOps/goldilocks.git
+```
+
+**Step 14.** In the `default` namespace, deploy a "Goldilocks controller" service object using the manifest files you just downloaded. 
+```bash
+kubectl -n default apply -f goldilocks/hack/manifests/controller
+```
+
+**Step 15.** In the `default` namespace, deploy a "Goldilocks dashboard" service object using the manifest files you just downloaded. 
+```bash
+kubectl -n default apply -f goldilocks/hack/manifests/dashboard
+```
+
+**Step 16.** Forward port 80 of the "Goldilocks dashboard" service object to port 8080. 
+```bash
+kubectl -n default port-forward svc/goldilocks-dashboard --address 0.0.0.0 8080:80
+```
+
+**Step 99.** Load test your application using `locust`.
 ```bash
 locust --headless -H http://$LOAD_BALANCER
 ```
