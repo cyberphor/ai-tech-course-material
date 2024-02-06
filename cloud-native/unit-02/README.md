@@ -276,45 +276,70 @@ simplellm-deployment-9b7587974-stl5h   1/1     Running   0          2m33s
 simplellm-deployment-9b7587974-zp7qf   1/1     Running   0          2m35s
 ```
 
-**Step 12.** Download Kubernetes manifest files for `goldilocks`. 
+**Step 12.** Create a new `kubectl` namespace called `goldilocks`.
 ```bash
-git clone https://github.com/FairwindsOps/goldilocks.git
+kubectl create namespace goldilocks
 ```
 
-**Step 13.** In the `default` namespace, deploy a "Goldilocks controller" object using the manifest files you just downloaded. 
+**Step 13.** In the `goldilocks` namespace you just created, install Goldilocks via Helm. 
 ```bash
-kubectl -n default apply -f goldilocks/hack/manifests/controller
+helm install goldilocks --namespace goldilocks fairwinds-stable/goldilocks
 ```
 
-**Step 15.** In the `default` namespace, deploy a "Goldilocks dashboard" object using the manifest files you just downloaded. 
+**Step 14.** Enable Goldilocks in the `goldilocks` namespace.
 ```bash
-kubectl -n default apply -f goldilocks/hack/manifests/dashboard
+kubectl label ns goldilocks goldilocks.fairwinds.com/enabled=true
 ```
 
-**Step 16.** Configure `goldilocks` to provide suggestions for your `default` Kubernetes namespace. 
+**Step 15.** Expose the "Goldilocks dashboard" object you created using Helm.
 ```bash
-kubectl annotate namespace default goldilocks.fairwinds.com/enabled=true
+kubectl -n goldilocks expose deployment goldilocks-dashboard --type=LoadBalancer --name=goldilocks-service
 ```
 
-**Step 17.** Expose the "Goldilocks dashboard" object. 
+**Step 16.** Determine the external IP address of the `goldilocks-service` object created in the previous step.
 ```bash
-kubectl expose deployment goldilocks-dashboard --type=LoadBalancer --name=goldilocks-service
+kubectl -n goldilocks get svc
 ```
 
-**Step 18.** Determine the external IP address of the `goldilocks-service` object created in the previous step.
+Your output should be similar to below. 
 ```bash
-export GOLDILOCKS=$(kubectl -n default get svc | grep "goldilocks-service" | cut -d" " -f13)
+NAME                   TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)          AGE
+goldilocks-dashboard   ClusterIP      10.0.122.52   <none>         80/TCP           22m
+goldilocks-service     LoadBalancer   10.0.23.232   4.152.73.108   8080:30513/TCP   17m
 ```
 
-**Step 19.** Verify the "Goldilocks dashboard" is accessible from a public IP address.
+**Step 17.** Verify the "Goldilocks dashboard" is accessible on TCP port 8080 from its external public IP address.
+
+**Step 18.** Determine the external IP address of the `simplellm-service` object created in step 10.
 ```bash
-curl http://$GOLDILOCKS:8080/namespaces/default
+kubectl -n default get svc
 ```
 
-**Step 99.** Load test your application using `locust`.
+Your output should be similar to below. 
 ```bash
-locust --headless -H http://$LOAD_BALANCER
+NAME                TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)        AGE
+kubernetes          ClusterIP      10.0.0.1       <none>         443/TCP        18h
+simplellm-service   LoadBalancer   10.0.169.146   20.96.44.130   80:30549/TCP   17h
 ```
+
+**Step 19.** Change directories to `~/llmservice-handout/worker/loadtester/` and load test your application using `locust`. After 20 minutes, stop `locust`.
+```bash
+cd ~/llmservice-handout/worker/loadtester/
+locust --headless -H http://20.96.44.130
+```
+
+**Step 20.** Open "Goldilocks" to see what recommendations it has for your resource requests and limit values so your `simplellm-service` deployment has a "Guaranteed Quality of Service". 
+
+![goldilocks-01.png](task-02/goldilocks-01.png)
+
+**Step 21.** Change directories to `~/llmservice-handout/worker/k8s/`, update your `deployment.yaml` file with the values you saw in the previous step. Then, patch your `simplellm-service` object.
+```bash
+cd ~/llmservice-handout/worker/k8s/
+kubectl -n default apply -f .
+```
+
+**Step 22.** Open "Goldilocks" to confirm it sees you implemented its recommendations for vertical pod scaling.
+![goldilocks-02.png](task-02/goldilocks-02.png)
 
 ## Task 3
 **Step 1.** Text goes here.
