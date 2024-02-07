@@ -8,7 +8,7 @@ metadata:
   annotations:
     goldilocks.fairwinds.com/enabled: "true"
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: simplellm 
@@ -30,14 +30,15 @@ spec:
             cpu: 500m
             memory: 500M
         startupProbe:
+          periodSeconds: 5    # wait 3 seconds between checks
+          failureThreshold: 5 # the container is unhealthy if it doesn't respond after 5 checks (i.e., 25 seconds)
           httpGet:
             path: /healthcheck
             port: 8080
-          failureThreshold: 30 # the container is dead-on-arrival if it doesn't respond in 30 seconds
         readinessProbe:
+          periodSeconds: 3    # wait 3 seconds between checks
+          failureThreshold: 2 # the container is unhealthy if it doesn't respond after 2 checks (i.e., 6 seconds)
           exec:
             command:
             - touch
             - /opt/simplellm/tinyllama-1.1b-chat-v1.0.Q2_K.gguf
-          periodSeconds: 30 # check if the container is ready every 30 seconds 
-          failureThreshold: 1 # the container can fail to report once before its considered FTR

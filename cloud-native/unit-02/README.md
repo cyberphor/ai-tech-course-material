@@ -1,4 +1,10 @@
 # Cloud Native
+* [Setup](#setup)
+* [Task 01](#task-01)
+* [Task 02](#task-02)
+* [Task 03](#task-03)
+* [Task 04](#task-04)
+* [References](#references)
 
 ## Setup
 **Step 1.** Download the `vic-code` GitHub repository and change directories to this week's project. These commands are meant to be ran on your personal computer.
@@ -405,5 +411,20 @@ cd ~/llmservice-handout/worker/loadtester/
 locust --headless -H http://52.232.230.217 -u 5 -r 0.008 
 ```
 
+**Misc.** The following commands were helpful in completing this task. 
+```bash
+kubectl get hpa
+```
+
+Your output should be similar to below. 
+```bash
+NAME            REFERENCE                         TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+simplellm-hpa   Deployment/simplellm-deployment   <unknown>/50%   1         8         1          96m
+```
+
 ## Task 4
 **Step 1.** Text goes here.
+
+## References
+* [https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+* [https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
