@@ -379,6 +379,14 @@ Allocatable:
   memory:             4652376Ki
 ```
 
+Also, I found myself repeating these commands over and over again when submitting (as I changed the resource values).
+```bash
+vim worker/k8s/deployment.yaml
+kubectl -n default apply -f worker/k8s/deployment.yaml
+curl 52.232.230.217/healthcheck
+curl -G --data-urlencode message="what is 1 + 1?" http://52.232.230.217/api
+```
+
 ## Task 3
 **Step 1.** Text goes here.
 
