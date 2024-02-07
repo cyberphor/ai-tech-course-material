@@ -336,7 +336,7 @@ locust --headless -H http://52.232.230.217
 ```bash
 cd ~/llmservice-handout/worker/k8s/
 vim vpa.yaml
-kubectl -n default apply -f .
+kubectl -n default apply -f vpa.yaml
 ```
 
 **Step 22.** Make sure to the old pods are terminated and the new pods are `running` before testing the change you made. 
@@ -363,11 +363,46 @@ curl -G --data-urlencode message="what is 1 + 1?" http://52.232.230.217/api
 ```
 
 ## Task 3
-**Step 1.** Text goes here.
-
-**Step 99.** 
+**Step 1.** Delete the Vertical Pod Autoscaler object from your cluster. 
 ```bash
-locust --headless -H http://LOAD_BALANCER_IP -u 5 -r 0.008 --run-time 15m
+kubectl delete vpa/
+```
+
+**Step 2.** Change directories to `~/llmservice-handout/worker/k8s/` and delete the Vertical Pod Autoscaler's manifest file (`vpa.yaml`). 
+```bash
+cd ~/llmservice-handout/worker/k8s/
+rm vpa.yaml
+```
+
+**Step 3.** Update your `deployment.yaml` file (using the [provided example](task-03/kubernetes/deployment.yaml)) so it has a `startupProbe` and `readinessProbe`.
+
+**Step 4.** Create a `hpa.yaml` file using the [provided example](task-03/kubernetes/hpa.yaml).
+
+**Step 5.** From the `~/llmservice-handout/worker/k8s/` directory, deploy the changes you made. 
+```bash
+kubectl -n default apply -f .
+```
+
+**Step 6.** Determine the external IP address of your AKS cluster's load balancer.
+```bash
+kubectl get svc
+```
+
+Your output should be similar to below. 
+```bash
+NAME                TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
+kubernetes          ClusterIP      10.0.0.1      <none>           443/TCP        38h
+simplellm-service   LoadBalancer   10.0.112.34   52.232.230.217   80:30416/TCP   12h
+```
+
+**Step 7.** Change directories to `~/llmservice-handout/worker/loadtester/`
+```bash
+cd ~/llmservice-handout/worker/loadtester/
+```
+
+**Step 8.** Using `locust`, run a load test against your load balancer's external IP address. Submit your work once at least 90 queries pass.
+```bash
+locust --headless -H http://52.232.230.217 -u 5 -r 0.008 --run-time 1m
 ```
 
 ## Task 4
