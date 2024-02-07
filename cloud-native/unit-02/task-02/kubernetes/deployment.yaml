@@ -24,8 +24,7 @@ spec:
         - containerPort: 8080
         resources:
           requests:
-            cpu: 11m
-            memory: 145M
+            cpu: 250m
+            memory: 64M
           limits:
-            cpu: 11m
-            memory: 145M
+            memory: 64M

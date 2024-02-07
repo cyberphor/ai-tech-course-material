@@ -159,9 +159,9 @@ echo "export ACR_REGISTRY_ID=${ACR_REGISTRY_ID}" && echo "export SERVICE_PRINCIP
 
 **Step 20.** Go back to your virtual machine and paste the output from the previous step. 
 ```bash
-export ACR_REGISTRY_ID=readyeft.azurecr.io
-export SERVICE_PRINCIPAL_NAME=0fea5dad-9a5e-455e-a2af-3a6dafabcc50
-export SERVICE_PRINCIPAL_PASSWORD=MZd8Q~lxqF-zC~b5Woo1VpOG1M3PwpXyPqmEPbJH
+export ACR_REGISTRY_ID=amazingant.azurecr.io
+export SERVICE_PRINCIPAL_NAME=d875c1b5-cb6b-4492-bb4b-2364ede53059
+export SERVICE_PRINCIPAL_PASSWORD=ZoL8Q~6PVUpPS3-IwKj3qww93k5GMpG9LEK7bbM9
 ```
 
 **Step 21.** Login to Azure, set your subscription, and login to the Azure Container Registry created automatically in the [Setup](#setup) section.
@@ -288,7 +288,7 @@ helm install goldilocks --namespace goldilocks fairwinds-stable/goldilocks
 
 **Step 14.** Enable Goldilocks in the `goldilocks` namespace.
 ```bash
-kubectl label ns goldilocks goldilocks.fairwinds.com/enabled=true
+kubectl label ns default goldilocks.fairwinds.com/enabled=true
 ```
 
 **Step 15.** Expose the "Goldilocks dashboard" object you created using Helm.
@@ -317,15 +317,15 @@ kubectl -n default get svc
 
 Your output should be similar to below. 
 ```bash
-NAME                TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)        AGE
-kubernetes          ClusterIP      10.0.0.1       <none>         443/TCP        18h
-simplellm-service   LoadBalancer   10.0.169.146   20.96.44.130   80:30549/TCP   17h
+NAME                TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
+kubernetes          ClusterIP      10.0.0.1       <none>          443/TCP        18h
+simplellm-service   LoadBalancer   10.0.169.146   52.232.230.217  80:30549/TCP   17h
 ```
 
 **Step 19.** Change directories to `~/llmservice-handout/worker/loadtester/` and load test your application using `locust`. After 20 minutes, stop `locust`.
 ```bash
 cd ~/llmservice-handout/worker/loadtester/
-locust --headless -H http://20.96.44.130
+locust --headless -H http://52.232.230.217
 ```
 
 **Step 20.** Open "Goldilocks" to see what recommendations it has for your resource requests and limit values so your `simplellm-service` deployment has a "Guaranteed Quality of Service". 
@@ -338,11 +338,54 @@ cd ~/llmservice-handout/worker/k8s/
 kubectl -n default apply -f .
 ```
 
-**Step 22.** Open "Goldilocks" to confirm it sees you implemented its recommendations for vertical pod scaling.
+**Step 22.** Make sure to wait for the old pods to terminate and the status of the new pods (that have the new settings) is `running`. 
+```bash
+kubectl get pods
+```
+
+**Step 23.** Open "Goldilocks" to confirm it sees you have implemented its recommendations for vertical pod scaling. 
 ![goldilocks-02.png](task-02/goldilocks-02.png)
+
+**Step 24.** Test your application now that it's AKS cluster has been modified.
+```bash
+curl -G --data-urlencode message="what is 1 + 1?" http://52.232.230.217/api
+```
+
+**Misc.** FYI, if you're having trouble calibrating how much CPU and memory to allocate pick a node. 
+```bash
+kubectl get nodes
+```
+
+Your output should be similar to below. 
+```bash
+NAME                                STATUS   ROLES   AGE   VERSION
+aks-nodepool1-19130009-vmss000000   Ready    agent   25h   v1.27.7
+aks-nodepool1-19130009-vmss000001   Ready    agent   25h   v1.27.7
+aks-nodepool1-19130009-vmss000002   Ready    agent   25h   v1.27.7
+```
+
+Next, use `kubectl` to describe what is "Allocatable" for one of the nodes listed above (e.g., `aks-nodepool1-19130009-vmss000000` - yours will obviously have a different name).
+```bash
+kubectl describe node aks-nodepool1-19130009-vmss000000 | grep "Allocatable" -A 5
+```
+
+Your output should be similar to below. Now, I know my maximum limit is `1900m` CPU (i.e., 1.9 CPUs) and `4652376` memory (i.e., 4,650 MBs or 4.65 GBs of RAM).
+```yaml
+Allocatable:
+  cpu:                1900m
+  ephemeral-storage:  119703055367
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  memory:             4652376Ki
+```
 
 ## Task 3
 **Step 1.** Text goes here.
+
+**Step 99.** 
+```bash
+locust --headless -H http://LOAD_BALANCER_IP -u 5 -r 0.008 --run-time 15m
+```
 
 ## Task 4
 **Step 1.** Text goes here.
