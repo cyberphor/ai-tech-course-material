@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simplellm-deployment
+  labels:
+    app: simplellm
+  annotations:
+    goldilocks.fairwinds.com/enabled: "true"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: simplellm 
+  template:
+    metadata:
+      labels:
+        app: simplellm 
+    spec:
+      containers:
+      - name: simplellm
+        image: amazingant.azurecr.io/worker:v1 
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 250m
+            memory: 250M
+          limits:
+            cpu: 500m
+            memory: 500M
+        startupProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8080
+          failureThreshold: 30 # the container is dead-on-arrival if it doesn't respond in 30 seconds
+        readinessProbe:
+          exec:
+            command:
+            - touch
+            - /opt/simplellm/tinyllama-1.1b-chat-v1.0.Q2_K.gguf
+          periodSeconds: 30 # check if the container is ready every 30 seconds 
+          failureThreshold: 1 # the container can fail to report once before its considered FTR

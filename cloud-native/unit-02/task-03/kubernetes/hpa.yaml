@@ -1,0 +1,14 @@
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: simplellm-hpa
+  labels:
+    app: simplellm
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: simplellm-deployment
+  minReplicas: 1
+  maxReplicas: 6

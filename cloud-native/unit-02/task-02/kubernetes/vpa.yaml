@@ -10,8 +10,6 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: simplellm-deployment
-  updatePolicy:
-    updateMode: Auto
   resourcePolicy:
     containerPolicies:
     - containerName: simplellm
@@ -21,3 +19,5 @@ spec:
       maxAllowed:
         cpu: 500m
         memory: 500M
+  updatePolicy:
+    updateMode: Auto
