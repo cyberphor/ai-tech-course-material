@@ -22,9 +22,3 @@ spec:
         image: amazingant.azurecr.io/worker:v1 
         ports:
         - containerPort: 8080
-        resources:
-          requests:
-            cpu: 375m
-            memory: 64M
-          limits:
-            memory: 64M

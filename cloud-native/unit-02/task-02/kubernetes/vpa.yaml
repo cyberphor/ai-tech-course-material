@@ -7,8 +7,17 @@ metadata:
     app: simplellm
 spec:
   targetRef:
-    apiVersion: "apps/v1"
+    apiVersion: apps/v1
     kind: Deployment
     name: simplellm-deployment
   updatePolicy:
-    updateMode: "Auto"
+    updateMode: Auto
+  resourcePolicy:
+    containerPolicies:
+    - containerName: simplellm
+      minAllowed:
+        cpu: 250m
+        memory: 250M
+      maxAllowed:
+        cpu: 500m
+        memory: 500M

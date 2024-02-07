@@ -291,7 +291,7 @@ helm install goldilocks --namespace goldilocks fairwinds-stable/goldilocks
 kubectl label ns default goldilocks.fairwinds.com/enabled=true
 ```
 
-**Step 15.** Expose the "Goldilocks dashboard" object you created using Helm.
+**Step 15.** Expose the "Goldilocks dashboard" object created earlier by Helm.
 ```bash
 kubectl -n goldilocks expose deployment goldilocks-dashboard --type=LoadBalancer --name=goldilocks-service
 ```
@@ -328,63 +328,38 @@ cd ~/llmservice-handout/worker/loadtester/
 locust --headless -H http://52.232.230.217
 ```
 
-**Step 20.** Open "Goldilocks" to see what recommendations it has for your resource requests and limit values so your `simplellm-service` deployment has a "Guaranteed Quality of Service". 
+**Step 20.** Open "Goldilocks" to see what recommendations it has for your resource requests now that it's seen your deployment under load.
 
-![goldilocks-01.png](task-02/goldilocks-01.png)
+![goldilocks-01.png](task-02/goldilocks.png)
 
-**Step 21.** Change directories to `~/llmservice-handout/worker/k8s/`, update your `deployment.yaml` file with the values you saw in the previous step. Then, patch your `simplellm-service` object.
+**Step 21.** Change directories to `~/llmservice-handout/worker/k8s/`, update your `vpa.yaml` file with new values, and patch your `simplellm-service` object.
 ```bash
 cd ~/llmservice-handout/worker/k8s/
+vim vpa.yaml
 kubectl -n default apply -f .
 ```
 
-**Step 22.** Make sure to wait for the old pods to terminate and the status of the new pods (that have the new settings) is `running`. 
+**Step 22.** Make sure to the old pods are terminated and the new pods are `running` before testing the change you made. 
 ```bash
 kubectl get pods
 ```
 
-**Step 23.** Open "Goldilocks" to confirm it sees you have implemented its recommendations for vertical pod scaling. 
-![goldilocks-02.png](task-02/goldilocks-02.png)
-
-**Step 24.** Test your application now that it's AKS cluster has been modified.
+**Step 23.** Test your application now that it's AKS cluster has been modified.
 ```bash
 curl -G --data-urlencode message="what is 1 + 1?" http://52.232.230.217/api
 ```
 
-**Misc.** FYI, if you're having trouble calibrating how much CPU and memory to allocate pick a node. 
+**Misc.** I found myself repeating these commands over and over again from the `~/llmservice-handout/` directory when submitting (as I changed the resource values).
 ```bash
-kubectl get nodes
-```
-
-Your output should be similar to below. 
-```bash
-NAME                                STATUS   ROLES   AGE   VERSION
-aks-nodepool1-19130009-vmss000000   Ready    agent   25h   v1.27.7
-aks-nodepool1-19130009-vmss000001   Ready    agent   25h   v1.27.7
-aks-nodepool1-19130009-vmss000002   Ready    agent   25h   v1.27.7
-```
-
-Next, use `kubectl` to describe what is "Allocatable" for one of the nodes listed above (e.g., `aks-nodepool1-19130009-vmss000000` - yours will obviously have a different name).
-```bash
-kubectl describe node aks-nodepool1-19130009-vmss000000 | grep "Allocatable" -A 5
-```
-
-Your output should be similar to below. Now, I know my maximum limit is `1900m` CPU (i.e., 1.9 CPUs) and `4652376` memory (i.e., 4,650 MBs or 4.65 GBs of RAM).
-```yaml
-Allocatable:
-  cpu:                1900m
-  ephemeral-storage:  119703055367
-  hugepages-1Gi:      0
-  hugepages-2Mi:      0
-  memory:             4652376Ki
-```
-
-Also, I found myself repeating these commands over and over again when submitting (as I changed the resource values).
-```bash
-vim worker/k8s/deployment.yaml
-kubectl -n default apply -f worker/k8s/deployment.yaml
-curl 52.232.230.217/healthcheck
+cd ~/llmservice-handout/
+vim worker/k8s/vpa.yaml
+kubectl -n default apply -f worker/k8s/vpa.yaml
+kubectl get vpa
+kubectl describe vpa simplellm-vpa
+kubectl get pods
+curl http://52.232.230.217/healthcheck
 curl -G --data-urlencode message="what is 1 + 1?" http://52.232.230.217/api
+./submitter task2
 ```
 
 ## Task 3
