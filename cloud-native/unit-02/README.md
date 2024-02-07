@@ -439,6 +439,41 @@ simplellm-hpa   Deployment/simplellm-deployment   <unknown>/50%   1         8   
 kubectl describe hpa simplellm-hpa
 ```
 
+*Text goes here*
+```bash
+kubectl -n kube-system delete svc/vpa-webhook
+kubectl -n kube-system delete deployment/vpa-controller
+kubectl -n kube-system delete deployment/vpa-recommender
+kubectl -n kube-system delete deployment/vpa-updater
+```
+
+*Verify deployment has correct resource request/limit values.*
+```bash
+kubectl describe deployment simplellm-deployment
+```
+
+*Verify pod inherits resource request/limit values from deployment.* 
+```bash
+kubectl describe pod -l app=simplellm
+```
+
+*Verify Metrics Server is accessible.*
+```bash
+kubectl get --raw "/apis/metrics.k8s.io/"
+```
+
+Your output should be similar to below. 
+```json
+{"kind":"APIGroup","apiVersion":"v1","name":"metrics.k8s.io","versions":[{"groupVersion":"metrics.k8s.io/v1beta1","version":"v1beta1"}],"preferredVersion":{"groupVersion":"metrics.k8s.io/v1beta1","version":"v1beta1"}}
+```
+
+*Text goes here*
+```bash
+wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+vim components.yaml
+kubectl get deployment -A
+```
+
 ## Task 4
 **Step 1.** Text goes here.
 
