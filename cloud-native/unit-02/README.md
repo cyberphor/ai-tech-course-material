@@ -412,6 +412,18 @@ locust --headless -H http://52.232.230.217 -u 5 -r 0.008
 ```
 
 **Misc.** The following commands were helpful in completing this task. 
+
+*Check status of metrics server (HPA depends on it)*  
+```bash
+kubectl get apiservices | grep metrics
+```
+
+Your output should be similar to below. 
+```bash
+v1beta1.metrics.k8s.io                 kube-system/metrics-server   True        40h
+```
+
+*Check status of HPA*  
 ```bash
 kubectl get hpa
 ```
@@ -420,6 +432,11 @@ Your output should be similar to below.
 ```bash
 NAME            REFERENCE                         TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
 simplellm-hpa   Deployment/simplellm-deployment   <unknown>/50%   1         8         1          96m
+```
+
+*Text goes here*
+```bash
+kubectl describe hpa simplellm-hpa
 ```
 
 ## Task 4
