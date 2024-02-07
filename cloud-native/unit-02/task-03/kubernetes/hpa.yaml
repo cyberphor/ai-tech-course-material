@@ -3,12 +3,17 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: simplellm-hpa
-  labels:
-    app: simplellm
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: simplellm-deployment
   minReplicas: 1
-  maxReplicas: 6
+  maxReplicas: 8 # 2 CPUs / 0.25 CPU (250m) per pod (each pod has 1 container)
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
