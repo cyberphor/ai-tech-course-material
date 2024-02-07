@@ -402,7 +402,7 @@ cd ~/llmservice-handout/worker/loadtester/
 
 **Step 8.** Using `locust`, run a load test against your load balancer's external IP address. Submit your work once at least 90 queries pass.
 ```bash
-locust --headless -H http://52.232.230.217 -u 5 -r 0.008 --run-time 1m
+locust --headless -H http://52.232.230.217 -u 5 -r 0.008 
 ```
 
 ## Task 4
