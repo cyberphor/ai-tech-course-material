@@ -474,6 +474,12 @@ vim components.yaml
 kubectl get deployment -A
 ```
 
+```bash
+cd ~/llmservice-handout/worker/loadtester/
+locust --headless -H http://52.232.230.217 &
+kubectl get pods -w
+```
+
 ## Task 4
 **Step 1.** Text goes here.
 
