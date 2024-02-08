@@ -264,11 +264,11 @@ mkdir ~/llmservice-handout/worker/k8s/
 cd ~/llmservice-handout/worker/k8s/
 ```
 
-**Step 7.** Create a `deployment.yaml` file using the [provided example](task-02/kubernetes/deployment.yaml).
+**Step 7.** Create a `deployment.yaml` file using the [provided example](task-02/deployment.yaml).
 
-**Step 8.** Create a `service.yaml` file using the [provided example](task-02/kubernetes/service.yaml).
+**Step 8.** Create a `service.yaml` file using the [provided example](task-02/service.yaml).
 
-**Step 9.** Create a `vpa.yaml` file using the [provided example](task-02/kubernetes/vpa.yaml).
+**Step 9.** Create a `vpa.yaml` file using the [provided example](task-02/vpa.yaml).
 
 **Step 10.** Deploy the `simplellm` service defined by the files you just created. 
 ```bash
@@ -386,9 +386,9 @@ cd ~/llmservice-handout/worker/k8s/
 rm vpa.yaml
 ```
 
-**Step 3.** Update your `deployment.yaml` file (using the [provided example](task-03/kubernetes/deployment.yaml)) so it has a `startupProbe` and `readinessProbe`.
+**Step 3.** Update your `deployment.yaml` file (using the [provided example](task-03/deployment.yaml)) so it has a `startupProbe` and `readinessProbe`.
 
-**Step 4.** Create a `hpa.yaml` file using the [provided example](task-03/kubernetes/hpa.yaml).
+**Step 4.** Create a `hpa.yaml` file using the [provided example](task-03/hpa.yaml).
 
 **Step 5.** From the `~/llmservice-handout/worker/k8s/` directory, deploy the changes you made. 
 ```bash
@@ -477,7 +477,7 @@ cd ~/llmservice-handout/task4/
 func init --worker-runtime python --model V2
 ```
 
-**Step 3.** Edit `function_app.py` using the [provided example](task-04/function/function_app.py). 
+**Step 3.** Edit `function_app.py` using the [provided example](task-04/function_app.py). 
 
 **Step 4.** Copy `tinyllama-1.1b-chat-v1.0.Q2_K.gguf` to your current working directory. 
 ```bash
