@@ -11,12 +11,12 @@ spec:
   minReplicas: 1
   maxReplicas: 24 # 6 CPUs / 0.25 CPU (250m) = 24 pods max (each pod has 1 container)
   behavior:
-    scaleUp:
+    scaleUp: # scale up by 1 pod when CPU usage of all pods combined is greater than 50% for more than 10 seconds
       policies:
       - type: Pods
         value: 1
         periodSeconds: 10
-    scaleDown:
+    scaleDown: # scale down by 1 pod when CPU usage of all pods combined is less than 50% for more than 10 seconds
       policies:
       - type: Pods
         value: 1

@@ -1,3 +1,2 @@
-.env
 setup/terraform/.terraform*
 setup/terraform/terraform.*
