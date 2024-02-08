@@ -1,10 +1,16 @@
 # Cloud Native
+* [References](#references)
 * [Setup](#setup)
 * [Task 01](#task-01)
 * [Task 02](#task-02)
 * [Task 03](#task-03)
 * [Task 04](#task-04)
-* [References](#references)
+
+## References
+* [Kubernetes: Configure Liveness, Readiness and Startup Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+* [Kubernetes: HorizontalPodAutoscaler Walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
+* [Microsoft: Develop Azure Functions locally using Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python)
+* [GitHub: Azure-Samples/function-python-ai-langchain](https://github.com/azure-samples/function-python-ai-langchain/blob/main/function_app.py)
 
 ## Setup
 **Step 1.** Download the `vic-code` GitHub repository and change directories to this week's project. These commands are meant to be ran on your personal computer.
@@ -371,7 +377,7 @@ curl -G --data-urlencode message="what is 1 + 1?" http://52.232.230.217/api
 ## Task 3
 **Step 1.** Delete the Vertical Pod Autoscaler object from your cluster. 
 ```bash
-kubectl delete vpa/
+kubectl delete vpa/simplellm-vpa
 ```
 
 **Step 2.** Change directories to `~/llmservice-handout/worker/k8s/` and delete the Vertical Pod Autoscaler's manifest file (`vpa.yaml`). 
@@ -439,25 +445,17 @@ simplellm-hpa   Deployment/simplellm-deployment   <unknown>/50%   1         8   
 kubectl describe hpa simplellm-hpa
 ```
 
-*Text goes here*
-```bash
-kubectl -n kube-system delete svc/vpa-webhook
-kubectl -n kube-system delete deployment/vpa-controller
-kubectl -n kube-system delete deployment/vpa-recommender
-kubectl -n kube-system delete deployment/vpa-updater
-```
-
-*Verify deployment has correct resource request/limit values.*
+*Verify your deployment object has correct resource request/limit values*
 ```bash
 kubectl describe deployment simplellm-deployment
 ```
 
-*Verify pod inherits resource request/limit values from deployment.* 
+*Verify your pods are inheriting resource request/limit values from your deployment object* 
 ```bash
 kubectl describe pod -l app=simplellm
 ```
 
-*Verify Metrics Server is accessible.*
+*Verify your Metrics Server is accessible*
 ```bash
 kubectl get --raw "/apis/metrics.k8s.io/"
 ```
@@ -467,22 +465,41 @@ Your output should be similar to below.
 {"kind":"APIGroup","apiVersion":"v1","name":"metrics.k8s.io","versions":[{"groupVersion":"metrics.k8s.io/v1beta1","version":"v1beta1"}],"preferredVersion":{"groupVersion":"metrics.k8s.io/v1beta1","version":"v1beta1"}}
 ```
 
-*Text goes here*
-```bash
-wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-vim components.yaml
-kubectl get deployment -A
-```
-
-```bash
-cd ~/llmservice-handout/worker/loadtester/
-locust --headless -H http://52.232.230.217 &
-kubectl get pods -w
-```
-
 ## Task 4
-**Step 1.** Text goes here.
+**Step 1.** Create a new directory called `task4` under `~/llmservice-handout/` and then change directories to it. 
+```bash
+mkdir ~/llmservice-handout/task4/
+cd ~/llmservice-handout/task4/
+```
 
-## References
-* [https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
-* [https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
+**Step 2.** Create the files needed for an Azure Function. 
+```bash
+func init --worker-runtime python --model V2
+```
+
+**Step 3.** Edit `function_app.py` using the [provided example](task-04/function/function_app.py). 
+
+**Step 4.** Copy `tinyllama-1.1b-chat-v1.0.Q2_K.gguf` to your current working directory. 
+```bash
+cp ../worker/src/tinyllama-1.1b-chat-v1.0.Q2_K.gguf .
+```
+
+**Step 5.** Start a local instance of your Azure Function as a background process.
+```bash
+func start &
+``` 
+
+Your output should be similar to below. Remember this number so you know the process ID of your Azure Function.
+```bash
+[1] 74551
+```
+
+**Step 6.** Test your Azure Function.
+```bash
+curl http://localhost:7071/api/llm?message="hello"
+```
+
+**Step 7.** Stop your Azure Function. 
+```bash
+kill -9 74551
+```
