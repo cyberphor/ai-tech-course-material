@@ -9,18 +9,18 @@ spec:
     kind: Deployment
     name: simplellm-deployment
   minReplicas: 1
-  maxReplicas: 8 # 2 CPUs / 0.25 CPU (250m) per pod (each pod has 1 container)
+  maxReplicas: 24 # 6 CPUs / 0.25 CPU (250m) = 24 pods max (each pod has 1 container)
   behavior:
     scaleUp:
       policies:
       - type: Pods
         value: 1
-        periodSeconds: 30
+        periodSeconds: 10
     scaleDown:
       policies:
-      - type: Percent
-        value: 10
-        periodSeconds: 60
+      - type: Pods
+        value: 1
+        periodSeconds: 20
   metrics:
   - type: Resource
     resource:
