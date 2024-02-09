@@ -11,8 +11,8 @@
       ansible.builtin.script: scripts/Install-AzureFunctions.sh
     - name: Install Kubectl
       ansible.builtin.script: scripts/Install-Kubectl.sh
-    - name: Install Helm
-      ansible.builtin.script: scripts/Install-Helm.sh
+    #- name: Install Helm
+    #  ansible.builtin.script: scripts/Install-Helm.sh
     - name: Get Handout
       ansible.builtin.script: scripts/Get-Handout.sh
     - name: Update Python

@@ -1,2 +1,6 @@
 setup/terraform/.terraform*
 setup/terraform/terraform.*
+task-04/function/tinyllama-1.1b-chat-v1.0.Q2_K.gguf
+task-04/terraform/.terraform*
+task-04/terraform/terraform.*
+task-04/terraform/function.zip
