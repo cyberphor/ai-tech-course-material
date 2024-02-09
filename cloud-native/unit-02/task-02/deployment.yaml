@@ -8,7 +8,7 @@ metadata:
   annotations:
     goldilocks.fairwinds.com/enabled: "true"
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: simplellm 
@@ -19,6 +19,6 @@ spec:
     spec:
       containers:
       - name: simplellm
-        image: amazingant.azurecr.io/worker:v1 
+        image: uncommongrackle.azurecr.io/worker:v1 
         ports:
         - containerPort: 8080

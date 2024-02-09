@@ -11,6 +11,7 @@
 * [Kubernetes: HorizontalPodAutoscaler Walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
 * [Microsoft: Develop Azure Functions locally using Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python)
 * [GitHub: Azure-Samples/function-python-ai-langchain](https://github.com/azure-samples/function-python-ai-langchain/blob/main/function_app.py)
+* [GitHub: jllllll/llama-cpp-python-cuBLAS-wheels](https://github.com/jllllll/llama-cpp-python-cuBLAS-wheels/releases/tag/cpu)
 
 ## Setup
 **Step 1.** Download the `vic-code` GitHub repository and change directories to this week's project. These commands are meant to be ran on your personal computer.
@@ -212,7 +213,7 @@ az container create \
 curl http://${ACI_NAME}.eastus2.azurecontainer.io:8080/healthcheck
 ```
 
-## Task 2
+## Task 02
 **Step 1.** From the virtual machine, create a Azure Kubernetes Service (AKS) cluster.
 ```bash
 az aks create \
@@ -502,4 +503,48 @@ curl http://localhost:7071/api/llm?message="hello"
 **Step 7.** Stop your Azure Function. 
 ```bash
 kill -9 74551
+```
+
+**Step 8.** Create an Azure resource group. 
+```bash
+az group create \
+  --name "SimpleLLM" \
+  --location "eastus
+```
+
+**Step 9.** Create an Azure storage account.
+```bash
+az storage account create \
+  --name "simplellmstorageaccount" \
+  --location "eastus" \
+  --resource-group "SimpleLLM" \
+  --sku "Standard_LRS"
+```
+
+**Step 10.** Create an Azure Function. 
+```bash
+az functionapp create \
+  --resource-group "SimpleLLM" \
+  --consumption-plan-location "eastus" \
+  --runtime "python" \
+  --runtime-version "3.8" \
+  --functions-version 4 \
+  --name "SimpleLLM" \
+  --os-type "linux" \
+  --storage-account "simplellmstorageaccount"
+```
+
+**Step 11.** Add content to your Azure Function.
+```bash
+func azure functionapp publish "SimpleLLM"
+```
+
+**Step 12.** Test your Azure Function.
+```bash
+curl https://simplellm.azurewebsites.net/api/llm?message="Hello"
+```
+
+**Step 99.** Delete the resources you created during this task.
+```bash
+az group delete --name "SimpleLLM"
 ```
