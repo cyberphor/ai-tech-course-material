@@ -55,7 +55,7 @@ export IP_ADDRESS=$(terraform -chdir=terraform output -raw ip_address)
 ansible-playbook ansible/playbook.yaml -u $USERNAME -i ansible/inventory.yaml --ssh-common-args='-o StrictHostKeyChecking=no'
 ```
 
-## Task 1
+## Task 01
 **Step 1.** Connect to the virtual machine you just created and change directories to `llmservice-handout`. 
 ```bash
 cd llmservice-handout/
@@ -375,7 +375,7 @@ curl -G --data-urlencode message="what is 1 + 1?" http://52.232.230.217/api
 ./submitter task2
 ```
 
-## Task 3
+## Task 03
 **Step 1.** Delete the Vertical Pod Autoscaler object from your cluster. 
 ```bash
 kubectl delete vpa/simplellm-vpa
@@ -466,7 +466,7 @@ Your output should be similar to below.
 {"kind":"APIGroup","apiVersion":"v1","name":"metrics.k8s.io","versions":[{"groupVersion":"metrics.k8s.io/v1beta1","version":"v1beta1"}],"preferredVersion":{"groupVersion":"metrics.k8s.io/v1beta1","version":"v1beta1"}}
 ```
 
-## Task 4
+## Task 04
 **Step 1.** Create a new directory called `task4` under `~/llmservice-handout/` and then change directories to it. 
 ```bash
 mkdir ~/llmservice-handout/task4/
