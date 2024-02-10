@@ -1,17 +1,12 @@
 data "azurerm_client_config" "main" {}
 
-resource "random_pet" "value" {
-  length    = 2
-  separator = ""
-}
-
 resource "azurerm_resource_group" "main" {
   name     = var.resource_group_name
   location = var.location
 }
 
 resource "azurerm_storage_account" "main" {
-  name                     = random_pet.value.id
+  name                     = var.storage_account_name
   location                 = azurerm_resource_group.main.location
   resource_group_name      = azurerm_resource_group.main.name
   account_tier             = "Standard"
@@ -19,7 +14,7 @@ resource "azurerm_storage_account" "main" {
 }
 
 resource "azurerm_service_plan" "main" {
-  name                = random_pet.value.id
+  name                = var.app_service_plan_name
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   os_type             = "Linux"
@@ -34,27 +29,24 @@ data "archive_file" "main" {
 
 resource "azurerm_linux_function_app" "main" {
   depends_on = [ data.archive_file.main ]
-  name                        = random_pet.value.id
+  name                        = var.function_app_name
   resource_group_name         = azurerm_resource_group.main.name
   location                    = var.location
   service_plan_id             = azurerm_service_plan.main.id
   storage_account_name        = azurerm_storage_account.main.name
   storage_account_access_key  = azurerm_storage_account.main.primary_access_key
-  https_only                  = true
   functions_extension_version = "~4"
-  app_settings = {
-    "ENABLE_ORYX_BUILD"              = "true"                # enable on-the-fly builds
-    "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"                # enable on-the-fly builds
-    "FUNCTIONS_WORKER_RUNTIME"       = "python"
-    "AzureWebJobsFeatureFlags"       = "EnableWorkerIndexing"
-  }
-  site_config {
+  site_config {     # App Service app settings
     always_on = true
     application_stack {
       python_version = "3.8"
     }
   }
+  app_settings = {  # Azure Function app settings
+    "ENABLE_ORYX_BUILD"                = "true"  # enable on-the-fly builds
+    "SCM_DO_BUILD_DURING_DEPLOYMENT"   = "true"  # enable on-the-fly builds
+    "WEBSITE_RUN_FROM_PACKAGE"         = 1
+    "FUNCTIONS_WORKER_RUNTIME"         = "python"
+  }
   zip_deploy_file = data.archive_file.main.output_path
 }
-
-# https://github.com/hcodebase/tfazurefun/
