@@ -475,7 +475,7 @@ cd ~/llmservice-handout/task4/
 
 **Step 2.** Create the files needed for an Azure Function. 
 ```bash
-func init --worker-runtime python --model V2
+func init --worker-runtime python
 ```
 
 **Step 3.** Edit `function_app.py` using the [provided example](task-04/function_app.py). 
@@ -485,31 +485,26 @@ func init --worker-runtime python --model V2
 cp ../worker/src/tinyllama-1.1b-chat-v1.0.Q2_K.gguf .
 ```
 
-**Step 5.** Start a local instance of your Azure Function as a background process.
+**Step 5.** Start a local instance of your Azure Function.
 ```bash
-func start &
+func start 
 ``` 
 
-Your output should be similar to below. Remember this number so you know the process ID of your Azure Function.
+**Step 6.** Test the `healthcheck` endpoint of your Azure Function that's running locally.
 ```bash
-[1] 74551
+curl http://localhost:7071/api/healthcheck
 ```
 
-**Step 6.** Test your Azure Function.
+**Step 7.** Test the `llm` endpoint of your Azure Function that's running locally.
 ```bash
 curl http://localhost:7071/api/llm?message="hello"
-```
-
-**Step 7.** Stop your Azure Function. 
-```bash
-kill -9 74551
 ```
 
 **Step 8.** Create an Azure resource group. 
 ```bash
 az group create \
   --name "SimpleLLM" \
-  --location "eastus
+  --location "eastus"
 ```
 
 **Step 9.** Create an Azure storage account.
@@ -521,30 +516,89 @@ az storage account create \
   --sku "Standard_LRS"
 ```
 
-**Step 10.** Create an Azure Function. 
+**Step 10.** Create an Azure Function application. 
 ```bash
 az functionapp create \
-  --resource-group "SimpleLLM" \
   --consumption-plan-location "eastus" \
+  --resource-group "SimpleLLM" \
+  --name "SimpleLLM" \
+  --functions-version 4 \
   --runtime "python" \
   --runtime-version "3.8" \
-  --functions-version 4 \
-  --name "SimpleLLM" \
   --os-type "linux" \
   --storage-account "simplellmstorageaccount"
 ```
 
-**Step 11.** Add content to your Azure Function.
+**Step 11.** Text goes here.
+```bash
+az functionapp config appsettings set \
+  -g SimpleLLM \
+  -n SimpleLLM \
+  --settings @appsettings.json
+```
+
+**Step 12.** Add content to your Azure Function application.
 ```bash
 func azure functionapp publish "SimpleLLM"
 ```
 
-**Step 12.** Test your Azure Function.
+Your output should be similar to below. 
 ```bash
-curl https://simplellm.azurewebsites.net/api/llm?message="Hello"
+
+```
+
+**Step 13.** Test the `healthcheck` endpoint of your Azure Function that's running in Azure.
+```bash
+curl http://simplellm.azurewebsites.net/api/healthcheck
+```
+
+**Step 14.** Test the `llm` endpoint of your Azure Function that's running in Azure.
+```bash
+curl http://simplellm.azurewebsites.net/api/llm?message="Hello"
 ```
 
 **Step 99.** Delete the resources you created during this task.
 ```bash
 az group delete --name "SimpleLLM"
+```
+
+**Misc.** Text goes here.
+```bash
+az functionapp config appsettings list -g SimpleLLM -n SimpleLLM
+```
+
+Your output should be similar to below. 
+```json
+[
+  {
+    "name": "FUNCTIONS_WORKER_RUNTIME",
+    "slotSetting": false,
+    "value": "python"
+  },
+  {
+    "name": "FUNCTIONS_EXTENSION_VERSION",
+    "slotSetting": false,
+    "value": "~4"
+  },
+  {
+    "name": "AzureWebJobsStorage",
+    "slotSetting": false,
+    "value": "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=simplellmstorageaccount;AccountKey=tr/b1YKrGE2u1OuS/tjBwmMLLokUWkj6uCYAhMcA0JKJgDNGVD5dp8/BcSBfSUDolB+XxfxatPsm+AStOYSY+A=="
+  },
+  {
+    "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+    "slotSetting": false,
+    "value": "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=simplellmstorageaccount;AccountKey=tr/b1YKrGE2u1OuS/tjBwmMLLokUWkj6uCYAhMcA0JKJgDNGVD5dp8/BcSBfSUDolB+XxfxatPsm+AStOYSY+A=="
+  },
+  {
+    "name": "WEBSITE_CONTENTSHARE",
+    "slotSetting": false,
+    "value": "simplellm7782a58699ea"
+  },
+  {
+    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+    "slotSetting": false,
+    "value": "InstrumentationKey=f911b928-f0c2-46c0-9a4d-ae0c7ec7c2ee;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/"
+  }
+]
 ```
