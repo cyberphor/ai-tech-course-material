@@ -3,4 +3,4 @@
 # Manually managing azure-functions-worker may cause unexpected issues
 
 azure-functions
-https://github.com/jllllll/llama-cpp-python-cuBLAS-wheels/releases/download/cpu/llama_cpp_python-0.1.77+cpuavx-cp37-cp37m-linux_x86_64.whl
+https://github.com/abetlen/llama-cpp-python/releases/download/v0.2.6/llama_cpp_python-0.2.6-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
