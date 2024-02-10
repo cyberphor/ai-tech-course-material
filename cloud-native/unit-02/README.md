@@ -11,7 +11,8 @@
 * [Kubernetes: HorizontalPodAutoscaler Walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
 * [Microsoft: Develop Azure Functions locally using Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=linux%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-python)
 * [GitHub: Azure-Samples/function-python-ai-langchain](https://github.com/azure-samples/function-python-ai-langchain/blob/main/function_app.py)
-* [GitHub: jllllll/llama-cpp-python-cuBLAS-wheels](https://github.com/jllllll/llama-cpp-python-cuBLAS-wheels/releases/tag/cpu)
+* [llama-cpp-python - FAQ: Are there pre-built binaries / binary wheels available?](https://llama-cpp-python.readthedocs.io/en/latest/#are-there-pre-built-binaries-binary-wheels-available)
+* [GitHub: abetlen/llama-cpp-python](https://github.com/abetlen/llama-cpp-python/releases/tag/v0.2.6)
 
 ## Setup
 **Step 1.** Download the `vic-code` GitHub repository and change directories to this week's project. These commands are meant to be ran on your personal computer.
@@ -485,120 +486,43 @@ func init --worker-runtime python
 cp ../worker/src/tinyllama-1.1b-chat-v1.0.Q2_K.gguf .
 ```
 
-**Step 5.** Start a local instance of your Azure Function.
+**Step 5.** Start a local instance of your Azure Function. 
 ```bash
 func start 
 ``` 
 
-**Step 6.** Test the `healthcheck` endpoint of your Azure Function that's running locally.
-```bash
-curl http://localhost:7071/api/healthcheck
-```
-
-**Step 7.** Test the `llm` endpoint of your Azure Function that's running locally.
+**Step 6.** Test the `llm` endpoint of your Azure Function that's running locally. 
 ```bash
 curl http://localhost:7071/api/llm?message="hello"
 ```
 
-**Step 8.** Create an Azure resource group. 
+**Step 7.** Run the [provided BASH script](task-04/publish.sh). It will create a resource group, storage account, and app service plan as well as *publish* your Azure Function.
 ```bash
-az group create \
-  --name "SimpleLLM" \
-  --location "eastus"
+bash publish.sh
 ```
 
-**Step 9.** Create an Azure storage account.
-```bash
-az storage account create \
-  --name "simplellmstorageaccount" \
-  --location "eastus" \
-  --resource-group "SimpleLLM" \
-  --sku "Standard_LRS"
-```
-
-**Step 10.** Create an Azure Function application. 
-```bash
-az functionapp create \
-  --consumption-plan-location "eastus" \
-  --resource-group "SimpleLLM" \
-  --name "SimpleLLM" \
-  --functions-version 4 \
-  --runtime "python" \
-  --runtime-version "3.8" \
-  --os-type "linux" \
-  --storage-account "simplellmstorageaccount"
-```
-
-**Step 11.** Text goes here.
-```bash
-az functionapp config appsettings set \
-  -g SimpleLLM \
-  -n SimpleLLM \
-  --settings @appsettings.json
-```
-
-**Step 12.** Add content to your Azure Function application.
-```bash
-func azure functionapp publish "SimpleLLM"
-```
-
-Your output should be similar to below. 
-```bash
-
-```
-
-**Step 13.** Test the `healthcheck` endpoint of your Azure Function that's running in Azure.
-```bash
-curl http://simplellm.azurewebsites.net/api/healthcheck
-```
-
-**Step 14.** Test the `llm` endpoint of your Azure Function that's running in Azure.
+**Step 8.** Test the `llm` endpoint of your Azure Function that's running in Azure. Then, submit your work.
 ```bash
 curl http://simplellm.azurewebsites.net/api/llm?message="Hello"
 ```
 
-**Step 99.** Delete the resources you created during this task.
+**Step 9.** Delete the resources you created during this task.
 ```bash
 az group delete --name "SimpleLLM"
 ```
 
-**Misc.** Text goes here.
+**Misc.** If you make changes to your `function_app.py` file, run the command below again.
 ```bash
-az functionapp config appsettings list -g SimpleLLM -n SimpleLLM
+func azure functionapp publish "SimpleLLM"
 ```
 
-Your output should be similar to below. 
-```json
-[
-  {
-    "name": "FUNCTIONS_WORKER_RUNTIME",
-    "slotSetting": false,
-    "value": "python"
-  },
-  {
-    "name": "FUNCTIONS_EXTENSION_VERSION",
-    "slotSetting": false,
-    "value": "~4"
-  },
-  {
-    "name": "AzureWebJobsStorage",
-    "slotSetting": false,
-    "value": "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=simplellmstorageaccount;AccountKey=tr/b1YKrGE2u1OuS/tjBwmMLLokUWkj6uCYAhMcA0JKJgDNGVD5dp8/BcSBfSUDolB+XxfxatPsm+AStOYSY+A=="
-  },
-  {
-    "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
-    "slotSetting": false,
-    "value": "DefaultEndpointsProtocol=https;EndpointSuffix=core.windows.net;AccountName=simplellmstorageaccount;AccountKey=tr/b1YKrGE2u1OuS/tjBwmMLLokUWkj6uCYAhMcA0JKJgDNGVD5dp8/BcSBfSUDolB+XxfxatPsm+AStOYSY+A=="
-  },
-  {
-    "name": "WEBSITE_CONTENTSHARE",
-    "slotSetting": false,
-    "value": "simplellm7782a58699ea"
-  },
-  {
-    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-    "slotSetting": false,
-    "value": "InstrumentationKey=f911b928-f0c2-46c0-9a4d-ae0c7ec7c2ee;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/"
-  }
-]
-```
+Also, there's a few things I learned while experimenting with Azure Functions:
+* Files in the function's directory (wherever `func` is called) are uploaded automatically. The model file is almost half a GB and it wasn't a problem. I should do more research on file-size limit in the future. Also, from what I could tell, the files were not stored in the storage account created. 
+* I only needed to re-run `func azure functionapp publish "SimpleLLM"` when making changes to `function_app.py` (i..e, I did not need to delete the app service plan, storage account, or resource group anytime I made a change). `func` was able to determine if there was duplicate files - this is what led me to test and confirm this fact. 
+* The actions performed by `az functionapp create` take some time (20-30 seconds) for changes to be reflected in Azure. Therefore, I had to bake in sometime between running `func azure functionapp publish "SimpleLLM"` right after it. 
+* The function name used does not need to match the route used. For example, if I had a function called `llm` the route (i.e., the URL/endpoint requested) doesn't need to also be called `llm`. I tested this fact by naming my function `foo` and naming the route for it `llm`. Everything still worked fine. Also, the value shown in the portal is whatever function name you use in your code, not the route you use. So when I tried using `foo` for my function name and `llm` as the route, `foo` was displayed in the portal. 
+* I temporarily added a `subprocess` statement to run `uname` on the Linux host that was serving my Azure Function. It returned this: `Linux SandboxHost-638431781645874998 5.10.102.2-microsoft-standard #1 SMP Mon Mar 7 17:36:34 UTC 2022 x86_64 GNU/Linux`
+* I tested my Azure Function scaffolding before testing my Python dependencies. As in, I made sure I could run the examples provided in Azure documentation before trying to run 
+a Machine Learning application via Azure Functions.
+* If you're reading this, I want you to know while debugging my code the model once replied back with `Can you provide me with a list of the ingredients needed for making a classic chicken fajita?` when I sent the message `Hello`
+* You can monitor logs of your Azure Function by navigating the following path in the Azure portal: your Function App > Overview tab > Function (e.g., "llm") > Monitor > Logs tab. Once you're there, wait a few seconds and then you can begin running `curl` and watching your requests hit your Azure Function.

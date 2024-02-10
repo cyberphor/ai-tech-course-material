@@ -10,16 +10,11 @@ MODEL_PATH = "tinyllama-1.1b-chat-v1.0.Q2_K.gguf"
 N_CTX = 512
 N_BATCH = 1
 TEMPERATURE = 0.0
-MAX_TOKENS = None
+MAX_TOKENS = 50
 MODEL_DESCRIPTION = "You are an assistant."
 
-model = Llama(model_path=MODEL_PATH, n_ctx=N_CTX, n_batch=N_BATCH)
 app = FunctionApp()
-
-@app.route(route="healthcheck", auth_level=AuthLevel.ANONYMOUS)
-def healthcheck(req: HttpRequest) -> HttpResponse:
-    logging.info(f"[User] {req}")
-    return HttpResponse("OK\n")
+model = Llama(model_path=MODEL_PATH, n_ctx=N_CTX, n_batch=N_BATCH)
 
 @app.route(route="llm", auth_level=AuthLevel.ANONYMOUS)
 def llm(req: HttpRequest) -> HttpResponse:
