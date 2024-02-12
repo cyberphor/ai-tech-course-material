@@ -1,0 +1,11 @@
+---
+- hosts: all
+  tasks:
+    - name: Get Handouts
+      ansible.builtin.script: scripts/Get-Handouts.sh
+    - name: Install Python Dependencies
+      ansible.builtin.script: scripts/Install-PythonDependencies.sh
+    - name: Install MongoDB
+      ansible.builtin.script: scripts/Install-MongoDB.sh
+    - name: Set BASH Aliases
+      ansible.builtin.script: scripts/Set-BashAliases.sh
