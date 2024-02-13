@@ -93,3 +93,44 @@ resource "azurerm_linux_virtual_machine" "main" {
     version                       = var.vm_image_version
   }
 }
+
+resource "azurerm_cosmosdb_account" "cosmosdb" {
+  name                = "mycoolcosmoaccountname"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  offer_type          = "Standard"
+  kind                = "MongoDB"
+
+  capabilities {
+    name = "EnableMongo"
+  }
+
+  consistency_policy {
+    consistency_level       = "Eventual"
+  }
+
+  geo_location {
+    location          = azurerm_resource_group.main.location
+    failover_priority = 0
+  }
+}
+
+resource "azurerm_cosmosdb_mongo_database" "database" {
+  name                = "Customer_reviews"
+  resource_group_name = azurerm_resource_group.main.name
+  account_name        = azurerm_cosmosdb_account.cosmosdb.name
+  throughput          = 8000
+}
+
+resource "azurerm_cosmosdb_mongo_collection" "collection" {
+  name                = "movie_reviews"
+  resource_group_name = azurerm_resource_group.main.name
+  account_name        = azurerm_cosmosdb_account.cosmosdb.name
+  database_name       = azurerm_cosmosdb_mongo_database.database.name
+  shard_key           = "asin"
+  throughput          = 8000
+
+  index {
+    keys   = ["_id"]
+  }
+}
