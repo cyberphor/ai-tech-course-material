@@ -10,7 +10,8 @@
 ## References
 If I find any helpful references, I will put them here. 
 * [GitHub - cyberphor: virtualization/containers/kubernetes](https://github.com/cyberphor/knowledge-base/tree/main/virtualization/containers/kubernetes)
-* [Kubernetes Gateway API](https://gateway-api.sigs.k8s.io/)
+* [Kubernetes Gateway API: Overview](https://gateway-api.sigs.k8s.io/)
+* [Kubernetes Gateway API: Deploying a Simple Gateway](https://gateway-api.sigs.k8s.io/guides/simple-gateway/)
 * [NGINX Gateway Fabric (NGF)](https://docs.nginx.com/nginx-gateway-fabric/overview/gateway-architecture/)
 
 ## Setup
@@ -109,14 +110,55 @@ helm install ngf oci://ghcr.io/nginxinc/charts/nginx-gateway-fabric --create-nam
 kubectl apply -f https://raw.githubusercontent.com/nginxinc/nginx-gateway-fabric/v1.0.0/deploy/manifests/service/loadbalancer.yaml
 ```
 
-If you were able to complete the steps above, you've created the object in the image below. 
+If you were able to complete the steps above, you've created the object in the image below. Also, FYSA, your Gateway API is in its own namespace, not the default one where your objects will live. If you want to check the status of it, run this command: `kubectl -n nginx-gateway get pods`. 
 ![nginx-gateway-fabric.png](setup/nginx-gateway-fabric.png)
 
-The following instructions cover creating the objects in the image below (these objects are logically within the `nginx` container in the previous image).  
+## Task 01
+The following instructions cover creating the objects in the image below in the ordered specified. The object with the green checkmark was created in the previous section. Also, the objects shown are logically within the NGF pod circled above. 
+
 ![gateway-api.png](setup/gateway-api.png)
 
-## Task 01
-**Step 1.** Text goes here.
+**Step 1.** Using your favorite text-editor and [the provided example](task-01/gateway.yaml), create a Kubernetes manifest for a Gateway object. If you're curious on how I determined the `GatewayClass` name, I ran the command `kubectl get gatewayclass -o yaml` and looked at the `name` field.  
+```bash
+vim gateway.yaml
+```
+
+**Step 2.** Apply the Kubernetes manifest file you just created to your Kubernetes cluster. The command below is meant to be ran in the same directory as your `gateway.yaml` file.
+```bash
+kubectl apply -f gateway.yaml
+```
+
+**Step 3.** Update [the files provided to deploy a containerized Large Language Model (LLM)](task-01/llm-service/) so they use the ACR you created earier. For example, when I downloaded the files they originally had `p3acr.azurecr.io` from the GitHub repository created in the first step of the [Setup](#setup) section. I updated them to use `cyberphorwashere.azurecr.io` instead. 
+
+**Step 4.** Change directories to the files you just updated.  
+```bash
+cd task-01/llm-service/
+```
+
+**Step 5.** Run the `wheel` target in [the provided Makefile](task-01/llm-service/Makefile) using the command below. This step creates the Python wheels the LLM needs to work. 
+```bash
+make wheel
+```
+
+**Step 6.** Run the `push` target in the same Makefile mentioned above using the command below. This step builds, tags, and pushes the containerized LLM (along with the Python wheels you just created) to your ACR. This is why you had to specify the correct name for your ACR. 
+```bash
+make push
+```
+
+**Step 7.** Deploy the containerized LLM mentioned above using [the provided Kubernetes manifest files](task-01/llm-service/k8s/) and the command below. If you're following along with the instructions in Sail(), this step is implied at the end Task 1, Subtask 1 (my instructions skip the "Interim Validation" part for Subtask 1). 
+```bash
+kubectl apply -f k8s/
+```
+
+**Step 8.** Using your favorite text-editor and [the provided example](task-01/httproute.yaml), create a Kubernetes manifest for a HTTPRoute object. The provided example configures Kubernetes to send everything recieved on TCP port 80 (with the prefix `/api`) of the Gateway object to the `llmservice` pod. 
+```bash
+vim httproute.yaml
+```
+
+**Step 9.** Apply the Kubernetes manifest file you just created to your Kubernetes cluster. The command below is meant to be ran in the same directory as your `httproute.yaml` file.
+```bash
+kubectl apply -f httproute.yaml
+```
 
 ## Task 02
 **Step 1.** Text goes here.

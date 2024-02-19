@@ -13,7 +13,7 @@ az aks create \
     --enable-managed-identity \
     --node-count 2 \
     --generate-ssh-keys
-echo "Waiting a few minutes for Azure to finish creating the Azure Kubernetes Cluster resource..."
+echo "Waiting a few minutes for Azure to finish creating the Azure Kubernetes Service resource..."
 sleep 300
 az aks update \
     --resource-group project3 \
