@@ -9,3 +9,7 @@ spec:
   - backendRefs:
     - name: llmservice
       port: 80              
+  - matches:
+      - path:
+          type: PathPrefix 
+          value: /       

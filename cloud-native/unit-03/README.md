@@ -118,7 +118,7 @@ The following instructions cover creating the objects in the image below in the 
 
 ![gateway-api.png](setup/gateway-api.png)
 
-**Step 1.** Using your favorite text-editor and [the provided example](task-01/gateway.yaml), create a Kubernetes manifest for a Gateway object. If you're curious on how I determined the `GatewayClass` name, I ran the command `kubectl get gatewayclass -o yaml` and looked at the `name` field.  
+**Step 1.** Using your favorite text-editor and [the provided example](task-01/gateway.yaml), create a Kubernetes manifest for a Gateway object. If you're curious about how I determined the `GatewayClass` name, I ran the command `kubectl get gatewayclass -o yaml` and looked at the `name` field.  
 ```bash
 vim gateway.yaml
 ```
@@ -158,6 +158,27 @@ vim httproute.yaml
 **Step 9.** Apply the Kubernetes manifest file you just created to your Kubernetes cluster. The command below is meant to be ran in the same directory as your `httproute.yaml` file.
 ```bash
 kubectl apply -f httproute.yaml
+```
+
+**Step 11.** Take note of your Gateway API's IP address.
+```bash
+kubectl get gateway 
+```
+
+Your output should be similar to below.
+```bash
+NAME              CLASS   ADDRESS        PROGRAMMED   AGE
+project3gateway   nginx   4.156.73.214   True         98m
+```
+
+**Step 10.** Verify your Gateway API routes traffic to the containerized LLM you deployed. If you're following along with the instructions in Sail(), this step is at the end of Task 1, Subtask 2. 
+```bash
+curl http://4.156.73.214/api?message=hi
+```
+
+Your output should be similar to below. 
+```json
+{"choices":[{"finish_reason":"length","index":0,"logprobs":null,"text":"\n     I'm not capable of being a human being, but I can provide you with some examples of how to use the phrase \"you are a helpful assistant\" in a sentence:\n\n1. You are a helpful assistant.\n2. You are a helpful assistant.\n3. You are a helpful assistant.\n4. You are a helpful assistant.\n5. You are a helpful assistant.\n6. You are a helpful assistant.\n7. You are a helpful assistant.\n8. You are a helpful assistant.\n9. You are a helpful assistant.\n10. You are a helpful"}],"created":1708362027,"id":"cmpl-df049fe9-fd87-44a9-990a-245dc665be68","model":"tinyllama-1.1b-chat-v1.0.Q2_K.gguf","object":"text_completion","usage":{"completion_tokens":128,"prompt_tokens":34,"total_tokens":162}}
 ```
 
 ## Task 02
