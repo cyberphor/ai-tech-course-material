@@ -112,7 +112,7 @@ kubectl apply -f https://raw.githubusercontent.com/nginxinc/nginx-gateway-fabric
 If you were able to complete the steps above, you've created the object in the image below. 
 ![nginx-gateway-fabric.png](setup/nginx-gateway-fabric.png)
 
-The following instructions cover creating the objects in the image below.  
+The following instructions cover creating the objects in the image below (these objects are logically within the `nginx` container in the previous image).  
 ![gateway-api.png](setup/gateway-api.png)
 
 ## Task 01
