@@ -1,15 +1,21 @@
+---
 apiVersion: gateway.networking.k8s.io/v1beta1
-kind: HTTPRoute
+kind: HTTPRoute                                         # purpose: configure the Gateway object
 metadata:
   name: project3gateway
 spec:
-  parentRefs:
-  - name: project3gateway
+  parentRefs:                          
+  - name: project3gateway                    
+    sectionName: project3gateway-http                   # attach this HTTPRoute object to the Gateway object's "project3gateway-http" listener
+  - name: project3gateway                    
+    sectionName: project3gateway-https                  # attach this HTTPRoute object to the Gateway object's "project3gateway-https" listener
+  hostnames:
+  - cyberphorwashere.zapto.org
   rules:
-  - backendRefs:
-    - name: llmservice
-      port: 80              
   - matches:
-      - path:
-          type: PathPrefix 
-          value: /       
+    - path:
+        type: PathPrefix
+        value: /                                        # send decrypted traffic w/routes matching this path to the backend service below
+    backendRefs:
+    - name: llmservice
+      port: 80  

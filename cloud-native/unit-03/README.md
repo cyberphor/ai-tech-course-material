@@ -181,6 +181,86 @@ Your output should be similar to below.
 {"choices":[{"finish_reason":"length","index":0,"logprobs":null,"text":"\n     I'm not capable of being a human being, but I can provide you with some examples of how to use the phrase \"you are a helpful assistant\" in a sentence:\n\n1. You are a helpful assistant.\n2. You are a helpful assistant.\n3. You are a helpful assistant.\n4. You are a helpful assistant.\n5. You are a helpful assistant.\n6. You are a helpful assistant.\n7. You are a helpful assistant.\n8. You are a helpful assistant.\n9. You are a helpful assistant.\n10. You are a helpful"}],"created":1708362027,"id":"cmpl-df049fe9-fd87-44a9-990a-245dc665be68","model":"tinyllama-1.1b-chat-v1.0.Q2_K.gguf","object":"text_completion","usage":{"completion_tokens":128,"prompt_tokens":34,"total_tokens":162}}
 ```
 
+**Step 11.** Go to [no-ip.com](https://no-ip.com) and create an account. 
+
+**Step 12.** Create a DNS "Host A" record. Use whatever string you want (that isn't taken) for the hostname field. Pick whatever domain name is available. Finally, use your Gateway API's IP address for the target field. The image below is an example of how your DNS "Host A" record should be configured. 
+
+![no-ip.png](task-01/no-ip.png)
+
+**Step 13.** Verify no-ip.com redirects traffic sent to your domain name to your your Gateway API. If you're following along with the instructions in Sail(), this step is in the middle of Task 1, Subtask 3. 
+```bash
+curl http://cyberphorwashere.zapto.org/api?message=hi
+```
+
+**Step 14.** Add `jetstack` to your list of known Helm repositories.  
+```bash
+helm repo add jetstack https://charts.jetstack.io
+```
+
+**Step 15.** Update your Helm installation so its aware of the Kubernetes plugins within the `jetstack` repository. 
+```bash
+helm repo update
+```
+
+**Step 16.** Install a Kubernetes plugin, from the `jetstack` Helm repository, called `cert-manager`. FYSA, this plugin will be in its own namespace, not the default one where most of your objects live. If you want to check the status of it, run this command: `kubectl -n cert-manager get pods`.
+```bash
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.12.0 \
+  --set installCRDs=true \
+  --set "extraArgs={--feature-gates=ExperimentalGatewayAPISupport=true}"
+```
+
+**Step 17.** Using your favorite text-editor and [the provided example](task-01/clusterissuer.yaml), create a Kubernetes manifest for a ClusterIssuer object. The provided example subscribes to certificate expiration alerts using your email address (in order for Let's Encrypt to confirm you own a certificate, it sends a challenge to your domain name only your web server should be able to solve). 
+```bash
+vim clusterissuer.yaml
+```
+
+**Step 10.** Apply the Kubernetes manifest file you just created to your Kubernetes cluster. The command below is meant to be ran in the same directory as your `clusterissuer.yaml` file.
+```bash
+kubectl apply -f clusterissuer.yaml
+```
+
+**Step 11.** Validate you are able to interact with your containerized LLM via HTTPS. 
+```bash
+curl https://cyberphorwashere.zapto.org/api?message=hello
+```
+
+**Misc.** The commands below are helpful while troubleshooting the configuration of this task. 
+```bash
+# look at gateways
+kubectl get gatewayclass
+kubectl get gateway
+kubectl describe gateway
+
+# look at services
+kubectl get svc 
+kubectl get svc -n nginx-gateway
+kubectl get svc -n cert-manager
+
+# look at httproutes (configuration of gateway object)
+kubectl get httproutes
+kubectl describe httproutes
+
+# look at clusterissuer
+kubectl describe clusterissuer
+
+# look at certificates
+kubectl get certificates 
+kubectl get certificates -n nginx-gateway
+kubectl get secrets -n cert-manager
+
+# look at secrets
+kubectl get secrets 
+kubectl get secrets -n nginx-gateway
+kubectl get secrets -n cert-manager
+
+# look at events
+kubectl get events
+```
+
 ## Task 02
 **Step 1.** Text goes here.
 

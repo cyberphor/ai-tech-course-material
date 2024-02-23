@@ -1,10 +1,24 @@
+---
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: Gateway
 metadata:
   name: project3gateway
+  annotations:                                          # subtask 03
+    cert-manager.io/cluster-issuer: letsencrypt-staging # subtask 03
 spec:
   gatewayClassName: nginx
   listeners:
-  - protocol: HTTP
+  - name: project3gateway-http
+    protocol: HTTP
     port: 80
-    name: project3gateway
+    hostname: cyberphorwashere.zapto.org                # subtask 03
+  - name: project3gateway-https                         # subtask 03
+    protocol: HTTPS                                     # subtask 03
+    port: 443                                           # subtask 03
+    hostname: cyberphorwashere.zapto.org                # subtask 03
+    tls:                                                # subtask 03
+      mode: Terminate                                   # subtask 03
+      certificateRefs:                                  # subtask 03
+      - kind: Secret                                    # subtask 03
+        group: ""                                       # subtask 03
+        name: issuer-account-key                        # subtask 03
