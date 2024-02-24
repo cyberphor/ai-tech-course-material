@@ -262,7 +262,184 @@ kubectl get events
 ```
 
 ## Task 02
-**Step 1.** Text goes here.
+The first five steps of this task focus on installing KrakenD, an API management system. Steps 9 through 18 use a web application called "KrakenDesigner" to generate a KrakenD configuration file. The instructions below assume your current working directory is `task-02`.
+
+**Step 1.** Install `ca-certificates` and `gnupg`. These software packages allow you to securely download and verify the authencity of KrakenD packages. 
+```bash
+sudo apt install -y ca-certificates gnupg
+```
+
+**Step 2.** Add KrakenD's software repository to your operating system's list of known software repositories. 
+```bash
+echo "deb https://repo.krakend.io/apt stable main" | sudo tee /etc/apt/sources.list.d/krakend.list
+```
+
+**Step 3.** Add the public key of Krakend's software repository to your operating system's list of trusted keys. Without it, your operating system can't verify KrakenD software packages. If your operating system can't verify the authenticity of a software package, it can't trust them and therefore won't download them.  
+```bash
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 5DE6FD698AD6FDD2
+```
+
+**Step 4.** Update your operating system's cache of known software packages (the cache is built using information collected from the operating system's list of known software repositories).  
+```bash
+sudo apt update
+```
+
+**Step 5.** Install the KrakenD software package. 
+```bash
+sudo apt install -y krakend
+```
+
+**Step 6.** Create a KrakenD configuration file called `krakend.json` using the example below. 
+```json
+{
+  "$schema": "https://www.krakend.io/schema/krakend.json",
+  "version": 3,
+  "endpoints": [],
+  "extra_config": {}
+}
+```
+
+**Step 7.** Validate the KrakenD configuration file you just created. 
+```bash
+krakend validate --config krakend.json
+```
+
+Your output should be similar to below. 
+```bash
+Parsing configuration file: krakend.json
+Syntax OK!
+```
+
+**Step 8.** Audit the KrakenD configuration you just created. This step is optional, but helpful in situations where you need to identify issues before a deployment. For example, the purpose of Task 2 is to resolve `3.1.2 [HIGH] Implement a rate-limiting strategy and avoid having an All-You-Can-Eat API`. 
+```bash
+krakend audit --config krakend.json
+```
+
+Your putput should be similar to below. 
+```
+1.2.1   [HIGH]          Prioritize using JWT for endpoint authorization to ensure security.
+2.1.2   [HIGH]          Enable TLS or use a terminator in front of KrakenD.
+2.1.7   [HIGH]          Enable HTTP security header checks (security/http).
+2.2.1   [MEDIUM]        Hide the version banner in runtime.
+2.2.2   [HIGH]          Enable CORS.
+3.1.1   [LOW]           Enable a bot detector.
+3.1.2   [HIGH]          Implement a rate-limiting strategy and avoid having an All-You-Can-Eat API.
+3.1.3   [HIGH]          Protect your backends with a circuit breaker.
+4.1.1   [MEDIUM]        Implement a telemetry system for collecting metrics for monitoring and troubleshooting.
+4.2.1   [MEDIUM]        Implement a telemetry system for tracing for monitoring and troubleshooting.
+4.3.1   [MEDIUM]        Use the improved logging component for better log parsing.
+5.1.7   [MEDIUM]        Avoid using sequential proxy.
+5.2.2   [LOW]           Benefit from the backend for frontend pattern capabilities.
+5.2.3   [LOW]           Avoid coupling clients by overusing no-op encoding.
+```
+
+**Step 9.** Open a web browser, go to [https://designer.krakend.io/](https://designer.krakend.io/), and click "Service settings."
+
+**Step 10.** In the "HTTP Server settings" section, there is a subsection called "Debug endpoints." Click "Enable /__debug/ endpoint" and "Enable /__echo/ endpoint."
+
+**Step 11.** In the "Hosts (Upstream services or backends)" section, add the URL for your LLM service you created in Task 1. For example, my URL was `https://cyberphorwashere.zapto.org`. 
+
+**Step 12.** In the navigation pane on the left, there is a section called "Endpoints." Click "Add endpoint" underneath it. Then, replace the endpoint's auto-generated route with `/v1/llm`.
+
+**Step 13.** In the "Parameter forwarding" tab, add a parameter called `message`.
+
+**Step 14.** In the "Throttling" tab, set "Timeout" to `300s` and "cache_ttl" to `100s`. 
+
+**Step 15.** In the "Throttling" tab, check the box for "Endpoint rate limit." Set the capacity to `1` token. 
+
+**Step 16.** In the "Response manipulation" tab, check the box for "Static Response (stub data)." Replace the JSON object in the "Response" field with the JSON object provided below. 
+```json
+{
+  "choices": [
+    {
+        "finish_reason": "length",
+        "index": 0,
+        "logprobs": null,
+        "text": "Beep boop I'm a fake response"
+    }
+  ],
+  "created": 1708201942,
+  "id": "cmpl-a",
+  "model": "fake_model",
+  "object": "text_completion",
+  "usage": {
+    "completion_tokens": 999,
+    "prompt_tokens": 10,
+    "total_tokens": 10
+  }
+}
+```
+
+**Step 17.** In the "Response manipulation" tab, there is a section called "Backends (Upstream) for /v1/llm." In the "Request" tab of this section, there is a "Connection" section. Check the box next to the host you previously added. Then, enter `/api` in the URL field.
+
+**Step 18.** In the top-right corner, click "Download config" and use it to replace the content of the `krakend.json` file you created near the beginning of this task. 
+
+**Step 19.** Validate the KrakenD configuration file you just updated. 
+```bash
+krakend validate --config krakend.json
+```
+
+Your output should be similar to below. 
+```bash
+Parsing configuration file: krakend.json
+Syntax OK!
+```
+
+**Step 20.** Create a Kubernetes configmap object using your KrakenD configuration file. 
+```bash
+kubectl create configmap krakend-cfg --from-file=./krakend.json
+```
+
+**Step 21.** Create a Kubernetes deployment object and a Kubernetes service object by applying [the provided Kubernetes file](task-02/deployment.yaml). The purpose of this step is to deploy KrakenD to your Kubernetes cluster. Again, KrakenD is an API management system. 
+```bash
+kubectl apply -f deployment.yaml
+```
+
+**Step 22.** Determine the external IP address of the Kubernetes service object you just created.
+```bash
+kubectl get svc
+```
+
+Your output should be similar to below.
+```bash
+NAME         TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)          AGE
+apigateway   LoadBalancer   10.0.245.122   52.186.97.202   8080:30018/TCP   30s
+kubernetes   ClusterIP      10.0.0.1       <none>          443/TCP          4d14h
+llmservice   ClusterIP      10.0.250.211   <none>          80/TCP           4d11h
+```
+
+**Step 23.** Query the Kubernetes service object using its external IP address. For example, based on the output above, I would use `52.186.97.202`. 
+```bash
+curl http://52.186.97.202:8080/v1/llm?message=hello
+```
+
+If your output is similar to below, KrakenD has successfully been deployed to your Kubernetes cluster.
+```json
+{"choices":[{"finish_reason":"stop","index":0,"logprobs":null,"text":"\nCertainly! Here's an example of how to use the \"helpful\" verb in a sentence:\n\nExample:\n- \"I'm excited to help you with your homework!\""}],"created":1708745345,"id":"cmpl-859196db-9fdf-4cef-bdcf-53e3fa0670b5","model":"tinyllama-1.1b-chat-v1.0.Q2_K.gguf","object":"text_completion","usage":{"completion_tokens":43,"prompt_tokens":34,"total_tokens":77}}
+```
+
+**Step 24.** Using your favorite text-editor, replace `llmservice` with `apigateway` in your `httproute.yaml` file. 
+
+**Step 25.** Apply the change you just made. FYI, I chose to make a copy of my YAML files from Task 1 and put them into a single file for Task 2. I felt like this just made things easier to think about and debug. The name of this new, all-in-one, file is `task-02.yaml`. Again, it's just an aggregation of the `gateway.yaml`, `httproute.yaml`, and `clusterissuer.yaml` files created in Task 1 ableit with the change in the previous step.
+```bash
+kubectl apply -f task-02.yaml
+```
+
+**Step 26.** In the [the provided Kubernetes file](task-02/deployment.yaml), update the `spec` section so it looks like below. The purpose of this update is to (1) change your KrakenD service from a `LoadBalancer` type to a `ClusterIP` type and (2) change the exposed port from `8080` to `80`. 
+```yaml
+spec:
+  type: ClusterIP
+  selector:
+    application: apigateway
+  ports:
+    - port: 80
+      targetPort: 8080
+```
+
+**Step 27.** Verify you can access your LLM through your KrakenD service. 
+```bash
+curl https://cyberphorwashere.zapto.org/v1/llm?message=hello
+```
 
 ## Task 03
 **Step 1.** Text goes here.
