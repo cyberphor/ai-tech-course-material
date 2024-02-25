@@ -5,7 +5,6 @@
 * [Task 02](#task-02)
 * [Task 03](#task-03)
 * [Task 04](#task-04)
-* [Task 05](#task-05)
 
 ## References
 If I find any helpful references, I will put them here. 
@@ -449,10 +448,103 @@ curl https://cyberphorwashere.zapto.org/v1/llm?message=hello
 ```
 
 ## Task 03
-**Step 1.** Text goes here.
+**Step 1.** Create a folder called `task-03` and change directories to it.
+```bash
+mkdir task-03
+cd task-03/
+```
+
+**Step 2.** Create a Python virtual environment called `venv`. 
+```bash
+python3 -m venv venv
+```
+
+**Step 3.** Activate the Python virtual environment you just created.
+```bash
+source venv/bin/activate
+```
+
+**Step 4.** Upgrade the Python libraries below to their latest versions.
+```bash
+pip install --upgrade pip setuptools wheel
+```
+
+**Step 5.** Install the Django, a Python web app framework.
+```bash
+pip install Django djangorestframework djangorestframework-simplejwt[crypto]
+```
+
+**Step 6.** Create a Django project called `task3`. FYI, the `django-admin` program is used for creating projects and/or apps, managing them.
+```bash
+django-admin startproject task3 .
+```
+
+**Step 7.** Change directories to the `task3` folder automatically created by the Django CLI in the previous step. This folder is completely different from the one created at the beginning of this task. To explain, your path should be something like `task-03/task03` when you're done with this step.
+```bash
+cd task3
+```
+
+**Step 8.** Create a Django app called `login`.
+```bash
+django-admin startapp login
+```
+
+**Step 9.** Change directories to the parent of the `task3` folder (i.e., the `task-03` folder). It contains a file called `manage.py`.
+```bash
+cd ..
+```
+
+**Step 10.** Create a database file called `db.sqlite3` using the command below.
+```bash
+python manage.py migrate
+```
+
+**Step 11.** Create a new privileged Django user called `admin`. Whe prompted, give it the password `asdasd`. This password sucks so enter `Y` to bypass the password validation and reject everything Vic represents.
+```bash
+python manage.py createsuperuser --username admin --email admin@example.com
+```
+
+**Step 12.** Using the command below, run your Django app to make sure it works. If you're doing this in GitHub Codespaces, click the "Ports" tab in your terminal window. Then, in the "Forwarded Address" column, click the "Open in Browser" button on the right side of the auto-generated URL. 
+```bash
+python manage.py runserver
+```
+
+**Step 13.** Add `admin/login/` to the end of the URL in your browser tab. You will be redirected to a login page. Login using the credentials you specified above (username: `admin`, password: `asdasd`). Once you confirm you're able to login, stop the app. 
+
+**Step 14.** Using your favorite text-editor, create a file called `serializers.py` in the `task3/login` folder using [the provided example](task-03/task3/login/serializers.py).
+```bash
+vim task3/login/serializers.py
+```
+
+**Step 15.** Using your favorite text-editor, update the file called `views.py` in the `task3/login` folder using [the provided example](task-03/task3/login/views.py).
+```bash
+vim task3/login/views.py
+```
+
+**Step 16.** Using your favorite text-editor, update the file called `urls.py` in the `task3/` folder using [the provided example](task-03/task3/urls.py).
+```bash
+vim task3/urls.py
+```
+
+**Step 17.** Using your favorite text-editor, update the file called `settings.py` in the `task3/` folder using [the provided example](task-03/task3/settings.py).
+```bash
+vim task3/settings.py
+```
+
+**Step 18.** Using the command below, run your Django app as a background process.  
+```bash
+python manage.py runserver &
+```
+
+**Step 19.** Verify the authentication system you created works. 
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"asdasd"}' http://localhost:8000/api/token/
+```
+
+Your output should be similar to below. Again, all of these commands and Python code allow you to include add authentication to your LLM service.
+```json
+{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcwODkyMDA3MiwiaWF0IjoxNzA4ODMzNjcyLCJqdGkiOiI4NzE1OGI1ZGNmY2U0MzkwYTM3OTFmNDI2NTBhNDc4ZCIsInVzZXJfaWQiOjF9.ZnIQ3xKo4yiia_Zb2tyAxzdudokYAzGQePPTuz1nwP0","access":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA4ODMzOTcyLCJpYXQiOjE3MDg4MzM2NzIsImp0aSI6IjUxMTkwY2RhZDY5YzQ3MzJhN2M2NGMzZGM5YzQwMGM0IiwidXNlcl9pZCI6MX0.92_RXl3FTbovVrFmAVW0y2sQRiFIX85SPhHv1rdkuRI"}[25/Feb/2024 04:01:12] "POST /api/token/ HTTP/1.1" 200 483
+```
 
 ## Task 04
-**Step 1.** Text goes here.
-
-## Task 05
 **Step 1.** Text goes here.
