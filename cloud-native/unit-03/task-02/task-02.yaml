@@ -11,38 +11,43 @@ spec:
   - name: project3gateway-http
     protocol: HTTP
     port: 80
-    hostname: cyberphorwashere.zapto.org                # subtask 03
-  - name: project3gateway-https                         # subtask 03
-    protocol: HTTPS                                     # subtask 03
-    port: 443                                           # subtask 03
-    hostname: cyberphorwashere.zapto.org                # subtask 03
-    tls:                                                # subtask 03
-      mode: Terminate                                   # subtask 03
-      certificateRefs:                                  # subtask 03
-      - kind: Secret                                    # subtask 03
-        group: ""                                       # subtask 03
-        name: issuer-account-key                        # subtask 03
+    hostname: cyberphorwashere.zapto.org # subtask 03
+  - name: project3gateway-https          # subtask 03
+    protocol: HTTPS                      # subtask 03
+    port: 443                            # subtask 03
+    hostname: cyberphorwashere.zapto.org # subtask 03
+    tls:                                 # subtask 03
+      mode: Terminate                    # subtask 03
+      certificateRefs:                   # subtask 03
+      - kind: Secret                     # subtask 03
+        group: ""                        # subtask 03
+        name: issuer-account-key         # subtask 03
 ---
 apiVersion: gateway.networking.k8s.io/v1beta1
-kind: HTTPRoute                                         # purpose: configure the Gateway object
+kind: HTTPRoute                               # purpose: configure the Gateway object
 metadata:
   name: project3gateway
 spec:
   parentRefs:                          
   - name: project3gateway                    
-    sectionName: project3gateway-http                   # attach this HTTPRoute object to the Gateway object's "project3gateway-http" listener
+    sectionName: project3gateway-http         # attach this HTTPRoute object to the Gateway object's "project3gateway-http" listener
   - name: project3gateway                    
-    sectionName: project3gateway-https                  # attach this HTTPRoute object to the Gateway object's "project3gateway-https" listener
+    sectionName: project3gateway-https        # attach this HTTPRoute object to the Gateway object's "project3gateway-https" listener
   hostnames:
   - cyberphorwashere.zapto.org
   rules:
   - matches:
     - path:
         type: PathPrefix
-        value: /                                        # send decrypted traffic w/routes matching this path to the backend service below
+        value: /api      # send decrypted traffic w/routes matching this path to the backend services below                                
+    - path: 
+        type: PathPrefix 
+        value: /v1/llm   # send decrypted traffic w/routes matching this path to the backend services below
     backendRefs:
+    - name: llmservice
+      port: 80  
     - name: apigateway
-      port: 80                                    
+      port: 8080                                         
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer

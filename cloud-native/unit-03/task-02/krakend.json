@@ -16,7 +16,7 @@
             "sd": "static",
             "method": "GET",
             "host": [
-              "https://cyberphorwashere.zapto.org"
+              "http://llmservice"
             ],
             "disable_host_sanitize": false
           }
