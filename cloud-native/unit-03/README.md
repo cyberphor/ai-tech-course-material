@@ -443,7 +443,7 @@ spec:
       targetPort: 8080
 ```
 
-**Step 27.** Verify you can access your LLM through your KrakenD service. 
+**Step 27.** Verify you can access your LLM through your KrakenD service. If you get a response with a HTTP server code 404, wait a few seconds and try again. 
 ```bash
 curl https://cyberphorwashere.zapto.org/v1/llm?message=hello
 ```
