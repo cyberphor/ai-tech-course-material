@@ -337,7 +337,7 @@ Your putput should be similar to below.
 
 **Step 10.** In the "HTTP Server settings" section, there is a subsection called "Debug endpoints." Click "Enable /__debug/ endpoint" and "Enable /__echo/ endpoint."
 
-**Step 11.** In the "Hosts (Upstream services or backends)" section, add the URL for your LLM service you created in Task 1. For example, my URL was `https://cyberphorwashere.zapto.org`. 
+**Step 11.** In the "Hosts (Upstream services or backends)" section, add `http://llmservice`.
 
 **Step 12.** In the navigation pane on the left, there is a section called "Endpoints." Click "Add endpoint" underneath it. Then, replace the endpoint's auto-generated route with `/v1/llm`.
 
@@ -418,21 +418,28 @@ If your output is similar to below, KrakenD has successfully been deployed to yo
 {"choices":[{"finish_reason":"stop","index":0,"logprobs":null,"text":"\nCertainly! Here's an example of how to use the \"helpful\" verb in a sentence:\n\nExample:\n- \"I'm excited to help you with your homework!\""}],"created":1708745345,"id":"cmpl-859196db-9fdf-4cef-bdcf-53e3fa0670b5","model":"tinyllama-1.1b-chat-v1.0.Q2_K.gguf","object":"text_completion","usage":{"completion_tokens":43,"prompt_tokens":34,"total_tokens":77}}
 ```
 
-**Step 24.** Using your favorite text-editor, replace `llmservice` with `apigateway` in your `httproute.yaml` file. 
+**Step 24.** Using your favorite text-editor, update the `backendRefs` section of your `httproute.yaml` file so it looks like below.
+```yaml
+    backendRefs:
+    - name: llmservice
+      port: 80  
+    - name: apigateway
+      port: 8080    
+```
 
 **Step 25.** Apply the change you just made. FYI, I chose to make a copy of my YAML files from Task 1 and put them into a single file for Task 2. I felt like this just made things easier to think about and debug. The name of this new, all-in-one, file is `task-02.yaml`. Again, it's just an aggregation of the `gateway.yaml`, `httproute.yaml`, and `clusterissuer.yaml` files created in Task 1 ableit with the change in the previous step.
 ```bash
 kubectl apply -f task-02.yaml
 ```
 
-**Step 26.** In the [the provided Kubernetes file](task-02/deployment.yaml), update the `spec` section so it looks like below. The purpose of this update is to (1) change your KrakenD service from a `LoadBalancer` type to a `ClusterIP` type and (2) change the exposed port from `8080` to `80`. 
+**Step 26.** In the `spec` section of [the provided Kubernetes file](task-02/deployment.yaml), change your KrakenD service from a `LoadBalancer` type to a `ClusterIP` type.
 ```yaml
 spec:
   type: ClusterIP
   selector:
     application: apigateway
   ports:
-    - port: 80
+    - port: 8080
       targetPort: 8080
 ```
 

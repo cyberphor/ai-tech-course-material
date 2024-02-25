@@ -42,7 +42,6 @@ spec:
           volumeMounts:
           - name: krakend-cfg
             mountPath: /etc/krakend
- 
 ---
 apiVersion: v1
 kind: Service
@@ -51,7 +50,7 @@ metadata:
   labels:
     application: apigateway
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     application: apigateway
   ports:
