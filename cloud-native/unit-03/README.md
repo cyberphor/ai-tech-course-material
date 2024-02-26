@@ -536,15 +536,240 @@ vim task3/settings.py
 python manage.py runserver &
 ```
 
-**Step 19.** Verify the authentication system you created works. 
+**Step 19.** Verify the login service you created works. Don't forget the trailing `/` at the end of the URL. 
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"asdasd"}' http://localhost:8000/api/token/
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"asdasd"}' http://localhost:8000/api/token/ 
 ```
 
 Your output should be similar to below. Again, all of these commands and Python code allow you to include add authentication to your LLM service.
 ```json
-{"refresh":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcwODkyMDA3MiwiaWF0IjoxNzA4ODMzNjcyLCJqdGkiOiI4NzE1OGI1ZGNmY2U0MzkwYTM3OTFmNDI2NTBhNDc4ZCIsInVzZXJfaWQiOjF9.ZnIQ3xKo4yiia_Zb2tyAxzdudokYAzGQePPTuz1nwP0","access":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA4ODMzOTcyLCJpYXQiOjE3MDg4MzM2NzIsImp0aSI6IjUxMTkwY2RhZDY5YzQ3MzJhN2M2NGMzZGM5YzQwMGM0IiwidXNlcl9pZCI6MX0.92_RXl3FTbovVrFmAVW0y2sQRiFIX85SPhHv1rdkuRI"}[25/Feb/2024 04:01:12] "POST /api/token/ HTTP/1.1" 200 483
+{
+  "refresh": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcwOTAwMjYxMywiaWF0IjoxNzA4OTE2MjEzLCJqdGkiOiI5MmM0MzVkMmJkMWM0YjQ3ODdmNmNmZDQ1YjFjYzUzMSIsInVzZXJfaWQiOjF9.xmEO4qaLX9-zmiBE1-sMNU4rS2ZNJLyUzqFpsqMSimWsWh4Gpsy-9nzgiOnVpnCe05eoMjMLMSSz6yZ5cVWIh_WufqRHjPk1qnsBxrbqWMfsz77oWvzNjx5-YZG_vDdEKxzNUDtoGNjz-pH4Pa6Xx6v7muqgVgudRl9qxj41bxdXqZHNk0uPWPNUMC2WndmPi057_Cb-y_v8L5dTLR_yBF7x9-mfviTF2iStr03vGmgDSjiaDdTPFP8vlYDJjOL94zeNQBRTCDWchv9g4SaCA-TYn_a5k08fRDl-qaMI4mm5--GkBo4hfF6X5ImptQedr8Y_VI_8HfUz6zRH6bpYig",
+  "access": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA4OTE2NTEzLCJpYXQiOjE3MDg5MTYyMTMsImp0aSI6IjIwZDRmOTBhOWYxNjQyMDFhYjYzNzFlN2MxYTYzMTRhIiwidXNlcl9pZCI6MX0.Gtp_eYvSAxESfKYo2JFYVcxbQZBaYId5fXPvr0butzoQflIEKos0d-lk1rk-CuEqRFX0uYZzWb8XBQYfcVdjg4k0XpFEfD7LgfYJs1ywnbOs6mx8bVSYM5IIcOvdpQ-g07JaouZ6NBFfoDSH3jytS-36tZHur535w_VNgPa8dJdNlviyVR60-0wdf1dJjAbrHgbginDblfE2ua2ETHIDoIg1aeNaZo2Jxo-zb_xTmoZjf46eFmrusxgdBXYif_McWE1glKuIrrJghtw7QkJ-A-t0-lLOf2IPRFbz2p6XadNYMd1MO-zO4Dkfy8_ZwnVx_DKjjtknKd9HXvnNN26ByQ"
+}
 ```
 
-## Task 04
-**Step 1.** Text goes here.
+## Task   04
+FYSA, I made a copy of all the files generated in the `task-03` folder and copied them to a `task-04/django` folder I made (to include the Python virtual environment folder called `venv`). Then, before starting this task, I changed directories to `task-04/django`.
+
+**Step 1.** Create an private key.
+```bash
+openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:2048
+```
+
+**Step 2.** Create a public key.
+```bash
+openssl rsa -pubout -in private.pem -out public.pem
+```
+
+**Step 3.** Create an environment variable using the content of your private key as its value.
+```bash
+export PRIVATE_KEY=$(cat private.pem)
+```
+
+**Step 4.** Create an environment variable using the content of your public key as its value.
+```bash
+export PUBLIC_KEY=$(cat public.pem)
+```
+
+**Step 5.** Using your favorite text-editor, update the file called `settings.py` in the `task3/` folder using [the provided example](task-04/django/task3/settings.py). Again, I made a copy of the files generated in the `task-03` folder and copied them to a `task-04` I made. Then, before starting this task, I changed directories to `task-04`.
+```bash
+vim task3/settings.py
+```
+
+This is what I added for this step. `RS256` is not a typo. 
+```python
+SIMPLE_JWT = {
+    "ALGORITHM": "RS256",
+    "SIGNING_KEY": os.getenv("PRIVATE_KEY"),
+    "VERIFYING_KEY": os.getenv("PUBLIC_KEY"),
+}
+```
+
+**Step 6.** Reactivate your Python virtual environment. 
+```bash
+source venv/bin/activate
+```
+
+**Step 7.** Verify your environment variables (`PRIVATE_KEY` AND `PUBLIC_KEY`) are still set. Then, restart your Django application as a background process.
+```bash
+python manage.py runserver &
+```
+
+**Step 8.** Verify the login service you just updated works by first running the following command. Don't forget the trailing `/` at the end of the URL. 
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"asdasd"}' http://localhost:8000/api/token/ -s | jq .access
+```
+
+Your output should be a string similar to below. If you also get something like `[26/Feb/2024 02:37:49] "POST /api/token/ HTTP/1.1" 200 1081`, ignore it. It's a server log from Django and not part of your JWT. 
+```
+eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA4OTE1MzY5LCJpYXQiOjE3MDg5MTUwNjksImp0aSI6ImNkODIzYTc5MjAwNDQzOWFhYTMxYzdiYTk4NDViMzMzIiwidXNlcl9pZCI6MX0.hrIdW_XsWAn3mRifqgX0Liheyn6PrSSrsoebOGDFnJ9-ognsKZkWU1GlIzo_Ua53JA8L1GXA10XxKK3U6llCqdHTHwZqRRGcvdl9OMWJsS1IU7vLGATWd5HwWe_jy4DY7IOP7xGtTDTnzLx7EjY_PKn0Cxox4oxiUiQOgVxXvtB52Bp9ovABMjfrrVDU3bGEZZtgxk5_D52GHGRMJz8xh_BIHPgoyJUt-0hi8ooPE8XnNslOF98Nm2iHZjNS8F4Mzlts4z6wDUgZxX8Jo5WHgeFZADf6oOxtD2oJPxX5cCts5Bxkb7S3Iq-xa2SVO2lCqcYX0AHrNSN6LG4GyhYltw
+```
+
+Open a browser and go to [https://jwt.io/](https://jwt.io/). Copy and paste the string generated by the previous command to the "Encoded" field. Then, copy the contents of your `PUBLIC_KEY` variable to the "Public key..." field inside the "VERIFY SIGNATURE" box. Make sure you see "Signature Verified" before moving on.
+
+**Step 9.** Create a folder called `docker` in the `task-04` folder. 
+```bash
+mkdir docker/
+```
+
+**Step 10.** Using your favorite text-editor and [the provided example](task-04/docker/Dockerfile), create a Dockerfile in the `docker` folder. The purpose of the next few steps is to containerize the login service you created via Django.
+
+**Step 11.** Build and tag container image using the Dockerfile you just created.
+```bash
+docker image build --rm --tag loginservice:v1.0.0 -f docker/Dockerfile  . 
+```
+
+**Step 12.** Create a container using the image you just built.
+```bash
+docker run --name login -d -p 8000:8000 \
+  -e PUBLIC_KEY="${PUBLIC_KEY}" \
+  -e PRIVATE_KEY="${PRIVATE_KEY}" \
+  loginservice:v1.0.0
+```
+
+**Step 13.** Test your containerized login service by entering the command below. Your output should be similar to what we've seen already.
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"asdasd"}' http://localhost:8000/api/token/
+```
+
+**Step 14.** Stop the container you created.
+```bash
+docker container stop login
+```
+
+**Step 15.** Remove the container you created.
+```bash
+docker container rm login
+```
+
+**Step 16.** Add another tag to your image for your Azure Container Registry (ACR). 
+```bash
+docker tag loginservice:v1.0.0 cyberphorwashere.azurecr.io/loginservice:v1.0.0
+```
+
+**Step 17.** Push your container image to your ACR.
+```bash
+docker push cyberphorwashere.azurecr.io/loginservice:v1.0.0 
+```
+
+**Step 18.** Using your favorite text-editor and [the provided example](task-04/kubernetes/loginservice.yaml), create a file called `loginservice.yaml` in the `kubernetes` folder.
+
+**Step 19.** Create a Kubernetes secret using the command below. To explain, this command creates a single secret containing the contents of your `private.pem` and `private.pem` keys. 
+```bash
+kubectl create secret generic loginservice \
+  --from-file=django/private.pem \
+  --from-file=django/public.pem
+```
+
+**Step 20.** Apply the `loginservice.yaml` file you created to your Kubernetes cluster.
+```bash
+kubectl apply -f kubernetes/loginservice.yaml 
+```
+
+**Step 21.** Identify the external IP address Kubernetes gave your login service. 
+```bash
+kubectl get svc
+```
+
+Your output should be similar to below.
+```bash
+NAME           TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
+apigateway     ClusterIP      10.0.245.122   <none>          8080/TCP       2d2h
+kubernetes     ClusterIP      10.0.0.1       <none>          443/TCP        6d17h
+llmservice     ClusterIP      10.0.250.211   <none>          80/TCP         6d13h
+loginservice   LoadBalancer   10.0.209.2     52.226.154.50   80:32701/TCP   10s
+```
+
+**Step 22.** Test your containerized login service using the command below, the external IP address you just identified, and TCP port 80. Your output should be similar to what we've seen already. 
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"asdasd"}' http://52.226.154.50/api/token/
+```
+
+**Step 23.** Install the `jwcrypto` Python library in your Python virtual environment.
+```bash
+pip install jwcrypto
+```
+
+**Step 24.** Run the provided Python script that converts your public key to a format called JWKS.
+```bash
+python pubkey2jwk.py 
+```
+
+**Step 25.** Take the output of the previouse command and create a file called `publickey.json`. Make it look like below.
+```json
+{
+  "keys": [
+    {
+      "kty":"RSA",
+      "use": "sig",
+      "kid":"yourcoolkid",
+      "n":"3rID6InQ-Pdo922pq4AsJWnGk_11v2U7iNp4KHb-RPVDzohtzfHQmwZps8lNbXJq0uyZMFVKHVkHK3uME16zYECJHU_j0m7XP-iqTCaUSYfdnHMjpTxVxEFqVWr1P_7vFbiQ8wm_2gKhKiwlHiEfqenGT3CPv5kEi87I78YLjHPCzsWx2gU6GLqVSpj3teyrBeksZljLMVxtbfb31xeoUFKJTDMMKcGoWag7XnfLgHpd1571LxAzOuODLrfGMALb0fNDzV7cC9TQySK1zs9qbb7oEq7216oGm-j53sNNaXP5rot2dWG70DSHy6i7Gyc28Z8L8jD62kYW0wZb0a7YVQ",
+      "e":"AQAB",
+      "alg":"RS256",
+    }
+  ]
+}
+```
+
+**Step 26.** Using your favorite text-editor and [the provided example](task-04/krakend/krakend.json), update your `krakend.json` configuration file. 
+```bash
+vim krakend.json
+```
+
+**Step 27.** Delete your old KrakenD configuration and upload your new one.
+```bash
+kubectl delete configmap krakend-cfg 
+kubectl create configmap krakend-cfg --from-file=krakend/krakend.json
+```
+
+**Step 28.** Restart your KrakenD pod.
+```bash
+kubectl rollout restart deployment/krakend-deploy
+```
+
+**Step 29.** See if you can access your login service through your KrakenD pod.
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"asdasd"}' http://52.226.154.50/api/token/
+```
+
+**Step 30.** Create a Kubernetes secret based on the `publickey.json` file you created earlier.
+```bash
+kubectl create secret generic krakend-pubkey \
+  --from-file=krakend/publickey.json
+```
+
+**Step 31.** Update your `httproute.yaml` so it looks like [the provided example](task-04/kubernetes/httproute.yaml).
+```bash
+kubectl apply -f kubernetes/httproute.yaml
+```
+
+**Step 32.** Authenticate with your login service so it returns a JWT.
+```bash
+curl -H 'Content-Type: application/json' -d '{"username":"admin", "password":"asdasd" }' -X POST https://cyberphorwashere.zapto.org/v1/logintoken | jq .access
+```
+
+Your output should be similar to below.
+```
+eyJhbGciOiJSUzI1NiIsImtpZCI6InlvdXJjb29sa2lkIiwidHlwIjoiSldUIn0.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA4OTMxNDAyLCJpYXQiOjE3MDg5MzExMDIsImp0aSI6IjZkMWQ0MTJlZGIzNDRiMGRhNzlhZWI5NGM4NjYyMjJlIiwidXNlcl9pZCI6MX0.PpyHEab1OFvreWTOpfSv-Wrmq6H6HL70j5E2enJPkUo7m0erDQWZEwkDdPc42z74_L5NoTFU4JT6Zvgzy_QGMF1otIHzg2bL6nwRmsPQgIOsWtZSrZoUq7y-JUt3OvHYraEeAL1-51OU-PLNBIhX7cc1-7_x4isUKL4FC2eEZZA4NeGeG1ukVcpzwwJa75yY8pfu0YQVYh1mrYeBo1ieP_pV6EBtbJOlm13XJgVqEFxpIuQhVqi381UuY1ZWAEVyaMQMsQD6tRY1bINPyswFZtWzxA3UIJXNWevtShOhD1kdcm7yfEtjFXHxAxI0z1Esv2ueWp4U9pVeaRFZfiJvkw
+```
+
+**Step 33.** Use the JWT your login service returned to query your LLM.
+```bash
+curl -D - -H "Authorization: BEARER eyJhbGciOiJSUzI1NiIsImtpZCI6InlvdXJjb29sa2lkIiwidHlwIjoiSldUIn0.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA4OTMxNDAyLCJpYXQiOjE3MDg5MzExMDIsImp0aSI6IjZkMWQ0MTJlZGIzNDRiMGRhNzlhZWI5NGM4NjYyMjJlIiwidXNlcl9pZCI6MX0.PpyHEab1OFvreWTOpfSv-Wrmq6H6HL70j5E2enJPkUo7m0erDQWZEwkDdPc42z74_L5NoTFU4JT6Zvgzy_QGMF1otIHzg2bL6nwRmsPQgIOsWtZSrZoUq7y-JUt3OvHYraEeAL1-51OU-PLNBIhX7cc1-7_x4isUKL4FC2eEZZA4NeGeG1ukVcpzwwJa75yY8pfu0YQVYh1mrYeBo1ieP_pV6EBtbJOlm13XJgVqEFxpIuQhVqi381UuY1ZWAEVyaMQMsQD6tRY1bINPyswFZtWzxA3UIJXNWevtShOhD1kdcm7yfEtjFXHxAxI0z1Esv2ueWp4U9pVeaRFZfiJvkw" https://cyberphorwashere.zapto.org/v1/llm?message=hello
+```
+
+**Misc.** The commands below helped me troubleshoot during this task.
+```bash
+# get pods
+kubectl get pods
+
+# print env vars of a given pod (ex: login-788bc9cb7-nrvtl)
+kubectl exec login-788bc9cb7-nrvtl -- env
+
+# enter a pod
+kubectl exec -it login-788bc9cb7-lj2tr -- /bin/bash
+
+# look at logs of a pod
+kubectl logs krakend-deploy-58fcc87f9-mdp99
+```

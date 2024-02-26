@@ -1,0 +1,47 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login
+  labels:
+    application: loginservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: loginservice
+  template:
+    metadata:
+      labels:
+        application: loginservice
+    spec:
+      containers:
+      - name: loginservice
+        image: cyberphorwashere.azurecr.io/loginservice:v1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: loginservice
+              key: public.pem
+        - name: PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: loginservice
+              key: private.pem
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loginservice
+spec:
+  type: ClusterIP
+  selector:
+    application: loginservice
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
