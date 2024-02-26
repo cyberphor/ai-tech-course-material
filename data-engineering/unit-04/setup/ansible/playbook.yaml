@@ -1,0 +1,16 @@
+---
+- hosts: all
+  tasks:
+    - name: Set BASH Aliases
+      ansible.builtin.script: scripts/Set-BashAliases.sh
+    - name: Install Unzip
+      ansible.builtin.script: scripts/Install-Unzip.sh
+    - name: Install the Databricks CLI
+      ansible.builtin.script: scripts/Install-DatabricksCLI.sh
+    - name: Configure the Databricks Workspace
+      ansible.builtin.script: scripts/Configure-DatabricksWorkspace.sh
+      environment:
+        DATABRICKS_HOST: "{{ lookup('env', 'DATABRICKS_HOST') }}"
+        DATABRICKS_TOKEN: "{{ lookup('env', 'DATABRICKS_TOKEN') }}"
+    - name: Get Handouts
+      ansible.builtin.script: scripts/Get-Handouts.sh
