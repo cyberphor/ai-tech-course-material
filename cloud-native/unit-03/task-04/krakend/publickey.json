@@ -1,0 +1,12 @@
+{
+  "keys": [
+    {
+      "kty":"RSA",
+      "use": "sig",
+      "kid":"yourcoolkid",
+      "n":"3rID6InQ-Pdo922pq4AsJWnGk_11v2U7iNp4KHb-RPVDzohtzfHQmwZps8lNbXJq0uyZMFVKHVkHK3uME16zYECJHU_j0m7XP-iqTCaUSYfdnHMjpTxVxEFqVWr1P_7vFbiQ8wm_2gKhKiwlHiEfqenGT3CPv5kEi87I78YLjHPCzsWx2gU6GLqVSpj3teyrBeksZljLMVxtbfb31xeoUFKJTDMMKcGoWag7XnfLgHpd1571LxAzOuODLrfGMALb0fNDzV7cC9TQySK1zs9qbb7oEq7216oGm-j53sNNaXP5rot2dWG70DSHy6i7Gyc28Z8L8jD62kYW0wZb0a7YVQ",
+      "e":"AQAB",
+      "alg":"RS256"
+    }
+  ]
+}
