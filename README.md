@@ -47,15 +47,15 @@
 ## DevOps
 | Topic                                                    | Training Objectives |
 | -------------------------------------------------------- | ------------------- |
-| [Getting Started with DevOps](/devops/unit-03/README.md) |
-| [Continuous Integration (CI)](/devops/unit-05/README.md) |
-| [Continuous Deployment (CD)](/devops/unit-07/README.md)  |
-| [Azure DevOps Pipelines](/devops/unit-09/README.md)      |
-| [GitHub Actions](/devops/unit-11/README.md)              |
-| [Containers](/devops/unit-12/README.md)                  |
-| [Serverless Functions](/devops/unit-13/README.md)        |
-| [Infrastructure as Code](/devops/unit-14/README.md)      |
-| [Incident Response](/devops//unit-15/README.md)          |
+| [Getting Started with DevOps](/devops/unit-00/README.md) |
+| [Continuous Integration (CI)](/devops/unit-01/README.md) |
+| [Continuous Deployment (CD)](/devops/unit-02/README.md)  |
+| [Azure DevOps Pipelines](/devops/unit-03/README.md)      |
+| [GitHub Actions](/devops/unit-04/README.md)              |
+| [Containers](/devops/unit-05/README.md)                  |
+| [Serverless Functions](/devops/unit-06/README.md)        | <ul><li>Create a serverless function</li><li>Create a CI/CD pipeline for a serverless function</li><li>Implement a Blue/Green deployment strategy for a serverless function</li></ul>
+| [Infrastructure as Code](/devops/unit-07/README.md)      |
+| [Incident Response](/devops//unit-08/README.md)          |
 
 ## Cloud-Native
 | Topic                                                        | Training Objectives |
