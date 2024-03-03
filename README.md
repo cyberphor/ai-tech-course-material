@@ -47,7 +47,7 @@
 ## DevOps
 | Topic                                                    | Training Objectives |
 | -------------------------------------------------------- | ------------------- |
-| [Getting Started with DevOps](/devops/unit-00/README.md) |
+| [Git, GitHub, and Azure DevOps](/devops/unit-00/README.md) | <ul><li>Create a GitHub Personal Access Token</li><li>Create an Azure DevOps Personal Access Token</li><li>Create an Azure DevOps Project</li><li>Purchase an Azure DevOps Parallel Job for an Organization</li><li>Configure Git</li><li>Clone a Repo Using SSH</li><li>Create a Branch</li><li>Add a GitHub Action</li><li>Push a Commit</li></ul>
 | [Continuous Integration (CI)](/devops/unit-01/README.md) |
 | [Continuous Deployment (CD)](/devops/unit-02/README.md)  |
 | [Azure DevOps Pipelines](/devops/unit-03/README.md)      |
