@@ -1,4 +1,5 @@
 # Cloud Native: Inter-Service Communication
+* [Notes](#notes)
 * [References](#references)
 * [Setup](#setup)
 * [Task 01](#task-01)
