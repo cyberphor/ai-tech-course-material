@@ -26,8 +26,18 @@ Asynchronous Server Gateway Interfaces (ASGI) can process multiple requests at t
 **Poetry**  
 Poetry is another package manager that can install Python packages in isolated environments. Yet, unlike `pipx`, Poetry can also handle dependency resolution, package version locking, or package publishing. Package managers like Poetry and Cargo (the package manager for the Rust programming language) create "source" and "test" folders because they assume your codebase will include unit tests. If you want to configure Poetry to create your virtual environment near your code, add a file called `poetry.toml` to your project folder (see below for what to add to this file). Once you've added Python packages to your project's `pyproject.toml` file (NOT the `poetry.toml` file), others can replicate your development setup by downloading your code and then running `poetry install`.
 
+**gRPC**  
+Google Remote Procedure Call (gRPC) is a protocol used for inter-service communication. gRPC uses *protocol buffers* for its messaging format (aka interface definition language) and HTTP 2 for transport. In contrast, REST APIs uses JSON and HTTP 1.1.
+
+**Serialization**  
+Serialization is the process of converting a language object (e.g., Python dict) into a series of bytes. Examples of technology that use serialization are Pickle and gRPC.
+
+**Protocol Buffer**  
+A protocol buffer is a method of serialization. Protocol buffers are defined using `.proto` files.nterface definition language
+
 ## References
 If I find any helpful references, I will put them here. 
+* [gRPC vs. REST: Key Similarities and Differences](https://blog.dreamfactory.com/grpc-vs-rest-how-does-grpc-compare-with-traditional-rest-apis/)
 
 ## Setup
 The tasks prescribed within this README assume you're already working in a Linux environment (Windows Subsystem for Linux, Azure Shell, GitHub Codespaces, a VirtualBox-based Linux virtual machine, etc.). They also assume you already have the following software installed: Python, Azure CLI, Kubernetes, and Helm.
@@ -562,6 +572,7 @@ curl http://localhost/api?message=hi
 **FYSA.** The submitter assumes you will run it where `fastapi-p4` is a child folder (not via Docker). 
 
 ## Task 02
+**Step 1.** 
 
 ## Task 03
 
