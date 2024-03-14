@@ -1,0 +1,99 @@
+// set the syntax version
+syntax = "proto3";
+
+// define the package
+package llmproto.v1;
+
+// import the "Timestamp" type definition file from Google
+import "google/protobuf/timestamp.proto";
+
+// define a gRPC service called "LLMService"
+service LLMService {
+    // returns a CompletionResponse object when given a CompletionRequest object
+    rpc Completion (CompletionRequest) returns (CompletionResponse) {}
+
+    // returns a stream LLMStreamResponse object when given a LLMStreamResponse object
+    rpc LLMStream (LLMStreamRequest) returns (stream LLMStreamResponse) {}
+}
+
+// represents requests sent to the LLM 
+message CompletionRequest {
+    // message contains the LLM prompt
+    string message = 1;
+}
+
+// represents a single choice
+message Choice {
+    // text field
+    string text = 1;
+
+    // index field
+    int32 index = 2;
+
+    // logprobs field
+    string logprobs = 3;
+
+    // finish_reason field
+    string finish_reason = 4;
+}
+
+// represents token usage
+message Usage {
+    // prompt_tokens field
+    int32 prompt_tokens = 1;
+
+    // completion_tokens field
+    int32 completion_tokens = 2;
+
+    // total_tokens field
+    int32 total_tokens = 3;
+}
+
+// represents responses from the the LLM 
+message CompletionResponse {
+    // id field
+    string id = 1;
+
+    // object field
+    string object = 2;
+
+    // timestamp field
+    google.protobuf.Timestamp created = 3;
+
+    // model name field
+    string model = 4;
+
+    // a list of Choice objects
+    // this list represents the "choices" parameter
+    // a single Choice object contains: text, index, logprobs, finish_reason
+    repeated Choice choices = 5;
+
+    // usage field
+    Usage usage = 6;
+}
+
+// represents requests sent to the LLM 
+message LLMStreamRequest {
+    // message contains the LLM prompt
+    string message = 1;
+}
+
+// represents responses from the the LLM 
+message LLMStreamResponse {
+    // id field
+    string id = 1;
+
+    // object field
+    string object = 2;
+
+    // timestamp field
+    google.protobuf.Timestamp created = 3;
+
+    // model name field
+    string model = 4;
+
+    // a list of Choice objects
+    // this list represents the "choices" parameter
+    // a single Choice object contains: text, index, logprobs, finish_reason
+    repeated Choice choices = 5;
+}

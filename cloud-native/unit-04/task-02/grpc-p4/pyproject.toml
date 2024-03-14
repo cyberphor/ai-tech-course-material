@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "grpc-p4"
+version = "0.1.0"
+description = ""
+authors = ["Victor Fernandez III <48382964+cyberphor@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+grpcio-tools = "^1.62.1"
+llama-cpp-python = "^0.2.56"
+types-protobuf = "^4.24.0.20240311"
+asyncio = "^3.4.3"
+
+
+[tool.poetry.group.dev.dependencies]
+grpc-stubs = "^1.53.0.5"
+mypy = "^1.9.0"
+types-protobuf = "^4.24.0.20240311"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+strict = true
+untyped_calls_exclude = "grpc_p4.llmproto"
+
+[[tool.mypy.overrides]]
+module = "grpc_p4.llmproto.v1.*"
+ignore_errors = true

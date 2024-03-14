@@ -33,11 +33,13 @@ Google Remote Procedure Call (gRPC) is a protocol used for inter-service communi
 Serialization is the process of converting a language object (e.g., Python dict) into a series of bytes. Examples of technology that use serialization are Pickle and gRPC.
 
 **Protocol Buffer**  
-A protocol buffer is a method of serialization. Protocol buffers are defined using `.proto` files.nterface definition language
+A protocol buffer is a method of serialization. Protocol buffers are defined using `.proto` files.
 
 ## References
 If I find any helpful references, I will put them here. 
 * [gRPC vs. REST: Key Similarities and Differences](https://blog.dreamfactory.com/grpc-vs-rest-how-does-grpc-compare-with-traditional-rest-apis/)
+* [grpc.io: Python - Quick Start](https://grpc.io/docs/languages/python/quickstart/)
+* [Protocol Buffers Documentation: JSON Mapping](https://protobuf.dev/programming-guides/proto3/#json)
 
 ## Setup
 The tasks prescribed within this README assume you're already working in a Linux environment (Windows Subsystem for Linux, Azure Shell, GitHub Codespaces, a VirtualBox-based Linux virtual machine, etc.). They also assume you already have the following software installed: Python, Azure CLI, Kubernetes, and Helm.
@@ -68,7 +70,7 @@ vim poetry.toml
 ```
 
 **Step 7.** Add the code below to the `poetry.toml` file. 
-```bash
+```yaml
 [virtualenvs]
 in-project = true
 path = ".venv"
@@ -572,8 +574,798 @@ curl http://localhost/api?message=hi
 **FYSA.** The submitter assumes you will run it where `fastapi-p4` is a child folder (not via Docker). 
 
 ## Task 02
-**Step 1.** 
+### Subtask 01
+**Step 1.** Use Poetry to create a new Python project called `grpc-p4`. FYI, this command will also create a file called `pyproject.toml` among other things.
+```bash
+poetry new grpc-p4
+```
+
+**Step 2.** Change directories to your project folder. 
+```bash
+cd grpc-p4/
+```
+
+**Step 3.** Create and open a file called `poetry.toml`. 
+```bash
+vim poetry.toml
+```
+
+**Step 4.** Add the code below to the `poetry.toml` file. 
+```yaml
+[virtualenvs]
+in-project = true
+path = ".venv"
+```
+
+**Step 5.** Add the Python packages you need to the `pyproject.toml` file and then install them. 
+```bash
+poetry add grpcio-tools llama-cpp-python
+```
+
+**Step 6.** Create a directory called `v1` under another directory called `llmproto`. 
+```bash
+mkdir -p llmproto/v1
+```
+
+**Step 7.** Create and open a file called `llm.proto` in the `llmproto/v1/` directory.
+```bash
+vim llmproto/v1/llm.proto
+```
+
+**Step 8.** Add the code below to it. 
+```go
+// set the syntax version
+syntax = "proto3";
+
+// define the package
+package llmproto.v1;
+
+// import the "Timestamp" type definition file from Google
+import "google/protobuf/timestamp.proto";
+
+// define a gRPC service called "LLMService"
+service LLMService {
+    // returns a CompletionResponse object when given a CompletionRequest object
+    rpc Completion (CompletionRequest) returns (CompletionResponse) {}
+}
+
+// represents requests sent to the LLM 
+message CompletionRequest {
+    // message contains the LLM prompt
+    string message = 1;
+}
+
+// represents responses from the the LLM 
+message CompletionResponse {
+    // id field
+    string id = 1;
+
+    // object field
+    string object = 2;
+
+    // timestamp field
+    google.protobuf.Timestamp created = 3;
+
+    // model name field
+    string model = 4;
+
+    // choices contains a list of fields
+    message Choices {
+        // text field
+        string text = 1;
+
+        // index field
+        int32 index = 2;
+
+        // logprobs field
+        string logprobs = 3;
+
+        // finish_reason field
+        string finish_reason = 4;
+    }
+
+    // usage contains a dictionary of fields
+    message Usage {
+        // prompt_tokens field
+        int32 prompt_tokens = 1;
+
+        // completion_tokens field
+        int32 completion_tokens = 2;
+
+        // total_tokens field
+        int32 total_tokens = 3;
+    }
+
+    // choices field
+    Choices choices = 5;
+
+    // usage field
+    Usage usage = 6;
+}
+```
+
+**Step 9.** Download and install Homebrew, another open-source package manager. 
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+**Step 10.** Run the commands necessary to add Homebrew to your `PATH` environment variable. For example, in GitHub Codespaces, I got the following output. 
+```bash
+==> Next steps:
+- Run these two commands in your terminal to add Homebrew to your PATH:
+    (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/codespace/.bashrc
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+``` 
+
+So I ran these commands in my terminal session. Given the filepaths used (ex: `/home/codespace/`) you might have a slightly different command sentence to run. 
+```bash
+(echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/codespace/.bashrc
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+```
+
+**Step 11.** Download install Buf using Homebrew.
+```bash
+brew install bufbuild/buf/buf
+```
+
+**Step 12.** Create and open a file called `buf.yaml` within the `grpc-p4` folder (this folder is above the `grpc_p4` and `llmproto` folders). The file `buf.yaml` represents Buf's configuration settings. 
+```bash
+vim buf.yaml
+```
+
+**Step 13.** Add the code below to it. 
+```yaml
+version: v1
+build:
+  excludes:
+    - .venv
+lint:
+  use:
+    - DEFAULT
+    - COMMENT_MESSAGE
+    - COMMENT_RPC
+    - COMMENT_SERVICE
+    - COMMENT_FIELD
+```
+
+**Step 15.** Run Buf to confirm your `llm.proto` file meets code style and functionality changes. No output is good. It means Buf didn't find anything wrong with your protocol buffer definition.
+```bash
+./buf lint .
+```
+
+### Subtask 02
+**Step 1.** Use the `grpc_tools.protoc` Python module to create gRPC stubs. The command sentence below will specifically create a `llmproto/v1` folder and add three files to it: 
+* `llm_pb2_grpc.py`: contains client and server classes
+* `llm_pb2.py`: contains request and response classes
+* `llm_pb2.pyi`: contains protocol buffer message interfaces
+
+```bash
+poetry run python -m grpc_tools.protoc -Igrpc_p4=. --python_out=. --pyi_out=. --grpc_python_out=. llmproto/v1/llm.proto
+```
+
+**Step 2.** Create and open a file called `server.py` in the `grpc_p4` folder (notice the `_`).
+```bash
+vim grpc_p4/server.py
+```
+
+**Step 3.** Add the code below to it.
+```python
+"""
+A module for an Large Language Model (LLM) gRPC server
+"""
+# import built-in modules
+from concurrent import futures
+from time import time
+
+# import third-party modules
+from google.protobuf.timestamp_pb2 import Timestamp
+import grpc
+
+# import local modules
+from grpc_p4.llmproto.v1 import llm_pb2
+from grpc_p4.llmproto.v1 import llm_pb2_grpc
+
+port = "50051"
+
+# text goes here
+class LLMService(llm_pb2_grpc.LLMServiceServicer):
+    """
+    Text goes here
+    """
+    def Completion(self, request, context):
+        print(f"LLM Prompt: {request.message}")
+        seconds_since_epoch = int(time())
+        timestamp = Timestamp()
+        timestamp.FromSeconds(seconds=seconds_since_epoch)
+        return llm_pb2.CompletionResponse(
+            id="cmpl-7fc1be4c-8f5b-4b2f-805f-f8c5086a9fb4",
+            object="text_completion",
+            created=timestamp,
+            model = "tinyllama-1.1b-chat-v1.0.Q2_K.gguf",
+            choices=llm_pb2.CompletionResponse.Choices(
+                text="Beep boop",
+                index=0,
+                logprobs="null",
+                finish_reason="stop"
+            ),
+            usage=llm_pb2.CompletionResponse.Usage(
+                prompt_tokens=198,
+                completion_tokens=10,
+                total_tokens=208
+            )
+        )
+
+# text goes here
+def serve(port: str):
+    """
+    Text goes here
+    """
+    # declare and initialize a variable called "server" using 
+    # a grpc.server() object
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+
+    # declare and initialize a variable called "llmservice" using 
+    # a LLMService() object
+    llmservice = LLMService()
+
+    # bind the LLMService to the gRPC server
+    llm_pb2_grpc.add_LLMServiceServicer_to_server(llmservice, server)
+
+    # add a port to the gRPC server
+    server.add_insecure_port("[::]:" + port)
+
+    # start the gRPC server
+    server.start()
+    print(f"Server started, listening on {port}")
+    server.wait_for_termination()
+
+
+if __name__ == "__main__":
+    serve(port)
+```
+
+**Step 4.** Create and open a file called `client.py` in the `grpc_p4` folder (notice the `_`).
+```bash
+vim grpc_p4/client.py
+```
+
+**Step 5.** Add the code below to it.
+```python
+"""
+A module for an Large Language Model (LLM) gRPC client
+"""
+# import built-n modules
+from __future__ import print_function
+
+# import third-party modules
+import grpc
+
+# import local modules
+from grpc_p4.llmproto.v1 import llm_pb2
+from grpc_p4.llmproto.v1 import llm_pb2_grpc
+
+# text goes here
+def run():
+    """
+    Text goes here
+    """
+    with grpc.insecure_channel("localhost:50051") as channel:
+        stub = llm_pb2_grpc.LLMServiceStub(channel)
+        response = stub.Completion(llm_pb2.CompletionRequest(message="hello"))
+    print(response)
+
+
+if __name__ == "__main__":
+    run()
+```
+
+**Step 6.** Start the gRPC server.
+```bash
+poetry run python -m grpc_p4.server
+```
+
+**Step 7.** In another terminal, run the gRPC client to make sure your code works. You should get a response back similar to the output of the LLM in Task 01. 
+```bash
+poetry run python -m grpc_p4.client
+```
+
+### Subtask 03
+**Step 1.** Open the file called `llm.proto` (i.e., the protocol buffer definition file) in the `llmproto/v1/` directory.
+```bash
+vim llmproto/v1/llm.proto
+```
+
+**Step 2.** Replace its contents with the code below. 
+```go
+// set the syntax version
+syntax = "proto3";
+
+// define the package
+package llmproto.v1;
+
+// import the "Timestamp" type definition file from Google
+import "google/protobuf/timestamp.proto";
+
+// define a gRPC service called "LLMService"
+service LLMService {
+    // returns a CompletionResponse object when given a CompletionRequest object
+    rpc Completion (CompletionRequest) returns (CompletionResponse) {}
+
+    // returns a stream LLMStreamResponse object when given a LLMStreamResponse object
+    rpc LLMStream (LLMStreamRequest) returns (stream LLMStreamResponse) {}
+}
+
+// represents requests sent to the LLM 
+message CompletionRequest {
+    // message contains the LLM prompt
+    string message = 1;
+}
+
+// represents responses from the the LLM 
+message CompletionResponse {
+    // id field
+    string id = 1;
+
+    // object field
+    string object = 2;
+
+    // timestamp field
+    google.protobuf.Timestamp created = 3;
+
+    // model name field
+    string model = 4;
+
+    // choices contains a list of fields
+    message Choices {
+        // text field
+        string text = 1;
+
+        // index field
+        int32 index = 2;
+
+        // logprobs field
+        string logprobs = 3;
+
+        // finish_reason field
+        string finish_reason = 4;
+    }
+
+    // usage contains a dictionary of fields
+    message Usage {
+        // prompt_tokens field
+        int32 prompt_tokens = 1;
+
+        // completion_tokens field
+        int32 completion_tokens = 2;
+
+        // total_tokens field
+        int32 total_tokens = 3;
+    }
+
+    // choices field
+    Choices choices = 5;
+
+    // usage field
+    Usage usage = 6;
+}
+
+// represents requests sent to the LLM 
+message LLMStreamRequest {
+    // message contains the LLM prompt
+    string message = 1;
+}
+
+// represents responses from the the LLM 
+message LLMStreamResponse {
+    // id field
+    string id = 1;
+
+    // object field
+    string object = 2;
+
+    // timestamp field
+    google.protobuf.Timestamp created = 3;
+
+    // model name field
+    string model = 4;
+
+    // choices contains a list of fields
+    message Choices {
+        // text field
+        string text = 1;
+
+        // index field
+        int32 index = 2;
+
+        // logprobs field
+        string logprobs = 3;
+
+        // finish_reason field
+        string finish_reason = 4;
+    }
+
+    // choices field
+    Choices choices = 5;
+}
+```
+
+**Step 3.** Run Buf again to make sure `llm.proto` still meets style and functionality expectations.
+```bash
+buf lint .
+```
+
+**Step 4.** Use the `grpc_tools.protoc` Python module again to recreate gRPC stubs. 
+```bash
+poetry run python -m grpc_tools.protoc -Igrpc_p4=. --python_out=. --pyi_out=. --grpc_python_out=. llmproto/v1/llm.proto
+```
+
+**Step 5.** Open the file called `server.py` in the `grpc_p4` folder (notice the `_`).
+```bash
+vim grpc_p4/server.py
+```
+
+**Step 6.** Add the code below to it.
+```python
+"""
+A module for an Large Language Model (LLM) gRPC server
+"""
+# import built-in modules
+from collections.abc import Iterator
+from concurrent import futures
+from time import time
+from typing import Dict
+
+# import third-party modules
+from google.protobuf.timestamp_pb2 import Timestamp
+import grpc
+from llama_cpp import Llama
+
+# import local modules
+from grpc_p4.llmproto.v1 import llm_pb2
+from grpc_p4.llmproto.v1 import llm_pb2_grpc
+
+# set environment variable
+port = "50051"
+
+# declare and initialize a variable called "model" by assigning a Llama object to it
+model = Llama(
+    model_path="tinyllama-1.1b-chat-v1.0.Q2_K.gguf",
+    n_ctx=512,
+    n_batch=1
+)
+
+# set the max number of tokens allowed for each LLM prompt 
+MAX_TOKENS = 512
+
+# text goes here
+class LLMService(llm_pb2_grpc.LLMServiceServicer):
+    """
+    Text goes here
+    """
+    def Completion(self, request: llm_pb2.CompletionRequest, context: grpc.ServicerContext) -> llm_pb2.CompletionResponse:
+        """
+        Text goes here
+        """
+        print(f"Completion Request: {request.message}")
+        seconds = int(time())
+        timestamp = Timestamp()
+        timestamp.FromSeconds(seconds)
+        return llm_pb2.CompletionResponse(
+            id="cmpl-7fc1be4c-8f5b-4b2f-805f-f8c5086a9fb4",
+            object="text_completion",
+            created=timestamp,
+            model = "tinyllama-1.1b-chat-v1.0.Q2_K.gguf",
+            choices=llm_pb2.CompletionResponse.Choices(
+                text="Beep boop",
+                index=0,
+                logprobs="null",
+                finish_reason="stop"
+            ),
+            usage=llm_pb2.CompletionResponse.Usage(
+                prompt_tokens=198,
+                completion_tokens=10,
+                total_tokens=208
+            )
+        )
+    def LLMStream(self, request: llm_pb2.LLMStreamRequest, context: grpc.ServicerContext) -> Iterator[llm_pb2.LLMStreamResponse]:
+        """
+        Text goes here
+        """
+        print(f"LLM Stream Request: {request.message}")
+        model_description = "You are an assistant."
+        llmprompt = f"<|system|>\n{model_description}</s>\n<|user|>{request.message}</s><|assistant|>"
+        for element in model(llmprompt, temperature=0.0, max_tokens=MAX_TOKENS, stream=True):
+            assert isinstance(element, Dict)
+            assert element["choices"][0]["logprobs"] is None
+            seconds = int(element["created"])
+            timestamp = Timestamp()
+            timestamp.FromSeconds(seconds)
+            yield llm_pb2.LLMStreamResponse(
+                id=element["id"],
+                object=element["object"],
+                created=timestamp,
+                model = element["model"],
+                choices=llm_pb2.LLMStreamResponse.Choices(
+                    text=element["choices"][0]["text"],
+                    index=element["choices"][0]["index"],
+                    logprobs=element["choices"][0]["logprobs"],
+                    finish_reason=element["choices"][0]["finish_reason"]
+                )
+            )
+
+# text goes here
+def main(port: str) -> None:
+    """
+    Text goes here
+    """
+    # declare and initialize a variable called "server" using 
+    # a grpc.server() object
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+
+    # declare and initialize a variable called "llmservice" using 
+    # a LLMService() object
+    llmservice = LLMService()
+
+    # bind the LLMService to the gRPC server
+    llm_pb2_grpc.add_LLMServiceServicer_to_server(llmservice, server)
+
+    # add a port to the gRPC server
+    server.add_insecure_port("[::]:" + port)
+
+    # start the gRPC server
+    server.start()
+    print(f"Server started, listening on {port}")
+    server.wait_for_termination()
+
+if __name__ == "__main__":
+    main(port)
+```
+
+**Step 7.** Open the file called `client.py` in the `grpc_p4` folder (notice the `_`).
+```bash
+vim grpc_p4/client.py
+```
+
+**Step 8.** Add the code below to it.
+```python
+"""
+A module for an Large Language Model (LLM) gRPC client
+"""
+# import third-party modules
+import grpc
+
+# import local modules
+from grpc_p4.llmproto.v1 import llm_pb2
+from grpc_p4.llmproto.v1 import llm_pb2_grpc
+
+# text goes here
+def main() -> None:
+    """
+    Text goes here
+    """
+    with grpc.insecure_channel("localhost:50051") as channel:
+        stub = llm_pb2_grpc.LLMServiceStub(channel)
+        for element in stub.LLMStream(llm_pb2.LLMStreamRequest(message="hello")):
+            print(element.choices.text, end="", flush=True)
+
+if __name__ == "__main__":
+    main()
+```
+
+**Step 9.** Download the `tinyllama-1.1b-chat-v1.0.Q2_K.gguf` model file to the `grpc-p4` directory.
+```bash
+wget https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q2_K.gguf
+```
+
+**Step 10.** Start the gRPC server.
+```bash
+poetry run python -m grpc_p4.server
+```
+
+**Step 11.** In another terminal, run the gRPC client to make sure your code works. You should get a streaming response back similar to ChatGPT.
+```bash
+poetry run python -m grpc_p4.client
+```
+
+### Subtask 04
+**Step 1.** Add the `grpc-stubs`, `mypy`, and `types-protobuf` Python packages to your project as development dependencies. Again, doing this allows you to use these packages while ensuring they are not added to your production-specific `pyproject.toml` when you publish your project later. 
+```bash
+poetry add -G dev grpc-stubs mypy types-protobuf 
+```
+
+**Step 2.** Open the file called `pyproject.toml`.
+```bash
+vim pyproject.toml
+```
+ 
+**Step 3.** Add the content below to it.
+```yaml
+[tool.mypy]
+strict = true
+untyped_calls_exclude = "grpc_p4.llmproto"
+
+[[tool.mypy.overrides]]
+module = "grpc_p4.llmproto.v1.*"
+ignore_errors = true
+```
+
+**Step 4.** Run `mypy` using Poetry to lint `server.py`. `mypy` shouldn't find any issues.
+```bash
+poetry run mypy grpc_p4/server.py --strict
+```
+
+**Step 5.** Run `mypy` using Poetry to lint `client.py`. `mypy` shouldn't find any issues.
+```bash
+poetry run mypy grpc_p4/client.py --strict
+```
+
+**Step 6.** Add the `asyncio` Python package to the `pyproject.toml` file and then install them. 
+```bash
+poetry add asyncio
+```
+
+**Step 7.** Open the file called `server.py` in the `grpc_p4` folder (notice the `_`).
+```bash
+vim grpc_p4/server.py
+```
+
+**Step 8.** Replace its contents with the code below.
+```python
+"""
+A module for an Large Language Model (LLM) gRPC server
+"""
+# import built-in modules
+from time import time
+from typing import AsyncGenerator
+from typing import Dict
+from typing import List
+
+# import third-party modules
+from google.protobuf.timestamp_pb2 import Timestamp
+from llama_cpp import Llama
+import asyncio
+import grpc
+
+# import local modules
+from grpc_p4.llmproto.v1 import llm_pb2
+from grpc_p4.llmproto.v1 import llm_pb2_grpc
+
+# set environment variable
+port = "50051"
+
+# declare and initialize a variable called "model" by assigning a Llama object to it
+model = Llama(
+    model_path="tinyllama-1.1b-chat-v1.0.Q2_K.gguf",
+    n_ctx=512,
+    n_batch=1
+)
+
+# set the max number of tokens allowed for each LLM prompt 
+MAX_TOKENS = 512
+
+# text goes here
+class LLMService(llm_pb2_grpc.LLMServiceServicer):
+    """
+    Text goes here
+    """
+    async def Completion(self, request: llm_pb2.CompletionRequest, context: grpc.ServicerContext) -> llm_pb2.CompletionResponse:
+        """
+        Text goes here
+        """
+        print(f"Completion Request: {request.message}")
+        seconds = int(time())
+        timestamp = Timestamp()
+        timestamp.FromSeconds(seconds)
+        return llm_pb2.CompletionResponse(
+            id="cmpl-7fc1be4c-8f5b-4b2f-805f-f8c5086a9fb4",
+            object="text_completion",
+            created=timestamp,
+            model = "tinyllama-1.1b-chat-v1.0.Q2_K.gguf",
+            choices=[
+                llm_pb2.Choice(
+                    text="Beep boop",
+                    index=0,
+                    logprobs="null",
+                    finish_reason="stop"
+                )
+            ],
+            usage=llm_pb2.Usage(
+                prompt_tokens=198,
+                completion_tokens=10,
+                total_tokens=208
+            )
+        )
+    async def LLMStream(self, request: llm_pb2.LLMStreamRequest, context: grpc.ServicerContext) -> AsyncGenerator[llm_pb2.LLMStreamResponse, None]:
+        """
+        Text goes here
+        """
+        print(f"LLM Stream Request: {request.message}")
+        model_description = "You are an assistant."
+        llmprompt = f"<|system|>\n{model_description}</s>\n<|user|>{request.message}</s><|assistant|>"
+        for element in model(llmprompt, temperature=0.0, max_tokens=MAX_TOKENS, stream=True):
+            assert isinstance(element, Dict)
+            assert isinstance(element["choices"], List)
+            assert element["choices"][0]["logprobs"] is None
+            seconds = int(element["created"])
+            timestamp = Timestamp()
+            timestamp.FromSeconds(seconds)
+            yield llm_pb2.LLMStreamResponse(
+                id=element["id"],
+                object=element["object"],
+                created=timestamp,
+                model=element["model"],
+                choices=element["choices"]
+            )
+
+# text goes here
+async def main() -> None:
+    """
+    Text goes here
+    """
+    # declare and initialize a variable called "server" using 
+    # a grpc.server() object
+    server = grpc.aio.server()
+
+    # declare and initialize a variable called "llmservice" using 
+    # a LLMService() object
+    llmservice = LLMService()
+
+    # bind the LLMService to the gRPC server
+    llm_pb2_grpc.add_LLMServiceServicer_to_server(llmservice, server)
+
+    # add a port to the gRPC server
+    server.add_insecure_port("[::]:" + port)
+
+    # start the gRPC server
+    await server.start()
+    print(f"Server started, listening on {port}")
+    await server.wait_for_termination()
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+**Step 9.** Open the file called `client.py` in the `grpc_p4` folder (notice the `_`).
+```bash
+vim grpc_p4/server.py
+```
+
+**Step 10.** Replace its contents with the code below.
+```python
+"""
+A module for an Large Language Model (LLM) gRPC client
+"""
+# import third-party modules
+import asyncio
+import grpc
+
+# import local modules
+from grpc_p4.llmproto.v1 import llm_pb2
+from grpc_p4.llmproto.v1 import llm_pb2_grpc
+
+# text goes here
+async def main() -> None:
+    """
+    Text goes here
+    """
+    with grpc.insecure_channel("localhost:50051") as channel:
+        stub = llm_pb2_grpc.LLMServiceStub(channel)
+        for element in stub.LLMStream(llm_pb2.LLMStreamRequest(message="hello")):
+            print(element.choices[0].text, end="", flush=True)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+**Step 11.** Install `grpcurl` using Homebrew. It's needed for the submitter.
+```bash
+brew install grpcurl
+```
 
 ## Task 03
+**Purpose of Task 03**  
+FastAPI does not provide a streaming interface for clients that can scale without violating REST. gRPC, on the other hand can scale, but its interface will not work with frontend applications that can't use gRPC. 
+
+**Step 1.** 
 
 ## Task 04

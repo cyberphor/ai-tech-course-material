@@ -3,3 +3,6 @@ task-01/fastapi-p4/.mypy_cache/
 task-01/fastapi-p4/.venv/
 task-01/fastapi-p4/fastapi_p4/__pycache__/
 task-01/fastapi-p4/tinyllama-1.1b-chat-v1.0.Q2_K.gguf
+task-02/grpc-p4/.venv/
+task-02/grpc-p4/grpc_p4/__pycache__/
+task-02/grpc-p4/grpc_p4/llmproto/v1/__pycache__/

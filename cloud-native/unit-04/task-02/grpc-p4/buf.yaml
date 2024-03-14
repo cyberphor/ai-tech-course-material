@@ -1,0 +1,11 @@
+version: v1
+build:
+  excludes:
+    - .venv
+lint:
+  use:
+    - DEFAULT
+    - COMMENT_MESSAGE
+    - COMMENT_RPC
+    - COMMENT_SERVICE
+    - COMMENT_FIELD
