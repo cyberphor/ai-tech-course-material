@@ -1,3 +1,4 @@
+.credentials
 .venv
 ml-100k/
 collaborative_filtering.tgz

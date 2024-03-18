@@ -7,6 +7,11 @@
 ## Notes
 If I learn anything new, I will put it here until I migrate the topic to my public [Knowledge Base](https://github.com/cyberphor/knowledge-base).
 
+**Developing a ML System**  
+**Step 1.** Identify and explore the data points between the user and their data science problem (e.g., picking a movie to watch). One example is the distribution of movie ratings per user.
+
+**Step 2.** Identify how to assess the performance of your ML system (e.g., how do rating evolve over time?).
+
 ## References
 If I find any helpful references, I will put them here.
 
@@ -57,4 +62,4 @@ chmod +x submitter
 ```
 
 ## Task 
-The purpose of this task is to develop a recommender system that uses collaborative filtering. 
+The purpose of this task is to develop a movie recommendation system that uses collaborative filtering. See the provided Jupyter Notebook for more informaton.
