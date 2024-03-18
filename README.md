@@ -5,6 +5,7 @@
 * [DevOps](#devops)
 * [Data Engineering](#data-engineering)
 * [Cloud-Native](#cloud-native)
+* [AI Practitioner](#ai-practitioner)
 
 ## Setup Guides
 * [Create SSH Keys](/SETUP.md#how-to-create-ssh-keys)
@@ -72,3 +73,9 @@
 | [Relational Databases](/data-engineering/unit-02/README.md) | <ul> <li>Use `pandas` to clean, transform, and prepare data</li></li><li>Load data into a MySQL database</li><li>Perform SQL queries</li><li>Create and loads records into a SQL database table</li><li>Modify a SQL database tables (e.g., add and remove columns)</li><li>Query and filter records from SQL database tables</li><li>Merge multiple SQL database tables</li></ul>
 | [NoSQL Databases](/data-engineering/unit-03/README.md) | <ul><li>Compare NoSQL databases to the relational databases based on SQL.</li><li>Deploy and configure a fully managed multi-model database on Azure with MongoDB API.</li><li>Ingest data from a local JSON file into the managed database on Azure.</li><li>Perform extraction, transformation, and loading (ETL) process on a raw dataset.</li><li>Practice writing efficient MongoDB queries using the Azure Cosmos DB's API for MongoDB.</li><li>Gather insights from a dataset residing in Azure Cosmos DB.</li><li>Implement and evaluate MongoDB indexing to improve the performance of MongoDB queries.</li></ul>
 | [Data Processing with Spark](/data-engineering/unit-04/README.md) | <ul><li>Explore big data processing with Spark and MapReduce.</li><li>Compare non-iterative batch processing (Hadoop) vs. iterative batch processing (Spark).</li><li>Explain RDDs, transformations, actions in Spark job execution.</li><li>Develop Spark apps with interactive programming in Azure Databricks Notebooks.</li><li>Use cloud managed services for Spark apps, like Azure Databricks.</li><li>Write Spark applications using RDD and DataFrame APIs.</li></ul>
+
+## AI Practitioner
+| Topic                                                                   | Training Objectives |
+| ----------------------------------------------------------------------- | ------------------- |
+| [Recommender Systems](/ai-practitioner/unit-00/README.md)               | <ul><li>Access data and perform elementary dataframe manipulations using the Pandas library, demonstrating the ability to prepare and manage data for ML projects.</li><li>Employ NumPy functions and sparse matrices to effectively carry out computational tasks on extensive datasets.</li><li>Conduct task exploration to identify the requirements and objectives of an ML project involving recommender systems or collaborative filtering methods.</li><li>Employ vectorization and matrix programming paradigms to efficiently implement complex numerical algebra operations common in ML systems.</li><li>Create a collaborative filtering model based movie recommendation system using low-rank factorization.</li>
+</ul> |
