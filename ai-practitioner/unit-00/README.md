@@ -1,4 +1,4 @@
-# AI Practitioner: Recommender Systems
+# AI Practitioner: Recommendation Systems
 * [Notes](#notes)
 * [References](#references)
 * [Setup](#setup)
@@ -62,4 +62,4 @@ chmod +x submitter
 ```
 
 ## Task 
-The purpose of this task is to develop a movie recommendation system that uses collaborative filtering. See the provided Jupyter Notebook for more informaton.
+The purpose of this task is to develop a movie recommendation system that uses collaborative filtering. See [the provided Jupyter Notebook](collaborative_filtering.ipynb) for the walkthrough.
