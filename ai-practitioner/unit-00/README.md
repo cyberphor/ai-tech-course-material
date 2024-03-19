@@ -31,7 +31,7 @@ print(outer_product)
 ```
 
 **Binary Indicator Matrix**  
-A *binary indicator matrix* is a list of numbers used to filter for values in another list or matrix. I would consider a subnet mask address a binary indicator matrix. For example, anything that *is one* should be extracted. 
+A *binary indicator matrix* is a matrix of values used to filter another matrix. A matrix of boolean values is one example. To produce a binary indicator matrix, you can compare a matrix to `0`. For instance, if `X` contains `[[0 5], [8 3], [0 1]]`, then `X != 0` will produce `[[True False], [False False], [True False]]`.
 
 ## References
 If I find any helpful references, I will put them here.
