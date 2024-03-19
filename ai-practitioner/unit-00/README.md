@@ -30,6 +30,9 @@ outer_product = np.outer(number_of_users, number_of_movies)
 print(outer_product)
 ```
 
+**Binary Indicator Matrix**  
+A *binary indicator matrix* is a list of numbers used to filter for values in another list or matrix. I would consider a subnet mask address a binary indicator matrix. For example, anything that *is one* should be extracted. 
+
 ## References
 If I find any helpful references, I will put them here.
 
