@@ -12,6 +12,24 @@ If I learn anything new, I will put it here until I migrate the topic to my publ
 
 **Step 2.** Identify how to assess the performance of your ML system (e.g., how do rating evolve over time?).
 
+**Vectors**  
+A *vector* is a list of numbers. The Pandas library represents vectors as Series objects. The NumPy library represents vectors as NumPy Array objects. 
+
+**Outer Product**  
+An *outer product* is the result of multiplying two lists of numbers together. The result look like a cross-walk of numbers. For example, imagine you have two lists: `[1,2,3]`, `[4,5]`. The outer product would be: `[[4,5],[8,10],[12,15]]`. 
+
+**Calculating the Outer Product of Two Vectors**  
+Below is an example of how calculate the outer product of two vectors in Python.
+```python
+import pandas as pd
+import numpy as np
+
+number_of_users = pd.DataFrame([1,2,3])
+number_of_movies = pd.DataFrame([4,5])
+outer_product = np.outer(number_of_users, number_of_movies)
+print(outer_product)
+```
+
 ## References
 If I find any helpful references, I will put them here.
 
