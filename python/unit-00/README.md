@@ -1,1 +1,0 @@
-# Types, Variables, and Functions

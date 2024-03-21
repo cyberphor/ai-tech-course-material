@@ -1,8 +1,9 @@
-ppp-p8-data-analysis/__pycache__/
-ppp-p8-data-analysis/dependencies/
-ppp-p8-data-analysis/enron_berkeley_subset/
-ppp-p8-data-analysis/p8-env/
-ppp-p8-data-analysis/submission_logs/
-ppp-p8-data-analysis/wdi_exports/
-ppp-p8-data-analysis/enron_email_list.txt
-ppp-p8-data-analysis/requirements.txt
+ppp-p7-webscraping-office-documents/__pycache__
+ppp-p7-webscraping-office-documents/dependencies
+ppp-p7-webscraping-office-documents/p7-env
+ppp-p7-webscraping-office-documents/requirements.txt
+ppp-p7-webscraping-office-documents/submission_logs
+ppp-p7-webscraping-office-documents/submit.py
+.sailconfig.json
+algebraic-ratio*
+zZz_*

@@ -1,9 +1,8 @@
-ppp-p7-webscraping-office-documents/__pycache__
-ppp-p7-webscraping-office-documents/dependencies
-ppp-p7-webscraping-office-documents/p7-env
-ppp-p7-webscraping-office-documents/requirements.txt
-ppp-p7-webscraping-office-documents/submission_logs
-ppp-p7-webscraping-office-documents/submit.py
+ppp-p6-files-datastores/__pycache__/
+ppp-p6-files-datastores/books_data/zZz_*
+ppp-p6-files-datastores/dependencies/
+ppp-p6-files-datastores/p6-env/
+ppp-p6-files-datastores/submission_logs/
+ppp-p6-files-datastores/submit.py
+ppp-p6-files-datastores/zZz_*
 .sailconfig.json
-algebraic-ratio*
-zZz_*

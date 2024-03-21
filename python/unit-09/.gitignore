@@ -1,0 +1,8 @@
+ppp-p8-data-analysis/__pycache__/
+ppp-p8-data-analysis/dependencies/
+ppp-p8-data-analysis/enron_berkeley_subset/
+ppp-p8-data-analysis/p8-env/
+ppp-p8-data-analysis/submission_logs/
+ppp-p8-data-analysis/wdi_exports/
+ppp-p8-data-analysis/enron_email_list.txt
+ppp-p8-data-analysis/requirements.txt
