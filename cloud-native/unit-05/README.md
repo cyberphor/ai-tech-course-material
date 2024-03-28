@@ -15,6 +15,8 @@ If I find any helpful references, I will put them here.
 * [How To Deploy MySQL Using Persistent Volume](https://blog.knoldus.com/k8s-how-to-deploy-mysql-using-persistent-volume/)
 * [Retrieve the full name of a service in Kubernetes](https://stackoverflow.com/questions/59559438/retrieve-the-full-name-of-a-service-in-kubernetes)
 * [Kubernetes: Opaque Secrets](https://kubernetes.io/docs/concepts/configuration/secret/#opaque-secrets)
+* [Kubernetes: Run a Replicated Stateful Application - Create the StatefulSet](https://kubernetes.io/docs/tasks/run-application/run-replicated-stateful-application/#statefulset)
+* [Django: Automatic database routing](https://docs.djangoproject.com/en/5.0/topics/db/multi-db/)
 
 ## Notes
 **Kubernetes PersistentVolumeClaim Resource**  
@@ -331,6 +333,9 @@ Defaulted container "login" out of: login, login-init (init)
 ```
 
 ## Task 02
+The purpose of this task is to TEXT GOES HERE.
+
+### Subtask 01
 **Step 1.** Change your working directory from `task-01` to `task-02`. 
 ```bash
 cd ../task-02/
@@ -343,7 +348,7 @@ poetry new t2-locust
 
 **Step 3.** Change directories to `t2-locust`.
 ```bash
-cd t2-locust
+cd t2-locust/
 ```
 
 **Step 4.** Using your favorite text-editor, create and open a file called `poetry.toml`. 
@@ -383,14 +388,152 @@ mysql        ClusterIP      10.0.167.147   <none>         3306/TCP       29m
 poetry run locust -f t2_locust/locustfile.py --headless -u 10 -r 10 --host http://172.171.38.132
 ```
 
-**Step 10.** Using your favorite text-editor create a file called `subtask-01.yaml` using the [provided example](task-02/kubernetes/subtask-01.yaml) as inspiration.
+**Step 10.** Change directories back to `task-02`. 
+```bash
+cd ../
+```
+
+**Step 11.** Delete all of your `login` and `mysql` Kubernetes objects except for your Secret (this was defined using the CLI earlier, not a YAML file). Wait for your the deletion of your "PersistentVolumeClaim" to finish before moving on (run `kubectl get pvc` to check - if need be, use the Azure Portal: Kubernetes service > Storage > Persistent volume claims). The purpose of this step is to reduce confusion and re-baseline your cluster for Task 02.  
+```bash
+kubectl delete configmap/mysql
+kubectl delete pvc/mysql
+kubectl delete pod/mysql
+kubectl delete svc/mysql
+kubectl delete deployment/login
+```
+
+**Step 12.** Using your favorite text-editor, create a file called `subtask-01.yaml` using the [provided example](task-02/kubernetes/subtask-01.yaml) as inspiration.
 ```bash
 vim kubernetes/subtask-01.yaml
 ```
 
-**Step 11.** Apply the *new* Kubernetes configuration you just created to deploy a `mysql` image as a container on a pod in your Kubernetes cluster.
+**Step 13.** Apply the *new* Kubernetes configuration you just created. It does a few things: 
+* Creates a PersistentVolumeClaim object to request storage from the resource provider (i.e., Cloud Service Provider) and host the cluster's MySQL database
+* Creates a StatefulSet object (in lieu of a Deployment object) to deploy and track the identity and state of all pods 
+* Creates a MySQL Service object to route *read* requests to pods with MySQL servers that can read from the MySQL database
+* Creates a MySQL Service object to route *write* requests to pods with MySQL servers that can write to the MySQL database
+* Creates a ConfigMap object with two files
+    * `primary.cnf`: used only by the the primary MySQL server within a pod
+    * `replica.cnf`: used only by for all MySQL server replicas within a pod
 ```bash
 kubectl apply -f kubernetes/subtask-01.yaml
+```
+
+**Step 14.** Wait a few minutes and then, run the command below.  
+```bash
+kubectl get pods
+```
+
+Your output should be similar to below before moving on.
+```
+NAME      READY   STATUS    RESTARTS   AGE
+mysql-0   2/2     Running   0          2m41s
+mysql-1   2/2     Running   0          2m6s
+mysql-2   2/2     Running   0          71s
+```
+
+**Step 15.** Run the command below to confirm your MySQL system is working as expected.
+```bash
+kubectl run mysql-client --image=mysql:8.0 -it --rm --restart=Never -- mysql -h mysql-0.mysql -uroot -e 'SHOW databases;'
+```
+
+Your output should be similar to below. 
+```
++------------------------+
+| Database               |
++------------------------+
+| information_schema     |
+| mysql                  |
+| performance_schema     |
+| sys                    |
+| xtrabackup_backupfiles |
++------------------------+
+pod "mysql-client" deleted
+```
+
+### Subtask 02
+**Step 1.** Make sure you're still in the `task-02` directory. Then, using your favorite text-editor, create a file called `subtask-02.yaml` using the [provided example](task-02/kubernetes/subtask-02.yaml) as inspiration
+```bash
+vim kubernetes/subtask-02.yaml
+```
+
+**Step 2.** Apply the *new* Kubernetes configuration you just created. It creates a Job object that uses a MySQL container to create a MySQL database called `login`.  
+```bash
+kubectl apply -f kubernetes/subtask-02.yaml
+```
+
+**Step 3.** Run the command below to confirm your MySQL system now has a database called `login`.
+```bash
+kubectl run mysql-client --image=mysql:8.0 -it --rm --restart=Never -- mysql -h mysql-0.mysql -uroot -e 'SHOW databases;'
+```
+
+Your output should be similar to below. 
+```
++------------------------+
+| Database               |
++------------------------+
+| information_schema     |
+| mysql                  |
+| performance_schema     |
+| sys                    |
+| xtrabackup_backupfiles |
++------------------------+
+pod "mysql-client" deleted
+```
+
+**Step 4.** Delete the Job object you made. 
+```bash
+kubectl delete jobs/mysql
+```
+
+### Subtask 03
+**Step 1.** Make sure you're still in the `task-02` directory. Then, build a *new* `login` container image using the provided [Dockerfile example](docker/Dockerfile) and [entrypoint script example](docker/entrypoint.sh) as well as a *new* tag for your *local* container registry. The `settings.py` file has been updated to use a new file called `routers.py`. Together, they define which `login` MySQL server to use for reading and which one to use for writing. Specifically, `settings.py` uses a dictionary called `DATABASES` and list called `DATABASE_ROUTERS` (`DATABASE_ROUTERS` points to `routers.py`).
+```bash
+docker build --no-cache -t login:v3.0.0 -f docker/Dockerfile .
+```
+
+**Step 2.** Add a *new* tag to the image for your Azure Container Registry.
+```bash
+docker tag login:v3.0.0 "${ACR_NAME}.azurecr.io/login:v3.0.0"
+```
+
+**Step 3.** Push the updated and tagged image to your Azure Container Registry. 
+```bash
+docker push "${ACR_NAME}.azurecr.io/login:v3.0.0"
+```
+
+**Step 5.** Using your favorite text-editor, create a file called `subtask-03.yaml` using the [provided example](task-02/kubernetes/subtask-03.yaml) as inspiration.
+```bash
+vim kubernetes/subtask-03.yaml
+```
+
+**Step 3.** Apply the *new* Kubernetes configuration you just created to deploy your *updated* `login` image as a container as well as an init container on a pod in your Kubernetes cluster.
+```bash
+kubectl apply -f kubernetes/subtask-03.yaml
+```
+
+**Step 4.** Identify the IP address of the new LoadBalancer resource you defined previously. 
+```bash
+kubectl get svc
+```
+
+Your output should be similar to below.
+```
+NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP      10.0.0.1       <none>        443/TCP        26h
+login        LoadBalancer   10.0.247.191   4.255.92.5    80:31745/TCP   38s
+mysql        ClusterIP      None           <none>        3306/TCP       71s
+mysql-read   ClusterIP      10.0.94.146    <none>        3306/TCP       3h42m
+```
+
+**Step 5.** Test your *new* `login` container using `curl` and the IP address of your LoadBalancer resource. 
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"username":"admin", "password":"asdasd"}' http://4.255.92.5/api/token/ 
+```
+
+Your output should be similar to below. 
+```json
+{"refresh":"eyJhbGciOiJSUzI1NiIsImtpZCI6InlvdXJjb29sa2lkIiwidHlwIjoiSldUIn0.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxMTc0NzYwNSwiaWF0IjoxNzExNjYxMjA1LCJqdGkiOiI0YTQ0OTVjNWE0ZjA0NjgzYTFhMjg3OWQzNjZjYmYwMiIsInVzZXJfaWQiOjEsImlzcyI6ImxsbWxvZ2luIiwic3ViIjoiY2xpZW50In0.pJManSxsdzf6qM9HTgJnQclEbT3IDyZZh4ZvUA-zyoChU9IYn3yKRqgahWxGbnO9z5ldbESEuMe2d0GOC2WfWX9BIw_lPFuYjYJ6p-_PiG8KIAGqNw_SmBc10_mvV_iZZXwFqjZszFVTADhks3pchQMfvgF3SADs8Jgt8JE1U7jdQ_A9x23XaUYUQX20ZgiXTa9EKJi5TWCkc6n5PRX0-gp--GKWuALLsP3XlsSbqrq3JDRMptjOsQazHhLXs2tcR3HI-JqfRxP52EIlmV0mpLdrf8SOEgLDNIyXwmkBSPKhqWApWYjhWo6n14RU17hv-DZvVnbB4a1uhgevH7484Q","access":"eyJhbGciOiJSUzI1NiIsImtpZCI6InlvdXJjb29sa2lkIiwidHlwIjoiSldUIn0.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExNjYxNTA1LCJpYXQiOjE3MTE2NjEyMDUsImp0aSI6IjhjNGNiZDQxOWQ3OTRmZThiYzEyNmM5OWNmNGM3ODliIiwidXNlcl9pZCI6MSwiaXNzIjoibGxtbG9naW4iLCJzdWIiOiJjbGllbnQifQ.HewlfEjdKIyax_Fnsq2o1tZtGOgUus2eJ615xRd63oY5bmq0a78F0lVuJgqsERBuF9T1Zxo21ncgF9zNdBxZGdg13YotDgipzvyR1OxfhCcvjLUxR7WPz-CZ7B5xrFqC7r7Xx5AA20k8auUCAEZbKZhWB1IkWQGZZbV2UIn9s512vPOpeBb5575UuCY61o5O5TAW_dJjeSRE5rWgKv6gW-0YY6YT9-h9dlR06sThj2ltBuAO-PSqXkHm_SzVnVREx1iXzPGEmyTs35l5r0tiXQUo_FAUcy54hSSUyeHa4CEG71N2mCEbbMgppkjwLDgPlhKnnrzXciNQ_8hhbZ3H4Q"}
 ```
 
 ## Task 03

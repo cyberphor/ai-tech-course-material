@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login
+  labels:
+    app: login
+spec:
+  replicas: 1 # this was 1 in Task 01
+  selector:
+    matchLabels:
+      app: login
+  template:
+    metadata:
+      labels:
+        app: login
+    spec:
+      initContainers: 
+      - name: login-init # adds a record to the MySQL database defined in "settings.py" for a superuser called "admin" 
+        image: project5cyberphorwashere.azurecr.io/login:v3.0.0
+        command: ["sh", "-c", "poetry run python manage.py migrate && poetry run python manage.py createsuperuser --no-input --username admin --email testme@test.com || true"]
+        env:
+          - name: DJANGO_SUPERUSER_PASSWORD # sets the default superuser (i.e., "admin") password to "asdasd"
+            value: asdasd
+      containers: # 
+      - name: login
+        image: project5cyberphorwashere.azurecr.io/login:v3.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+          - name: PRIVATE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: keys
+                key: private.pem
+          - name: PUBLIC_KEY
+            valueFrom:
+              secretKeyRef:
+                name: keys
+                key: public.pem
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: login
+spec:
+  type: LoadBalancer
+  selector:
+    app: login
+  ports:
+    - port: 80
+      targetPort: 8080
