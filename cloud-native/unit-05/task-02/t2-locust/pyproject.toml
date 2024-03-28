@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "t2-locust"
+version = "0.1.0"
+description = ""
+authors = ["Victor Fernandez III <48382964+cyberphor@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+locust = "^2.24.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

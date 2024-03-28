@@ -1,11 +1,17 @@
 # Cloud Native: Inter-Service Communication
-* [Notes](#notes)
 * [References](#references)
+* [Notes](#notes)
 * [Setup](#setup)
 * [Task 01](#task-01)
 * [Task 02](#task-02)
 * [Task 03](#task-03)
 * [Task 04](#task-04)
+
+## References
+If I find any helpful references, I will put them here. 
+* [gRPC vs. REST: Key Similarities and Differences](https://blog.dreamfactory.com/grpc-vs-rest-how-does-grpc-compare-with-traditional-rest-apis/)
+* [grpc.io: Python - Quick Start](https://grpc.io/docs/languages/python/quickstart/)
+* [Protocol Buffers Documentation: JSON Mapping](https://protobuf.dev/programming-guides/proto3/#json)
 
 ## Notes
 **Web Server Gateway Interfaces**  
@@ -34,12 +40,6 @@ Serialization is the process of converting a language object (e.g., Python dict)
 
 **Protocol Buffer**  
 A protocol buffer is a method of serialization. Protocol buffers are defined using `.proto` files.
-
-## References
-If I find any helpful references, I will put them here. 
-* [gRPC vs. REST: Key Similarities and Differences](https://blog.dreamfactory.com/grpc-vs-rest-how-does-grpc-compare-with-traditional-rest-apis/)
-* [grpc.io: Python - Quick Start](https://grpc.io/docs/languages/python/quickstart/)
-* [Protocol Buffers Documentation: JSON Mapping](https://protobuf.dev/programming-guides/proto3/#json)
 
 ## Setup
 The tasks prescribed within this README assume you're already working in a Linux environment (Windows Subsystem for Linux, Azure Shell, GitHub Codespaces, a VirtualBox-based Linux virtual machine, etc.). They also assume you already have the following software installed: Python, Azure CLI, Kubernetes, and Helm.

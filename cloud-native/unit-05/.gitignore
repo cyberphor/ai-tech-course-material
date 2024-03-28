@@ -1,0 +1,12 @@
+.credentials
+setup/db.sqlite3
+setup/private.pem
+setup/public.pem
+setup/src/__pycache__/
+setup/src/.venv/
+task-01/src/__pycache__/
+task-01/src/.venv/
+task-02/t2-locust/.venv/
+task-02/t2-locust/t2_locust/__pycache__/
+submitter
+*.json

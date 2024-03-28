@@ -1,0 +1,49 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+    app.kubernetes.io/name: mysql
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS login CHARACTER SET utf8; 
+  primary.cnf: |
+    # Apply this config only on the primary.
+    [mysqld]
+    log-bin    
+  replica.cnf: |
+    # Apply this config only on replicas.
+    [mysqld]
+    super-read-only 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql # the name of this "Service" resource will be "mysql"
+  labels:
+    app: mysql
+    app.kubernetes.io/name: mysql
+spec:
+  selector:
+    app: mysql # expose port 3306 on any pods where "app" == "mysql"
+  clusterIP: None # what is this for?
+  ports:
+  - name: mysql
+    port: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-read # the name of this "Service" resource will be "mysql-read"
+  labels:
+    app: mysql
+    app.kubernetes.io/name: mysql
+    readonly: "true"
+spec:
+  selector:
+    app: mysql # expose port 3306 on any pods where "app" == "mysql"
+  ports:
+  - name: mysql
+    port: 3306
