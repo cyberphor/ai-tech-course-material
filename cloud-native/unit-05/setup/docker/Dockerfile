@@ -11,9 +11,6 @@ WORKDIR /opt/login/
 # copy sqlite3 database
 COPY db.sqlite3 db.sqlite3
 
-# set the working directory
-WORKDIR /opt/login/
-
 # copy the source code and container entrypoint script
 COPY src/ src/
 COPY docker/entrypoint.sh src/entrypoint.sh

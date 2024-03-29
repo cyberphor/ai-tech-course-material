@@ -9,9 +9,6 @@ RUN python -m pip install poetry &&\
 # set the working directory
 WORKDIR /opt/login/
 
-# set the working directory
-WORKDIR /opt/login/
-
 # copy the source code and container entrypoint script
 COPY src/ src/
 COPY docker/entrypoint.sh src/entrypoint.sh

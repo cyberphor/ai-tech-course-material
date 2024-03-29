@@ -22,7 +22,7 @@ spec:
         env:
           - name: DJANGO_SUPERUSER_PASSWORD # sets the default superuser (i.e., "admin") password to "asdasd"
             value: asdasd
-      containers: # 
+      containers: 
       - name: login
         image: project5cyberphorwashere.azurecr.io/login:v2.0.0
         imagePullPolicy: Always

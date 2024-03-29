@@ -9,7 +9,7 @@ spec:
   - ReadWriteOnce # Azure only supports ReadWriteOnce: (only one node can write to it, others can read from it)               
   resources:
     requests:
-      storage: 10Gi # this means this volume can hold 10 GBs
+      storage: 5Gi # this means this volume can hold 5 GBs
 ---
 apiVersion: v1
 kind: Pod

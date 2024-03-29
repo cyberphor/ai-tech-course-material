@@ -117,7 +117,7 @@ docker build --no-cache -t login:v1.0.0 -f docker/Dockerfile .
 
 **Step 14.** Create a container using the image you just built.
 ```bash
-docker run --name login -p 80:8080 -e "PRIVATE_KEY=$(cat private.pem)" -e "PUBLIC_KEY=$(cat public.pem)" login:v1.0.0
+docker run --name login -p 80:8080 -d -e "PRIVATE_KEY=$(cat private.pem)" -e "PUBLIC_KEY=$(cat public.pem)" login:v1.0.0
 ```
 
 **Step 15.** Test the container using `curl`. 
