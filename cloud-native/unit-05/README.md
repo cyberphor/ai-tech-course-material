@@ -89,9 +89,11 @@ az aks update --resource-group "${RESOURCE_GROUP_NAME}" --name "${AKS_CLUSTER_NA
 az aks get-credentials --resource-group "${RESOURCE_GROUP_NAME}" --name "${AKS_CLUSTER_NAME}"
 ```
 
-**Step 10.** Change directories to `src/`, create a new privileged user called `admin` and change directories back to `setup/`. When prompted, enter `asdasd` as a password. Then, enter `Y` to bypass the password validation check.
+**Step 10.** Change directories to `src/`, create a new privileged user called `admin` and change directories back to `setup/`. When prompted, enter `asdasd` as a password. Then, enter `Y` to bypass the password validation check. *This step will automatically create a file called* `db.sqlite3`.
 ```bash
 cd src/
+poetry install
+poetry run python manage.py migrate
 poetry run python manage.py createsuperuser --username admin --email admin@example.com
 cd ../
 ```
