@@ -22,7 +22,24 @@ A Persistent Volume Claim is a request for storage from our Cloud Provider. It p
 
 **How to Get Logs From a Container on a Kubernetes Pod**  
 ```bash
+# pod: login-666, container: login-init
 kubectl logs login-666 --container login-init
+```
+
+**How to Interact with a Container on a Kubernetes Pod**  
+```bash
+# pod: login-666, container: login
+kubectl exec -it login-666 -c login -- bash
+```
+
+**How to Delete Multiple Kubernetes Objects**  
+```bash
+kubectl delete -f kubernetes/mysql.yaml
+```
+
+**How to Update a Poetry Project After Modifying pyproject.toml**  
+```bash
+poetry update
 ```
 
 **Misc Docker Commands**  
@@ -406,7 +423,7 @@ vim kubernetes/subtask-01.yaml
     * `primary.cnf`: configuration for the primary MySQL server (one per pod)
     * `replica.cnf`: configuration for MySQL server replicas
 * Creates a StatefulSet object (in lieu of a Deployment object) to deploy and track the identity and state of all pods - every pod will have the containers below
-  * `init-mysql` container (image: `mysql:8.0`, ): records the pod's hostname (e.g., `mysql-0`, `mysql-1`, `mysql-2`) and applys either the `primary.cnf` or `replica.cnf` server configuration
+  * `init-mysql` container (image: `mysql:5.7`, ): records the pod's hostname (e.g., `mysql-0`, `mysql-1`, `mysql-2`) and applys either the `primary.cnf` or `replica.cnf` server configuration
   * `mysql` container (image: `mysql:5.7`): runs the MySQL server
   * `clone-mysql` container (image: `xtrabackup:1.0`)
   * `xtrabackup` container (image: `xtrabackup:1.0`)
