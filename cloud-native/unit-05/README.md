@@ -370,7 +370,7 @@ path = ".venv"
 poetry add locust
 ```
 
-**Step 7.** Using your favorite text-editor, create a file called `locustfile.py` using the [provided example](task-02/t2-locust/locustfile.py) as inspiration. 
+**Step 7.** Using your favorite text-editor, create a file called `locustfile.py` using the [provided example](task-02/t2-locust/t2_locust/locustfile.py) as inspiration. 
 
 **Step 8.** Identify the IP address of the new LoadBalancer resource you previously defined in Task 01 for your `login` service.
 ```bash
