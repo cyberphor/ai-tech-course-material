@@ -6,8 +6,6 @@ The purpose of this project is to explore tradeoffs between consistency and avai
 * [Setup](#setup)
 * [Task 01](#task-01)
 * [Task 02](#task-02)
-* [Task 03](#task-03)
-* [Task 04](#task-04)
 
 ## References
 If I find any helpful references, I will put them here. 
@@ -537,9 +535,3 @@ Your output should be similar to below.
 ```json
 {"refresh":"eyJhbGciOiJSUzI1NiIsImtpZCI6InlvdXJjb29sa2lkIiwidHlwIjoiSldUIn0.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxMTc0NzYwNSwiaWF0IjoxNzExNjYxMjA1LCJqdGkiOiI0YTQ0OTVjNWE0ZjA0NjgzYTFhMjg3OWQzNjZjYmYwMiIsInVzZXJfaWQiOjEsImlzcyI6ImxsbWxvZ2luIiwic3ViIjoiY2xpZW50In0.pJManSxsdzf6qM9HTgJnQclEbT3IDyZZh4ZvUA-zyoChU9IYn3yKRqgahWxGbnO9z5ldbESEuMe2d0GOC2WfWX9BIw_lPFuYjYJ6p-_PiG8KIAGqNw_SmBc10_mvV_iZZXwFqjZszFVTADhks3pchQMfvgF3SADs8Jgt8JE1U7jdQ_A9x23XaUYUQX20ZgiXTa9EKJi5TWCkc6n5PRX0-gp--GKWuALLsP3XlsSbqrq3JDRMptjOsQazHhLXs2tcR3HI-JqfRxP52EIlmV0mpLdrf8SOEgLDNIyXwmkBSPKhqWApWYjhWo6n14RU17hv-DZvVnbB4a1uhgevH7484Q","access":"eyJhbGciOiJSUzI1NiIsImtpZCI6InlvdXJjb29sa2lkIiwidHlwIjoiSldUIn0.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExNjYxNTA1LCJpYXQiOjE3MTE2NjEyMDUsImp0aSI6IjhjNGNiZDQxOWQ3OTRmZThiYzEyNmM5OWNmNGM3ODliIiwidXNlcl9pZCI6MSwiaXNzIjoibGxtbG9naW4iLCJzdWIiOiJjbGllbnQifQ.HewlfEjdKIyax_Fnsq2o1tZtGOgUus2eJ615xRd63oY5bmq0a78F0lVuJgqsERBuF9T1Zxo21ncgF9zNdBxZGdg13YotDgipzvyR1OxfhCcvjLUxR7WPz-CZ7B5xrFqC7r7Xx5AA20k8auUCAEZbKZhWB1IkWQGZZbV2UIn9s512vPOpeBb5575UuCY61o5O5TAW_dJjeSRE5rWgKv6gW-0YY6YT9-h9dlR06sThj2ltBuAO-PSqXkHm_SzVnVREx1iXzPGEmyTs35l5r0tiXQUo_FAUcy54hSSUyeHa4CEG71N2mCEbbMgppkjwLDgPlhKnnrzXciNQ_8hhbZ3H4Q"}
 ```
-
-## Task 03
-**Step 1.** Text goes here.
-
-## Task 04
-**Step 1.** Text goes here.
