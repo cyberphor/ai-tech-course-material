@@ -241,9 +241,7 @@ django.db.utils.OperationalError: (1049, "Unknown database 'login'")
 ### Subtask 04
 **Step 1.** Make sure you're still in the `task-01` directory. Then, delete all of your MySQL resources from your Kubernetes cluster. 
 ```bash
-kubectl delete pvc/mysql
-kubectl delete pod/mysql
-kubectl delete svc/mysql
+kubectl delete -f kubernetes/mysql.yaml
 ```
 
 **Step 2.** Using your favorite text-editor create a file called `subtask-04.yaml` using the [provided example](task-01/kubernetes/subtask-04.yaml) as inspiration.
@@ -284,8 +282,7 @@ pod "mysql-client" deleted
 ### Subtask 05
 **Step 1.** Make sure you're still in the `task-01` directory. Then, delete all of your `login` resources from your Kubernetes cluster. If you find yourself repeating this step multiple times, make sure your "PersistentVolumeClaim" resource has been recreated. Otherwise, it and therefore your MySQL database will have old data. 
 ```bash
-kubectl delete svc/login
-kubectl delete deployment/login
+kubectl delete -f kubernetes/login.yaml
 ```
 
 **Step 2.** Using your favorite text-editor create a file called `subtask-05.yaml` using the [provided example](task-01/kubernetes/subtask-05.yaml) as inspiration.
@@ -395,11 +392,7 @@ cd ../
 
 **Step 11.** Delete all of your `login` and `mysql` Kubernetes objects except for your Secret (this was defined using the CLI earlier, not a YAML file). Wait for your the deletion of your "PersistentVolumeClaim" to finish before moving on (run `kubectl get pvc` to check - if need be, use the Azure Portal: Kubernetes service > Storage > Persistent volume claims). The purpose of this step is to reduce confusion and re-baseline your cluster for Task 02.  
 ```bash
-kubectl delete configmap/mysql
-kubectl delete pvc/mysql
-kubectl delete pod/mysql
-kubectl delete svc/mysql
-kubectl delete deployment/login
+kubectl delete -f ../task-01/subtask-04.yaml
 ```
 
 **Step 12.** Using your favorite text-editor, create a file called `subtask-01.yaml` using the [provided example](task-02/kubernetes/subtask-01.yaml) as inspiration.
@@ -409,12 +402,16 @@ vim kubernetes/subtask-01.yaml
 
 **Step 13.** Apply the *new* Kubernetes configuration you just created. It does a few things: 
 * Creates a PersistentVolumeClaim object to request storage from the resource provider (i.e., Cloud Service Provider) and host the cluster's MySQL database
-* Creates a StatefulSet object (in lieu of a Deployment object) to deploy and track the identity and state of all pods 
+* Creates a ConfigMap object with two files
+    * `primary.cnf`: configuration for the primary MySQL server (one per pod)
+    * `replica.cnf`: configuration for MySQL server replicas
+* Creates a StatefulSet object (in lieu of a Deployment object) to deploy and track the identity and state of all pods - every pod will have the containers below
+  * `init-mysql` container (image: `mysql:8.0`, ): records the pod's hostname (e.g., `mysql-0`, `mysql-1`, `mysql-2`) and applys either the `primary.cnf` or `replica.cnf` server configuration
+  * `mysql` container (image: `mysql:5.7`): runs the MySQL server
+  * `clone-mysql` container (image: `xtrabackup:1.0`)
+  * `xtrabackup` container (image: `xtrabackup:1.0`)
 * Creates a MySQL Service object to route *read* requests to pods with MySQL servers that can read from the MySQL database
 * Creates a MySQL Service object to route *write* requests to pods with MySQL servers that can write to the MySQL database
-* Creates a ConfigMap object with two files
-    * `primary.cnf`: used only by the the primary MySQL server within a pod
-    * `replica.cnf`: used only by for all MySQL server replicas within a pod
 ```bash
 kubectl apply -f kubernetes/subtask-01.yaml
 ```
@@ -473,6 +470,7 @@ Your output should be similar to below.
 | Database               |
 +------------------------+
 | information_schema     |
+| login                  |
 | mysql                  |
 | performance_schema     |
 | sys                    |
