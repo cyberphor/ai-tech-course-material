@@ -4,7 +4,7 @@ LABEL Author="Victor Fernandez III, @cyberphor"
 
 # install poetry (the second pip sentence is strictly for the submitter)
 RUN python -m pip install poetry &&\
-    python -m pip install djangorestframework-simplejwt[crypto] djangorestframework Django mysqlclient
+    python -m pip install djangorestframework-simplejwt[crypto] djangorestframework Django==4.1 mysqlclient
 
 # set the working directory
 WORKDIR /opt/login/
