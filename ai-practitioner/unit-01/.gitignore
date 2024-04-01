@@ -1,0 +1,13 @@
+.venv/
+html_data/
+local_test_refs/
+pdfs/
+.env
+poetry.lock
+*.toml
+*.tgz
+*.pkl
+references
+requirements.txt
+submitter
+twitter.txt
