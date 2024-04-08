@@ -1,4 +1,4 @@
-# Cloud-Native: Data Tier Architecture and Distributed Queries
+# Cloud Native: Data Tier Architecture and Distributed Queries
 The purpose of this project is to explore tradeoffs between consistency and availability when deploying a stateful system. It's also a tutorial in improving the throughput and reliability of a login service. 
 
 * [References](#references)
