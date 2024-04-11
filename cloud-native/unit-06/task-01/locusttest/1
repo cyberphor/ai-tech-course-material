@@ -1,0 +1,2 @@
+pod "tmp-busybox" deleted
+Error from server (NotFound): pods "2" not found
