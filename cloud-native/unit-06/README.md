@@ -9,9 +9,75 @@ The purpose of this project is to add observability to a system consisting of th
 ## References
 If I find any helpful references, I will put them here. 
 * [Edited lru_cache decorator of pfsspy.Output.bg to conserve memory](https://github.com/dstansby/pfsspy/pull/150)
+* [OpenTelemetry: Collector | Configuration](https://opentelemetry.io/docs/collector/configuration/)
 
 ## Notes
 If I take any additional notes, I will put them here. 
+
+**Adding Telemetry Functions**  
+Don't add telemetry functions to a system if it will impact performance. 
+
+**Kubernetes Operator** 
+Operators create, configure, and manage applications within your cluster in a Kubernetes-native way. 
+
+**OpenTelemetry**  
+OpenTelemetry is a library used to add telemetry functions to microservices. 
+
+**OpenTelemetry Collector**  
+An OpenTelemetry Collector configuration includes four main sections:
+* Receivers: collects telemetry from one or more sources
+* Processors: takes data collected by the receivers and transforms it before sending it to the exporters
+* Exporters: sends data to one or more backends
+* Pipeline: join two pipelines together (e.g., connect a receiver to an exporter)
+
+**OpenTelemetry Instrumentation** 
+An Instrumentation resource configures the OpenTelemetry Operator to add an init container to deployments with specific attributes. The init container will identify what type of application server running and then add the correct instrumentation for it. 
+
+```mermaid
+flowchart LR
+  subgraph PrometheusNamespace["Prometheus Namespace"]
+    PrometheusOperator["Prometheus\nOperator"]
+    Prometheus["Prometheus"]
+  end
+  subgraph DefaultNamespace["Default Namespace"]
+    OpenTelemetryOperator["OpenTelemetry\nOperator"]
+    subgraph OpenTelemetryCollector["OpenTelemetry\nCollector"]
+      Port4318["TCP Port 4318"]
+      Port9464["TCP Port 9464"]
+    end
+    OpenTelemetryInstrumentation["OpenTelemetry\nInstrumentation"]
+    LLMService["LLM\nService"]
+    AuthenticationService["Authentication\nService"]
+    DatabaseService["Database\nService"]
+    LoadBalancer["Load Balancer"]
+  end
+  Developer["Developer"]
+
+  PrometheusOperator --"manages" --> Prometheus
+  OpenTelemetryOperator -- "manages" --> OpenTelemetryCollector
+  OpenTelemetryOperator -- "manages" --> OpenTelemetryInstrumentation
+  
+  OpenTelemetryInstrumentation -- "adds telemetry functions to" --> LLMService
+  LLMService -- "sends metrics to" --> Port4318
+  
+  OpenTelemetryInstrumentation -- "adds telemetry functions to" --> AuthenticationService 
+  AuthenticationService -- "sends metrics to" --> Port4318
+
+  OpenTelemetryInstrumentation -- "adds telemetry functions to" -->  DatabaseService
+  DatabaseService -- "sends metrics to" --> Port4318
+  
+  OpenTelemetryInstrumentation -- "adds telemetry functions to" -->  LoadBalancer
+  LoadBalancer -- "sends metrics to" --> Port4318
+  Prometheus --"collects metrics from" --> Port9464
+
+  Developer -- "queries" --> Prometheus
+```
+
+**Customize a Helm Chart**  
+If you want to customize a Helm chart, create a `values.yaml` file that includes the options you want. You can explore what options are available by running something like below. I'm assuming you will need the Helm chart repo installed first. 
+```bash
+helm show values prometheus-community/kube-prometheus-stack
+```
 
 ## Setup
 The following steps assume (1) you're using a Linux-based environment (GitHub Codespaces, Azure Shell, Windows Subsystem for Linux, or a Linux virtual machine), (2) you've installed the software required for this project (i.e., Python, Poetry, Docker, Kubernetes, Helm, and Azure CLI), (3) you've forked this repository, (4) you've downloaded this repository, and (5) you're running commands in this section from the `vic-code/cloud-native/unit-06/setup/` directory. FYI, I accepted this week's GitHub Classroom assignment and copied the contents of the `src` folder from the provided repository to my `setup` folder. I also moved the `submitter` program to the root of this week's project folder (i.e., `vic-code/cloud-native/unit-06/`). 
@@ -109,28 +175,28 @@ kubectl apply -f krakend/krakend-deployment.yaml
 kubectl get pods 
 ```
 
-### Subtask 04: Deploy a MariaDB Operator Service
+### Subtask 04: Deploy a MariaDB Operator
 **Step 1.** Create an Secret object (of the Opaque type) in your default namespace called `loginkeys` using the provided `private_key.pem` and `public_key.pem` file.
 ```bash
 kubectl create secret generic loginkeys --from-file=./django/private_key.pem --from-file=./django/public_key.pem
 ```
 
-**Step 2.** Add the MariaDB Operator Helm repository to your local list of known Helm repositories.
+**Step 2.** Add the Helm repository for the MariaDB Operator to your local list of known Helm repositories.
 ```bash
 helm repo add mariadb-operator https://mariadb-operator.github.io/mariadb-operator
 ```
 
-**Step 3.** Create the MariaDB Operator resources required for your authentication service in the default namespace of your Kubernetes cluster. 
+**Step 3.** Deploy a MariaDB Operator to the default namespace in your cluster. 
 ```bash
 helm install mariadb-operator mariadb-operator/mariadb-operator
 ```
 
-**Step 4.** Configure your MariaDB Operator resources using the provided YAML files. 
+**Step 4.** Configure your MariaDB Operator using the provided YAML files. 
 ```bash
 kubectl apply -f django/mariak8s/
 ```
 
-**Step 3.** Confirm your MariaDB Operator resources (`mariadb...`) are running by checking the status of the pods created in the previous step. 
+**Step 3.** Confirm your MariaDB Operator is running by checking the status of the pods created in the previous step. 
 ```bash
 kubectl get pods 
 ```
@@ -213,23 +279,23 @@ X-Krakend-Completed: true
 ```
 
 ## Task 01
-### Subtask 01: Deploy a Prometheus Operator Service
+### Subtask 01: Deploy a Prometheus Operator
 **Step 1.** Create a namespace called `prometheus` in your Kubernetes cluster. 
 ```bash
 kubectl create namespace prometheus
 ```
 
-**Step 1.** Add the Prometheus Helm repository to your local list of known Helm repositories.
+**Step 1.** Add the Helm repository for the Prometheus Operator to your local list of known Helm repositories.
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 ```
 
-**Step 3.** Create the Prometheus resources required in the default namespace of your Kubernetes cluster. 
+**Step 3.** Deploy a Prometheus Operator to the `prometheus` namespace in your cluster. 
 ```bash
-helm install prometheus prometheus-community/kube-prometheus-stack -n prometheus --create-namespace
+helm install prometheus prometheus-community/kube-prometheus-stack -n prometheus
 ```
 
-**Step 4.** Confirm your Prometheus resources (`prometheus...`) are running by checking the status of the pods created in the previous step. 
+**Step 4.** Confirm your Prometheus Operator is running by checking the status of the pods created in the previous step. 
 ```bash
 kubectl get pods -n prometheus
 ```
@@ -272,7 +338,7 @@ poetry install
 poetry run locust -f locusttest/locustfile.py  --headless --host http://4.156.66.247 -u 1 --auth-tok $TOKEN -u 3
 ``` 
 
-**Step 8.** In a separate terminal, forward traffic recieved on port 9090 on your local machine to the pod hosting Prometheus's dashboards.  
+**Step 8.** In a separate terminal, forward traffic received on port 9090 on your local machine to the pod hosting Prometheus's dashboards.  
 ```bash
 kubectl port-forward -n prometheus prometheus-prometheus-kube-prometheus-prometheus-0 9090
 ```
@@ -317,7 +383,100 @@ kubectl delete -f fastapi-p4/k8s
 kubectl apply -f fastapi-p4/k8s
 ```
 
-**Step 5.** Confirm your updated FastAPI-based LLM service (`llmserver...`) is running again by checking the status of the pods created in the previous step. 
+**Step 5.** Confirm your updated FastAPI-based LLM service is running again by checking the status of the pods created in the previous step. 
 ```bash
 kubectl get pods 
+```
+
+## Task 02
+The purpose of this task is to add telemetry functions to our system and send telemetry data to Prometheus using the OpenTelemetry Operator. 
+
+### Subtask 01: LLM Service Instrumentation
+**Step 1.** Change directories from `task-01/` under `unit-06` to `task-02/`. 
+```bash
+cd ../task-02/
+```
+
+**Step 2.** Deploy a Certificate Manager within your cluster. 
+```bash
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.14.4/cert-manager.yaml
+```
+
+**Step 3.** Deploy an OpenTelemetry Operator to the `opentelemetry-operator-system` namespace in your cluster.
+```bash
+kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml
+```
+
+**Step 4.** Confirm your OpenTelemetry Operator is running by checking the status of the pods created in the previous step. 
+```bash
+kubectl get pods -n opentelemetry-operator-system
+```
+
+**Step 5.** Apply [the provided Kubernetes manifest file](task-02/OpenTelemetry.yaml). It deploys an OpenTelemetry Collector resource and Instrumentation resource.  
+```bash
+kubectl apply -f OpenTelemetry.yaml
+```
+
+**Step 6.** Confirm your OpenTelemetry Collector is running by checking the status of the pods created in the previous step. 
+```bash
+kubectl get pods 
+```
+
+**Step 7.** Confirm your OpenTelemetry Instrumentation resource is working by checking the status of the pods created in the previous step. 
+```bash
+kubectl get instrumentation
+```
+
+You should get output similar to below. 
+```
+NAME                       AGE     ENDPOINT                         SAMPLER                    SAMPLER ARG
+simplest-instrumentation   2m10s   http://simplest-collector:4318   parentbased_traceidratio   1
+```
+
+**Step 8.** Open and edit the Kubernetes manifest file for your LLM service. You need need to *annotation* so your Instrumentation resource knows whether to add telemetry functions to the LLM service or not. If you use the one I have in my `task-02/` folder, make sure the container registry mentioned is the one you made. FYI, I just copied the YAML files from the [Setup](#setup) section and put them into one file. Then, I added the line mentioned in the instructions. 
+```bash
+vim LLM.yaml
+```
+
+**Step 9.** Apply the Kubernetes manifest file you just edited.  
+```bash
+kubectl apply -f LLM.yaml
+```
+
+**Step 10.** Verify an init container has been added to your LLM pod (use the pod name specific to your cluster). Again, adding the annotation tells the Instrumentation resource to add an init container to whatever pod deployment you specify. The init container is what adds telemetry functions to your service of interest (e.g., LLM service, authentication service, database service, or load balancer). 
+```bash
+kubectl describe pod llmserver-f68ccb8b8-ljtj7 | grep -A2 "Init Containers" 
+```
+
+If you used the exact command above, you should get output similar to below. If not, just scroll the output until you see the `Init Containers` section. Then, confirm the `opentelemetry` container was added to your LLM pod. 
+```
+Init Containers:
+  opentelemetry-auto-instrumentation-python:
+    Container ID:  containerd://516809bfa353525446692261b011509c89363ffef74fe5fc757e53aaa707236b
+```
+
+**Step 11.** Confirm the OpenTelemetry Collector is recieving metrics from your LLM service by checking the logs on the `simplest-collector-0` pod. 
+```bash
+kubectl logs simplest-collector-0
+```
+
+**Step 12.** Uninstall Prometheus. 
+```bash
+helm uninstall prometheus -n prometheus
+```
+
+**Step 13.** Re-install Prometheus but include [the provided `values.yaml` file I created](task-02/values.yaml). If you get an error saying `INSTALLATION FAILED: repo prometheus-community not found`, try re-adding the Helm repo for it (i.e., `helm repo add prometheus-community https://prometheus-community.github.io/helm-charts`). 
+```bash
+helm install -f ./values.yaml prometheus prometheus-community/kube-prometheus-stack -n prometheus 
+```
+
+**Step 14.** In a separate terminal, forward traffic received on port 9090 on your local machine to the pod hosting Prometheus's dashboards.  
+```bash
+kubectl port-forward -n prometheus prometheus-prometheus-kube-prometheus-prometheus-0 9090
+```
+
+**Step 15.** Confirm Prometheus is able to get metrics from your LLM service by entering the PromQL queries below into the Prometheus dashboard (one at a time - make sure there's something returned). 
+```
+system_thread_count{exported_job="llmserver"}
+process_runtime_cpython_context_switches_total
 ```
