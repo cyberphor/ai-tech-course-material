@@ -1,2 +1,3 @@
 setup/.credentials
 setup/locusttest/.venv/
+task-01/locusttest/.venv/

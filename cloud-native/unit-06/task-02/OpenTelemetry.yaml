@@ -1,0 +1,49 @@
+---
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: simplest
+spec:
+  # the Collector can be deployed as a Deployment, StatefulSet, Sidecar, or DaemonSet of pods
+  mode: statefulset # the Collector must be in StatefulSet mode to export telemetry data to Prometheus
+  # listen for telemetry data on 0.0.0.0:4318
+  # publish telemetry data on 0.0.0.0:9464 so Prometheus can pull it
+  config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+            endpoint: 0.0.0.0:4318 
+    processors:
+      batch:
+        send_batch_size: 10000
+        timeout: 10s
+    exporters:
+      debug:
+        verbosity: detailed
+      prometheus:
+        endpoint: 0.0.0.0:9464
+    service:
+      pipelines:
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [debug, prometheus]
+---
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: simplest-instrumentation
+spec:
+  # defines where to send telemetry data
+  exporter:
+    endpoint: http://simplest-collector:4318
+  # defines the format to use when sending telemetry data
+  propagators:
+    - tracecontext
+    - baggage
+  # defines how to limit what telemetry data is sent
+  sampler:
+    type: parentbased_traceidratio
+    argument: "1"

@@ -22,4 +22,3 @@ class QuickstartUser(HttpUser):
         params = {'message': 'hi ' + ' '.join(generate(4))}
         response = self.client.get('/v1/llm', headers=headers, params=params)
         print(response.text)
-
