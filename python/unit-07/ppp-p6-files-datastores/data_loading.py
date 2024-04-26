@@ -1,16 +1,18 @@
 """Module for loading data into a SQL database"""
+
 import csv
 import json
 import mysql.connector
 from pymongo import MongoClient
 from books_retrieval import fix_book_value_types
 
+
 def setup_sql_table(user: str, password: str, host: str, new_db: str, new_table: str):
     """Function for creating a SQL database and table"""
     queries = [
-        f'DROP DATABASE IF EXISTS {new_db};',
-        f'CREATE DATABASE {new_db};',
-        f'''
+        f"DROP DATABASE IF EXISTS {new_db};",
+        f"CREATE DATABASE {new_db};",
+        f"""
             CREATE TABLE {new_db}.{new_table} (
                 id VARCHAR(255) PRIMARY KEY,
                 title VARCHAR(1024),
@@ -25,19 +27,20 @@ def setup_sql_table(user: str, password: str, host: str, new_db: str, new_table:
                 publication_date VARCHAR(255),
                 publisher VARCHAR(255)
             );
-        '''
+        """,
     ]
     connection = mysql.connector.connect(host=host, user=user, password=password)
     cursor = connection.cursor()
     for query in queries:
-        cursor.execute(query)  
+        cursor.execute(query)
     cursor.close()
     connection.commit()
+
 
 def load_to_sql(user: str, password: str, host: str, db: str, table: str, csv_in: str):
     """Function for loading data from a CSV into a SQL table"""
     with open(csv_in, "r", encoding="UTF-8") as csv_file:
-        books = csv.DictReader(csv_file)    
+        books = csv.DictReader(csv_file)
         connection = mysql.connector.connect(host=host, user=user, password=password)
         cursor = connection.cursor()
         for book in books:
@@ -48,7 +51,10 @@ def load_to_sql(user: str, password: str, host: str, db: str, table: str, csv_in
         cursor.close()
         connection.commit()
 
-def retrieve_long_books(user: str, password: str, host: str, db: str, table: str, csv_out: str):
+
+def retrieve_long_books(
+    user: str, password: str, host: str, db: str, table: str, csv_out: str
+):
     """Function for loading data from a SQL table into a CSV file"""
     with open(csv_out, "w", encoding="UTF-8") as csv_file:
         connection = mysql.connector.connect(host=host, user=user, password=password)
@@ -66,6 +72,7 @@ def retrieve_long_books(user: str, password: str, host: str, db: str, table: str
         cursor.close()
         connection.commit()
 
+
 def load_to_mongodb(db: str, coll: str, json_in: str):
     """Function for loading data from a JSON file into a NoSQL collection"""
     with open(json_in, "r", encoding="UTF-8") as json_file:
@@ -77,13 +84,14 @@ def load_to_mongodb(db: str, coll: str, json_in: str):
             book = fix_book_value_types(book)
             database[coll].insert_one(book)
 
+
 if __name__ == "__main__":
     setup_sql_table(
         user="dbuser",
         password="dbroot",
         host="localhost",
         new_db="books",
-        new_table="goodreads",        
+        new_table="goodreads",
     )
     load_to_sql(
         user="dbuser",
@@ -91,10 +99,6 @@ if __name__ == "__main__":
         host="localhost",
         db="books",
         table="goodreads",
-        csv_in="books_data/books_v2.csv"
+        csv_in="books_data/books_v2.csv",
     )
-    load_to_mongodb(
-        db="books",
-        coll="goodreads",
-        json_in="books_data/books_v2.json"
-    )
+    load_to_mongodb(db="books", coll="goodreads", json_in="books_data/books_v2.json")

@@ -9,7 +9,7 @@ def is_prime(n):
     # If a given integer is greater than 1
     if n > 1 and type(n) == int:
         # Iterate from 2 to n / 2
-        for i in range(2, int(n/2) + 1):
+        for i in range(2, int(n / 2) + 1):
             # If num is divisible by any number between
             # 2 and n / 2, it is not prime.
             if n % i == 0:
@@ -17,15 +17,16 @@ def is_prime(n):
         return True
     return False
 
+
 def test_is_prime():
     """
     This is a suite of tests for the is_prime function.
     :return:
     """
     # TODO 2: PLACE YOUR CODE HERE
-    assert is_prime(2)  == True
-    assert is_prime(3)  == True
-    assert is_prime(5)  == True
-    assert is_prime(7)  == True
+    assert is_prime(2) == True
+    assert is_prime(3) == True
+    assert is_prime(5) == True
+    assert is_prime(7) == True
     assert is_prime(11) == True
     assert is_prime(13) == True

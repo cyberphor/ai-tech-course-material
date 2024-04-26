@@ -1,6 +1,6 @@
-from requests import codes
 from requests import Session
 from bs4 import BeautifulSoup
+
 
 def scrape_quotes():
     quotes = "https://quotes.toscrape.com/page/"
@@ -19,6 +19,7 @@ def scrape_quotes():
                 page_number = int(href_tag["href"].split("/")[2])
     browser.close()
     [print(url) for url in urls]
+
 
 if __name__ == "__main__":
     scrape_quotes()

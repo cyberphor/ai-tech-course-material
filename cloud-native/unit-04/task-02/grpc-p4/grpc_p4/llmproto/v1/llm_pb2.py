@@ -3,6 +3,7 @@
 # source: grpc_p4/llmproto/v1/llm.proto
 # Protobuf Python Version: 4.25.1
 """Generated protocol buffer code."""
+
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import symbol_database as _symbol_database
@@ -12,28 +13,29 @@ from google.protobuf.internal import builder as _builder
 _sym_db = _symbol_database.Default()
 
 
-from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
-
-
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1dgrpc_p4/llmproto/v1/llm.proto\x12\x0bllmproto.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"$\n\x11\x43ompletionRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"N\n\x06\x43hoice\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\r\n\x05index\x18\x02 \x01(\x05\x12\x10\n\x08logprobs\x18\x03 \x01(\t\x12\x15\n\rfinish_reason\x18\x04 \x01(\t\"O\n\x05Usage\x12\x15\n\rprompt_tokens\x18\x01 \x01(\x05\x12\x19\n\x11\x63ompletion_tokens\x18\x02 \x01(\x05\x12\x14\n\x0ctotal_tokens\x18\x03 \x01(\x05\"\xb5\x01\n\x12\x43ompletionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06object\x18\x02 \x01(\t\x12+\n\x07\x63reated\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05model\x18\x04 \x01(\t\x12$\n\x07\x63hoices\x18\x05 \x03(\x0b\x32\x13.llmproto.v1.Choice\x12!\n\x05usage\x18\x06 \x01(\x0b\x32\x12.llmproto.v1.Usage\"#\n\x10LLMStreamRequest\x12\x0f\n\x07message\x18\x01 \x01(\t\"\x91\x01\n\x11LLMStreamResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06object\x18\x02 \x01(\t\x12+\n\x07\x63reated\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05model\x18\x04 \x01(\t\x12$\n\x07\x63hoices\x18\x05 \x03(\x0b\x32\x13.llmproto.v1.Choice2\xad\x01\n\nLLMService\x12O\n\nCompletion\x12\x1e.llmproto.v1.CompletionRequest\x1a\x1f.llmproto.v1.CompletionResponse\"\x00\x12N\n\tLLMStream\x12\x1d.llmproto.v1.LLMStreamRequest\x1a\x1e.llmproto.v1.LLMStreamResponse\"\x00\x30\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n\x1dgrpc_p4/llmproto/v1/llm.proto\x12\x0bllmproto.v1\x1a\x1fgoogle/protobuf/timestamp.proto"$\n\x11\x43ompletionRequest\x12\x0f\n\x07message\x18\x01 \x01(\t"N\n\x06\x43hoice\x12\x0c\n\x04text\x18\x01 \x01(\t\x12\r\n\x05index\x18\x02 \x01(\x05\x12\x10\n\x08logprobs\x18\x03 \x01(\t\x12\x15\n\rfinish_reason\x18\x04 \x01(\t"O\n\x05Usage\x12\x15\n\rprompt_tokens\x18\x01 \x01(\x05\x12\x19\n\x11\x63ompletion_tokens\x18\x02 \x01(\x05\x12\x14\n\x0ctotal_tokens\x18\x03 \x01(\x05"\xb5\x01\n\x12\x43ompletionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06object\x18\x02 \x01(\t\x12+\n\x07\x63reated\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05model\x18\x04 \x01(\t\x12$\n\x07\x63hoices\x18\x05 \x03(\x0b\x32\x13.llmproto.v1.Choice\x12!\n\x05usage\x18\x06 \x01(\x0b\x32\x12.llmproto.v1.Usage"#\n\x10LLMStreamRequest\x12\x0f\n\x07message\x18\x01 \x01(\t"\x91\x01\n\x11LLMStreamResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06object\x18\x02 \x01(\t\x12+\n\x07\x63reated\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\r\n\x05model\x18\x04 \x01(\t\x12$\n\x07\x63hoices\x18\x05 \x03(\x0b\x32\x13.llmproto.v1.Choice2\xad\x01\n\nLLMService\x12O\n\nCompletion\x12\x1e.llmproto.v1.CompletionRequest\x1a\x1f.llmproto.v1.CompletionResponse"\x00\x12N\n\tLLMStream\x12\x1d.llmproto.v1.LLMStreamRequest\x1a\x1e.llmproto.v1.LLMStreamResponse"\x00\x30\x01\x62\x06proto3'
+)
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'grpc_p4.llmproto.v1.llm_pb2', _globals)
+_builder.BuildTopDescriptorsAndMessages(
+    DESCRIPTOR, "grpc_p4.llmproto.v1.llm_pb2", _globals
+)
 if _descriptor._USE_C_DESCRIPTORS == False:
-  DESCRIPTOR._options = None
-  _globals['_COMPLETIONREQUEST']._serialized_start=79
-  _globals['_COMPLETIONREQUEST']._serialized_end=115
-  _globals['_CHOICE']._serialized_start=117
-  _globals['_CHOICE']._serialized_end=195
-  _globals['_USAGE']._serialized_start=197
-  _globals['_USAGE']._serialized_end=276
-  _globals['_COMPLETIONRESPONSE']._serialized_start=279
-  _globals['_COMPLETIONRESPONSE']._serialized_end=460
-  _globals['_LLMSTREAMREQUEST']._serialized_start=462
-  _globals['_LLMSTREAMREQUEST']._serialized_end=497
-  _globals['_LLMSTREAMRESPONSE']._serialized_start=500
-  _globals['_LLMSTREAMRESPONSE']._serialized_end=645
-  _globals['_LLMSERVICE']._serialized_start=648
-  _globals['_LLMSERVICE']._serialized_end=821
+    DESCRIPTOR._options = None
+    _globals["_COMPLETIONREQUEST"]._serialized_start = 79
+    _globals["_COMPLETIONREQUEST"]._serialized_end = 115
+    _globals["_CHOICE"]._serialized_start = 117
+    _globals["_CHOICE"]._serialized_end = 195
+    _globals["_USAGE"]._serialized_start = 197
+    _globals["_USAGE"]._serialized_end = 276
+    _globals["_COMPLETIONRESPONSE"]._serialized_start = 279
+    _globals["_COMPLETIONRESPONSE"]._serialized_end = 460
+    _globals["_LLMSTREAMREQUEST"]._serialized_start = 462
+    _globals["_LLMSTREAMREQUEST"]._serialized_end = 497
+    _globals["_LLMSTREAMRESPONSE"]._serialized_start = 500
+    _globals["_LLMSTREAMRESPONSE"]._serialized_end = 645
+    _globals["_LLMSERVICE"]._serialized_start = 648
+    _globals["_LLMSERVICE"]._serialized_end = 821
 # @@protoc_insertion_point(module_scope)

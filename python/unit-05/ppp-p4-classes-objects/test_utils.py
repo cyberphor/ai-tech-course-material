@@ -1,7 +1,12 @@
 """Module providing test case class and methods"""
 
 import unittest
-from utils import InvalidArgumentError, validate_positive_number, validate_non_empty_string
+from utils import (
+    InvalidArgumentError,
+    validate_positive_number,
+    validate_non_empty_string,
+)
+
 
 class TestUtilsModule(unittest.TestCase):
     """Test class for utils module"""
@@ -16,6 +21,7 @@ class TestUtilsModule(unittest.TestCase):
         with self.assertRaises(InvalidArgumentError):
             validate_non_empty_string("")
             validate_non_empty_string(5)
+
 
 if __name__ == "__main__":
     unittest.main()

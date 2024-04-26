@@ -1,11 +1,20 @@
 """Module providing test case class and methods"""
 
 import unittest
-from geometric_shapes import Circle, ComplexShape, Ellipse, GeometricShape, Square, Rectangle
+from geometric_shapes import (
+    Circle,
+    ComplexShape,
+    Ellipse,
+    GeometricShape,
+    Square,
+    Rectangle,
+)
 from utils import InvalidArgumentError
+
 
 class TestGeometricShape(unittest.TestCase):
     """Test class for GeometricShape class"""
+
     def setUp(self):
         self.geometric_shape = GeometricShape("Square")
 
@@ -26,19 +35,23 @@ class TestGeometricShape(unittest.TestCase):
     def test_eq(self):
         self.assertTrue(self.geometric_shape, GeometricShape("Square"))
 
+
 class TestRectangleClass(unittest.TestCase):
     """Test class for Rectangle class"""
+
     def setUp(self):
         self.rectangle = Rectangle(5, 3)
-    
+
     def test_repr(self):
         self.assertEqual(self.rectangle.__repr__(), "Rectangle(a=5, b=3)")
 
     def test_eq(self):
         self.assertTrue(self.rectangle, Rectangle(5, 3))
 
+
 class TestEllipseClass(unittest.TestCase):
     """Test class for Ellipse class"""
+
     def setUp(self):
         self.ellipse = Ellipse(5, 10)
 
@@ -55,12 +68,13 @@ class TestEllipseClass(unittest.TestCase):
     def test_positive_semi_minor_axis(self):
         with self.assertRaises(InvalidArgumentError):
             self.ellipse.set_semi_major_axis(-10)
-    
+
     def test_repr(self):
         self.assertEqual(self.ellipse.__repr__(), "Ellipse(r1=5, r2=10)")
 
     def test_eq(self):
         self.assertTrue(self.ellipse, Ellipse(5, 10))
+
 
 class TestSquareClass(unittest.TestCase):
     def setUp(self):
@@ -72,8 +86,10 @@ class TestSquareClass(unittest.TestCase):
     def test_eq(self):
         self.assertEqual(self.square, Square(5))
 
+
 class TestCircleClass(unittest.TestCase):
     """Test class for Circle class"""
+
     def setUp(self):
         self.circle = Circle(10)
 
@@ -93,7 +109,7 @@ class TestCircleClass(unittest.TestCase):
         """Test method for circle set_radius method"""
         self.circle.set_radius(20)
         self.assertEqual(self.circle.get_radius(), 20)
-    
+
     def test_get_semi_major_axis(self):
         """Test method for circle get_semi_major_axis method"""
         self.assertEqual(self.circle.get_semi_major_axis(), 10)
@@ -117,6 +133,7 @@ class TestCircleClass(unittest.TestCase):
 
     def test_eq(self):
         self.assertEqual(self.circle, Circle(10))
+
 
 class TestComplexShape(unittest.TestCase):
     """Test class for ComplexShape class"""
@@ -147,7 +164,7 @@ class TestComplexShape(unittest.TestCase):
         """Test method for set_base method"""
         self.complex_shape.set_base(Rectangle(20, 20))
         self.assertTrue(isinstance(self.complex_shape.get_base(), Rectangle))
-    
+
     def test_set_holes(self):
         """Test method for set_holes method"""
         self.complex_shape.set_holes([])
@@ -158,20 +175,28 @@ class TestComplexShape(unittest.TestCase):
     def test_add_hole(self):
         """Test method for add_hole method"""
         self.complex_shape.add_hole(Circle(3))
-        self.assertTrue(self.complex_shape.get_holes(), ComplexShape(Ellipse, [Square, Circle, Rectangle, Circle]))
+        self.assertTrue(
+            self.complex_shape.get_holes(),
+            ComplexShape(Ellipse, [Square, Circle, Rectangle, Circle]),
+        )
 
     def test_remove_hole(self):
         """Test method for remove_hole method"""
         hole = self.complex_shape.get_holes()[-1]
         self.complex_shape.remove_hole(hole)
-        self.assertTrue(self.complex_shape.get_holes(), ComplexShape(Ellipse, [Square, Circle]))
+        self.assertTrue(
+            self.complex_shape.get_holes(), ComplexShape(Ellipse, [Square, Circle])
+        )
 
     def test_get_area(self):
         """Test method for get_area method"""
         self.assertEqual(self.complex_shape.get_area(), 560.0441968356505)
 
     def test_repr(self):
-        self.assertEqual(self.complex_shape.__repr__(), "ComplexShape(Ellipse with 3 holes)")
+        self.assertEqual(
+            self.complex_shape.__repr__(), "ComplexShape(Ellipse with 3 holes)"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

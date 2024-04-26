@@ -13,21 +13,18 @@ def get_llm_response(message, llm):
     return llm(template, temperature=0.0, max_tokens=128)
 
 
-
 def create_app():
-
     app = Flask(__name__)
     print("Loading tinyllama model...")
     llm = Llama(model_path="tinyllama-1.1b-chat-v1.0.Q2_K.gguf", n_ctx=512, n_batch=1)
 
-    @app.route('/api')
+    @app.route("/api")
     def send_llm_response():
         message = request.args.get("message")
         return get_llm_response(message, llm)
-    
 
-    @app.route('/healthcheck')
+    @app.route("/healthcheck")
     def healthcheck():
         return "OK"
-    
+
     return app

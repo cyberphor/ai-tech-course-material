@@ -2,6 +2,7 @@ class LoginRouter:
     """
     A router to control all database operations.
     """
+
     def db_for_write(self, model, **hints):
         """
         Write requests will be routed to the "default" database (as defined in "settings.py").

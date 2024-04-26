@@ -1,4 +1,5 @@
 """Module for shopping list"""
+
 from random import choices
 from random import randint
 from shoppinglistapp.core.errors import InvalidShoppingListSizeError
@@ -6,6 +7,7 @@ from shoppinglistapp.core.errors import InvalidShoppingListSizeError
 
 class ShoppingList:
     """Shopping list class"""
+
     def __init__(self, size=None, quantities=None, item_pool=None):
         self.list = []
         if item_pool is not None:
@@ -14,7 +16,7 @@ class ShoppingList:
     def refresh(self, item_pool, size=None, quantities=None):
         """Method for refreshing list"""
         if size is None:
-            size = randint(1, item_pool.get_size()+1)
+            size = randint(1, item_pool.get_size() + 1)
             # HACK: task 1  - added the next 3 lines below
             item_pool_size = item_pool.get_size()
             if size > item_pool_size:

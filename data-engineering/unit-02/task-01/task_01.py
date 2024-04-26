@@ -1,40 +1,41 @@
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import os
 import re
 
+
 def normalize_filename(filename):
-    new_label = ''
-    new_label = re.sub('-ws-', '+', filename)
-    new_label = re.sub('-ws', '+', new_label)
+    new_label = ""
+    new_label = re.sub("-ws-", "+", filename)
+    new_label = re.sub("-ws", "+", new_label)
     # === YOUR SOLUTION STARTS HERE ===
     # Do not change the code above.
     #
     # TODO 1: Following the examples above change the `new_label`
     #         variable so that "-cl" is replaced with "*" and
     #         "-u" is replaced with "=".
-    new_label = re.sub('-cl', '*', new_label)
-    new_label = re.sub('-u', '=', new_label)
+    new_label = re.sub("-cl", "*", new_label)
+    new_label = re.sub("-u", "=", new_label)
     # Do not change the code below.
     # === YOUR SOLUTION ENDS HERE ===
-    if(re.fullmatch('.*-.*', new_label)):
-        new_label = re.sub('-', '.', new_label)
-    elif(re.fullmatch('.*_.*', new_label)):
-        new_label = re.sub('_', '-', new_label)
+    if re.fullmatch(".*-.*", new_label):
+        new_label = re.sub("-", ".", new_label)
+    elif re.fullmatch(".*_.*", new_label):
+        new_label = re.sub("_", "-", new_label)
     return new_label.upper()
 
+
 def file2df(dirname, filename, security_id):
-    """ Given:
-        dirname: a string representing the path to the directory containing the file with name filename
-        filename: a string representing the name of a file in directory dirname
-        securityID: a number representing the foreign key value assigned to this particular security
-    
-        This method when called with the correct arguments should return a pandas Dataframe containing the columns
-        Date (of type datetime),Open, High, Low, Close, Volume, OpenInt, ID (of type int)
-        populated with the data from the given file.
+    """Given:
+    dirname: a string representing the path to the directory containing the file with name filename
+    filename: a string representing the name of a file in directory dirname
+    securityID: a number representing the foreign key value assigned to this particular security
+
+    This method when called with the correct arguments should return a pandas Dataframe containing the columns
+    Date (of type datetime),Open, High, Low, Close, Volume, OpenInt, ID (of type int)
+    populated with the data from the given file.
     """
     filepath = os.path.join(dirname, filename)
-    df = pd.read_csv(filepath, sep=',')
+    df = pd.read_csv(filepath, sep=",")
     # === YOUR SOLUTION STARTS HERE ===
     # Do not change the code above.
     #
@@ -48,8 +49,9 @@ def file2df(dirname, filename, security_id):
     # === YOUR SOLUTION ENDS HERE ===
     return df
 
+
 def dirname2etf(dirname):
-    """ Given the path to the directory containing the information of a particular security, 
+    """Given the path to the directory containing the information of a particular security,
     determine the contents of the "ETF" column of its record in Table 2
     """
     # === YOUR SOLUTION STARTS HERE ===
@@ -65,8 +67,9 @@ def dirname2etf(dirname):
     # Do not change the code below.
     # === YOUR SOLUTION ENDS HERE ===
 
+
 def filename2ticker(filename):
-    """ Given the filename of the file containing the time series data on a particular security,
+    """Given the filename of the file containing the time series data on a particular security,
     determine the contents of the "Ticker" column of its record in Table 2
     """
     # === YOUR SOLUTION STARTS HERE ===
@@ -80,21 +83,22 @@ def filename2ticker(filename):
     # Do not change the code below.
     # === YOUR SOLUTION ENDS HERE ===
 
+
 def build_security_dfs():
-    """ This method should return a tuple of the form (frame_time_series 
-        frame_tickers) where frame_time_series is a pandas DataFrame representing
-        the data found in the text files of the dataset along with the assigned
-        foreign key ID, and frame_tickers is a DataFrame representing the second
-        table of our chosen representation. 
-        """
-    directory = os.walk('./Data/')
+    """This method should return a tuple of the form (frame_time_series
+    frame_tickers) where frame_time_series is a pandas DataFrame representing
+    the data found in the text files of the dataset along with the assigned
+    foreign key ID, and frame_tickers is a DataFrame representing the second
+    table of our chosen representation.
+    """
+    directory = os.walk("./Data/")
     data_time_series = []
-    ticker_inf = {'id': [], 'ticker': [], 'ETF': []}
+    ticker_inf = {"id": [], "ticker": [], "ETF": []}
     id_cntr = 0
     for dirname, _, filenames in sorted(directory):
         if len(filenames) == 0:
             continue
-        type_ind = dirname2etf(dirname) #"Y" or "N"
+        type_ind = dirname2etf(dirname)  # "Y" or "N"
         for filename in sorted(filenames):
             if os.path.getsize(os.path.join(dirname, filename)) > 0:
                 # === YOUR SOLUTION STARTS HERE ===
@@ -119,34 +123,35 @@ def build_security_dfs():
                 ticker_inf["ticker"].append(filename2ticker(filename))
                 ticker_inf["ETF"].append(type_ind)
                 # TODO 8: Increment the value of `id_ctr` variable by 1.
-                id_cntr +=1 
+                id_cntr += 1
     frame_time_series = pd.concat(data_time_series)
     frame_tickers = pd.DataFrame(data=ticker_inf)
     return (frame_time_series, frame_tickers)
 
+
 if __name__ == "__main__":
     # TODO 1:
-    assert normalize_filename("abcd-ws")  == "ABCD+"
-    assert normalize_filename("ab-ws-z")  == "AB+Z"
+    assert normalize_filename("abcd-ws") == "ABCD+"
+    assert normalize_filename("ab-ws-z") == "AB+Z"
     assert normalize_filename("abd-ws-u") == "ABD+U"
-    assert normalize_filename("cd-cl")    == "CD*"
-    assert normalize_filename("cd_a-cl")  == "CD-A*"
-    assert normalize_filename("def-u")    == "DEF="
-    assert normalize_filename("def-a")    == "DEF.A"
-    assert normalize_filename("def_a")    == "DEF-A"
+    assert normalize_filename("cd-cl") == "CD*"
+    assert normalize_filename("cd_a-cl") == "CD-A*"
+    assert normalize_filename("def-u") == "DEF="
+    assert normalize_filename("def-a") == "DEF.A"
+    assert normalize_filename("def_a") == "DEF-A"
 
     # TODO 2 and TODO 3:
     file2df("./Data/ETFs", "schz.us.txt", 1)
-    
+
     # TODO 4:
-    assert dirname2etf("./Data/ETFs")   == "Y"
+    assert dirname2etf("./Data/ETFs") == "Y"
     assert dirname2etf("./Data/Stocks") == "N"
 
     # TODO 5:
-    assert filename2ticker("inda.us.txt")   == "INDA"
+    assert filename2ticker("inda.us.txt") == "INDA"
     assert filename2ticker("c-ws-a.us.txt") == "C+A"
-    assert filename2ticker("cof_c.us.txt")  == "COF-C"
+    assert filename2ticker("cof_c.us.txt") == "COF-C"
 
-    # TODO 6: 
+    # TODO 6:
     data_timeSeries, data_tickers = build_security_dfs()
     print(data_timeSeries.head())

@@ -1,4 +1,5 @@
 """Module for scraping names"""
+
 import csv
 import json
 from typing import Literal
@@ -12,6 +13,7 @@ from bs4 import BeautifulSoup
 from openpyxl import Workbook
 from requests import codes
 from requests import session
+
 
 def get_names_page(num: int) -> str:
     """Function to download a HTML document"""
@@ -27,12 +29,18 @@ def get_names_page(num: int) -> str:
             print(f"Connection failed (URL: {URL})")
             exit()
 
+
 def extract_page_count(page_text: str) -> int:
     """Function to get number of pages to parse"""
-    page_count = BeautifulSoup(page_text, "lxml").find_all("a", class_="pgcanhide")[-1].text
+    page_count = (
+        BeautifulSoup(page_text, "lxml").find_all("a", class_="pgcanhide")[-1].text
+    )
     return int(page_count)
 
-def extract_names_from_page(page_text: str, gender: bool = True, usage: bool = False, desc: bool = False) -> dict:
+
+def extract_names_from_page(
+    page_text: str, gender: bool = True, usage: bool = False, desc: bool = False
+) -> dict:
     """Function to parse an HTML document"""
     extracted_names = {}
     for div in BeautifulSoup(page_text, "lxml").find_all("div", class_="browsename"):
@@ -51,7 +59,15 @@ def extract_names_from_page(page_text: str, gender: bool = True, usage: bool = F
         extracted_names.update(extracted)
     return extracted_names
 
-def scrape_names(pages: list[int], output_file_path: str, gender: bool = True, usage: bool = False, desc: bool = False, output_format: Literal["csv", "json", "xml"] = "csv"):
+
+def scrape_names(
+    pages: list[int],
+    output_file_path: str,
+    gender: bool = True,
+    usage: bool = False,
+    desc: bool = False,
+    output_format: Literal["csv", "json", "xml"] = "csv",
+):
     """Function to carve-out names and their metadata"""
     names = {}
     for page in pages:
@@ -64,7 +80,7 @@ def scrape_names(pages: list[int], output_file_path: str, gender: bool = True, u
                 row = {"name": name}
                 for i in names[name]:
                     if i == "usage":
-                        names[name]["usage"] = ", ".join(names[name]["usage"])                        
+                        names[name]["usage"] = ", ".join(names[name]["usage"])
                     row.update({i: names[name][i]})
                 rows.append(row)
             columns = list(rows[0].keys())
@@ -89,6 +105,7 @@ def scrape_names(pages: list[int], output_file_path: str, gender: bool = True, u
             indent(scraped_names, space="\t")
             ElementTree(scraped_names).write(output_file_path, encoding="UTF-8")
 
+
 def json_to_excel(json_file_path: str, excel_file_path: str):
     workbook = Workbook()
     worksheet = workbook.active
@@ -106,6 +123,7 @@ def json_to_excel(json_file_path: str, excel_file_path: str):
         worksheet.append(row)
     workbook.save(excel_file_path)
 
+
 def csv_to_excel(csv_file_path: str, excel_file_path: str):
     workbook = Workbook()
     worksheet = workbook.active
@@ -114,6 +132,7 @@ def csv_to_excel(csv_file_path: str, excel_file_path: str):
         [worksheet.append(name) for name in csv.reader(csv_file)]
     workbook.save(excel_file_path)
 
+
 def xml_to_excel(xml_file_path: str, excel_file_path: str):
     workbook = Workbook()
     worksheet = workbook.active
@@ -121,12 +140,12 @@ def xml_to_excel(xml_file_path: str, excel_file_path: str):
     names = parse(xml_file_path).getroot()
     worksheet.append(list(dict.fromkeys(name.tag for name in names[0].iter())))
     for parent in names:
-        name   = [parent.attrib["value"]] 
+        name = [parent.attrib["value"]]
         gender = [child.text for child in parent.iter("gender")]
-        usage  = [child.text for child in parent.iter("usage")]
-        desc   = [child.text for child in parent.iter("desc")]
+        usage = [child.text for child in parent.iter("usage")]
+        desc = [child.text for child in parent.iter("desc")]
         if usage:
             worksheet.append(name + gender + [", ".join(usage)] + desc)
-        else: 
+        else:
             worksheet.append(name + gender + desc)
     workbook.save(excel_file_path)

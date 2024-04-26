@@ -17,7 +17,7 @@ If I take any additional notes, I will put them here.
 **Adding Telemetry Functions**  
 Don't add telemetry functions to a system if it will impact performance. 
 
-**Kubernetes Operator** 
+**Kubernetes Operator**  
 Operators create, configure, and manage applications within your cluster in a Kubernetes-native way. 
 
 **OpenTelemetry**  
@@ -30,7 +30,7 @@ An OpenTelemetry Collector configuration includes four main sections:
 * Exporters: sends data to one or more backends
 * Pipeline: join two pipelines together (e.g., connect a receiver to an exporter)
 
-**OpenTelemetry Instrumentation** 
+**OpenTelemetry Instrumentation**  
 An Instrumentation resource configures the OpenTelemetry Operator to add an init container to deployments with specific attributes. The init container will identify what type of application server running and then add the correct instrumentation for it. 
 
 ```mermaid

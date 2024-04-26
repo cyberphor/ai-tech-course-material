@@ -1,4 +1,5 @@
 """A simple Large Language Model (LLM) module"""
+
 import logging
 from azure.functions import AuthLevel
 from azure.functions import FunctionApp
@@ -16,12 +17,17 @@ MODEL_DESCRIPTION = "You are an assistant."
 app = FunctionApp()
 model = Llama(model_path=MODEL_PATH, n_ctx=N_CTX, n_batch=N_BATCH)
 
+
 @app.route(route="llm", auth_level=AuthLevel.ANONYMOUS)
 def llm(req: HttpRequest) -> HttpResponse:
-    """"Function for LLM response"""
-    user_prompt = req.params.get("message") 
+    """ "Function for LLM response"""
+    user_prompt = req.params.get("message")
     logging.info(f"[User] {user_prompt}")
-    template = f"<|system|>\n{MODEL_DESCRIPTION}</s>\n<|user|>{user_prompt}</s><|assistant|>"
-    model_response = str(model(template, temperature=TEMPERATURE, max_tokens=MAX_TOKENS))
+    template = (
+        f"<|system|>\n{MODEL_DESCRIPTION}</s>\n<|user|>{user_prompt}</s><|assistant|>"
+    )
+    model_response = str(
+        model(template, temperature=TEMPERATURE, max_tokens=MAX_TOKENS)
+    )
     logging.info(f"[Model] {model_response}")
     return HttpResponse(model_response)

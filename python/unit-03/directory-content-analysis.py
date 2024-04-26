@@ -1,17 +1,21 @@
 # TODO: Place your code here
 from os import remove, sep, walk
-from os.path import abspath, basename, getsize, join, normpath
+from os.path import basename, getsize, join, normpath
+
 
 def delete_dir_report(report_file_path: str = "dir-report.txt") -> None:
     remove("dir-report.txt")
+
 
 def print_dir_report(report_file_path: str = "dir-report.txt") -> None:
     with open(report_file_path, "r") as f:
         print(f.read())
 
+
 def get_path_depth(path):
     path = normpath(path)
     return len(path.split(sep))
+
 
 def show_dirs(path, report):
     parent = path["parent"]
@@ -24,6 +28,7 @@ def show_dirs(path, report):
         report.write(f"+ {basename(parent)}\n")
     else:
         report.write(f"{indent}|-+ {basename(parent)}\n")
+
 
 def show_dirs_and_file_count(path, report):
     files = path["files"]
@@ -39,11 +44,13 @@ def show_dirs_and_file_count(path, report):
     else:
         report.write(f"{indent}|-+ {basename(parent)} {file_count}\n")
 
+
 def file_name_matches_highlight(file_name, highlight):
     if file_name.split(".")[1] == highlight:
         return True
     else:
         return False
+
 
 def show_file_list(path, report):
     files = path["files"]
@@ -58,6 +65,7 @@ def show_file_list(path, report):
             report.write(f"{indent}|-- {basename(f)} <--\n")
         else:
             report.write(f"{indent}|-- {basename(f)}\n")
+
 
 def show_file_list_and_file_sizes(path, report):
     files = path["files"]
@@ -75,13 +83,14 @@ def show_file_list_and_file_sizes(path, report):
         else:
             report.write(f"{indent}|-- {basename(f)} {size}\n")
 
+
 def generate_dir_report(
     path: str = "data/dir-top",
     report_file_path: str = "dir-report.txt",
     show_files: bool = True,
     num_files: bool = False,
     file_size: bool = False,
-    hl: str = None
+    hl: str = None,
 ):
     depth = get_path_depth(path)
     level = -1
@@ -89,12 +98,12 @@ def generate_dir_report(
         for parent, children, files in sorted(walk(path)):
             # create a dictionary containing:
             path = {
-                "name": path,       # the main arg passed
-                "depth": depth,     # depth of main arg passed
-                "parent": parent,   # a folder within of the original arg passed
-                "files": files,     # files within the folder
-                "spaces": "  ",     # spaces
-                "highlight": hl     # what file to highlight
+                "name": path,  # the main arg passed
+                "depth": depth,  # depth of main arg passed
+                "parent": parent,  # a folder within of the original arg passed
+                "files": files,  # files within the folder
+                "spaces": "  ",  # spaces
+                "highlight": hl,  # what file to highlight
             }
             # show num files within a folder if "num_files" parameter is true
             if num_files:
@@ -107,9 +116,7 @@ def generate_dir_report(
                 show_file_list(path, report)
         level += 1
 
+
 if __name__ == "__main__":
-    generate_dir_report("data/dir-top",
-                        "dir-report.txt",
-                        file_size = True,
-                        hl = "log")
+    generate_dir_report("data/dir-top", "dir-report.txt", file_size=True, hl="log")
     print_dir_report()

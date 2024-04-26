@@ -1,4 +1,5 @@
 """Module for items"""
+
 import math
 import random
 from shoppinglistapp.core.errors import DuplicateItemError
@@ -10,6 +11,7 @@ from shoppinglistapp.core.errors import NonExistingItemError
 
 class Item:
     """Item class"""
+
     def __init__(self, name, price):
         if not isinstance(name, str) or not name:
             raise InvalidItemNameError(name)
@@ -50,19 +52,20 @@ class Item:
         return list_item
 
     def __repr__(self):
-        return f'Item({self.name}, {self.price})'
+        return f"Item({self.name}, {self.price})"
 
     def __eq__(self, other):
         # HACK: task 4 - wrote code this way because line was too long
         return (
-            isinstance(other, Item) and
-            self.name == other.name and
-            self.price == other.price
+            isinstance(other, Item)
+            and self.name == other.name
+            and self.price == other.price
         )
 
 
 class ItemPool:
     """ItemPool class"""
+
     def __init__(self, items=None):
         if not items:
             items = {}
@@ -94,12 +97,11 @@ class ItemPool:
     def sample_items(self, sample_size):
         """Method for generating bogus items"""
         return random.sample(
-            list(self.items.values()),
-            min(sample_size, len(self.items))
+            list(self.items.values()), min(sample_size, len(self.items))
         )
 
     def __repr__(self):
-        return f'ItemPool({self.items})'
+        return f"ItemPool({self.items})"
 
     def __eq__(self, other):
         return isinstance(other, ItemPool) and self.items == other.items

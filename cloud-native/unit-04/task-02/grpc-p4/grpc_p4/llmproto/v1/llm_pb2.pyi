@@ -2,7 +2,13 @@ from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from typing import (
+    ClassVar as _ClassVar,
+    Iterable as _Iterable,
+    Mapping as _Mapping,
+    Optional as _Optional,
+    Union as _Union,
+)
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -22,7 +28,13 @@ class Choice(_message.Message):
     index: int
     logprobs: str
     finish_reason: str
-    def __init__(self, text: _Optional[str] = ..., index: _Optional[int] = ..., logprobs: _Optional[str] = ..., finish_reason: _Optional[str] = ...) -> None: ...
+    def __init__(
+        self,
+        text: _Optional[str] = ...,
+        index: _Optional[int] = ...,
+        logprobs: _Optional[str] = ...,
+        finish_reason: _Optional[str] = ...,
+    ) -> None: ...
 
 class Usage(_message.Message):
     __slots__ = ("prompt_tokens", "completion_tokens", "total_tokens")
@@ -32,7 +44,12 @@ class Usage(_message.Message):
     prompt_tokens: int
     completion_tokens: int
     total_tokens: int
-    def __init__(self, prompt_tokens: _Optional[int] = ..., completion_tokens: _Optional[int] = ..., total_tokens: _Optional[int] = ...) -> None: ...
+    def __init__(
+        self,
+        prompt_tokens: _Optional[int] = ...,
+        completion_tokens: _Optional[int] = ...,
+        total_tokens: _Optional[int] = ...,
+    ) -> None: ...
 
 class CompletionResponse(_message.Message):
     __slots__ = ("id", "object", "created", "model", "choices", "usage")
@@ -48,7 +65,15 @@ class CompletionResponse(_message.Message):
     model: str
     choices: _containers.RepeatedCompositeFieldContainer[Choice]
     usage: Usage
-    def __init__(self, id: _Optional[str] = ..., object: _Optional[str] = ..., created: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., model: _Optional[str] = ..., choices: _Optional[_Iterable[_Union[Choice, _Mapping]]] = ..., usage: _Optional[_Union[Usage, _Mapping]] = ...) -> None: ...
+    def __init__(
+        self,
+        id: _Optional[str] = ...,
+        object: _Optional[str] = ...,
+        created: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
+        model: _Optional[str] = ...,
+        choices: _Optional[_Iterable[_Union[Choice, _Mapping]]] = ...,
+        usage: _Optional[_Union[Usage, _Mapping]] = ...,
+    ) -> None: ...
 
 class LLMStreamRequest(_message.Message):
     __slots__ = ("message",)
@@ -68,4 +93,11 @@ class LLMStreamResponse(_message.Message):
     created: _timestamp_pb2.Timestamp
     model: str
     choices: _containers.RepeatedCompositeFieldContainer[Choice]
-    def __init__(self, id: _Optional[str] = ..., object: _Optional[str] = ..., created: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ..., model: _Optional[str] = ..., choices: _Optional[_Iterable[_Union[Choice, _Mapping]]] = ...) -> None: ...
+    def __init__(
+        self,
+        id: _Optional[str] = ...,
+        object: _Optional[str] = ...,
+        created: _Optional[_Union[_timestamp_pb2.Timestamp, _Mapping]] = ...,
+        model: _Optional[str] = ...,
+        choices: _Optional[_Iterable[_Union[Choice, _Mapping]]] = ...,
+    ) -> None: ...

@@ -1,7 +1,12 @@
 """Module for Task 2"""
+
 import pandas as pd
 
-def get_country_centric_usability(source="wdi_exports/wdi_data.pkl", destination="wdi_exports/country-centric-assessment.xlsx"):
+
+def get_country_centric_usability(
+    source="wdi_exports/wdi_data.pkl",
+    destination="wdi_exports/country-centric-assessment.xlsx",
+):
     wdi_data = pd.read_pickle(source)
     countries = []
     for country in wdi_data.index.to_list():
@@ -16,69 +21,73 @@ def get_country_centric_usability(source="wdi_exports/wdi_data.pkl", destination
             usability = "Good"
         else:
             usability = "Excellent"
-        countries.append({
-            "Country Name": country,
-            "Missing Values": missing_values,
-            "Usability": usability
-        })
+        countries.append(
+            {
+                "Country Name": country,
+                "Missing Values": missing_values,
+                "Usability": usability,
+            }
+        )
     pd.DataFrame.from_dict(countries).to_excel(
-        index=None,
-        excel_writer=destination,
-        sheet_name="Countries Missing Data"
+        index=None, excel_writer=destination, sheet_name="Countries Missing Data"
     )
 
-def get_statistic_centric_usability(source="wdi_exports/wdi_data.pkl", destination="wdi_exports/statistic-centric-assessment.xlsx"):
+
+def get_statistic_centric_usability(
+    source="wdi_exports/wdi_data.pkl",
+    destination="wdi_exports/statistic-centric-assessment.xlsx",
+):
     wdi_data = pd.read_pickle(source)
     statistics = []
-    for column in range(len(wdi_data.iloc[0,:])):
-        missing_values = wdi_data.iloc[:,column].isna().sum()
+    for column in range(len(wdi_data.iloc[0, :])):
+        missing_values = wdi_data.iloc[:, column].isna().sum()
         if missing_values > 180:
-          usability = "None"
+            usability = "None"
         elif missing_values <= 180 and missing_values > 100:
-          usability = "Marginal"
+            usability = "Marginal"
         elif missing_values <= 100 and missing_values > 60:
-          usability = "Fair"
+            usability = "Fair"
         elif missing_values <= 60 and missing_values > 30:
-          usability = "Good"
+            usability = "Good"
         else:
-          usability = "Excellent"
-        statistics.append({
-            "Statistic Name": wdi_data.iloc[:,column].name,
-            "Missing Values": missing_values,
-            "Usability": usability
-        })
+            usability = "Excellent"
+        statistics.append(
+            {
+                "Statistic Name": wdi_data.iloc[:, column].name,
+                "Missing Values": missing_values,
+                "Usability": usability,
+            }
+        )
     pd.DataFrame.from_dict(statistics).to_excel(
-        index=None,
-        excel_writer=destination,
-        sheet_name="Statistics Missing Data"
+        index=None, excel_writer=destination, sheet_name="Statistics Missing Data"
     )
 
-def get_descriptive_statistics(source="wdi_exports/wdi_data.pkl", destination="wdi_exports/wdi_summary.xlsx"):
+
+def get_descriptive_statistics(
+    source="wdi_exports/wdi_data.pkl", destination="wdi_exports/wdi_summary.xlsx"
+):
     wdi_data = pd.read_pickle(source)
     with pd.ExcelWriter(destination) as writer:
-        for column in range(len(wdi_data.iloc[0,:])):
-            statistic = wdi_data.iloc[:,column]
+        for column in range(len(wdi_data.iloc[0, :])):
+            statistic = wdi_data.iloc[:, column]
             sheet_name = statistic.name[:31]
             pd.DataFrame(
                 index=["Max", "Mean", "Min"],
-                data=[
-                   statistic.max(),
-                   statistic.mean(),
-                   statistic.min()
-                ]
+                data=[statistic.max(), statistic.mean(), statistic.min()],
             ).to_excel(writer, sheet_name, index=True, header=False)
-            pd.DataFrame(
-               index=["Top 10"]
-            ).to_excel(writer, sheet_name, index=True, startrow=3)
-            pd.DataFrame(
-               data=statistic.nlargest(10)
-            ).to_excel(writer, sheet_name, index=True, header=False, startrow=4, startcol=1)
-            pd.DataFrame(
-               index=["Bottom 10"]
-            ).to_excel(writer, sheet_name, index=True, startrow=13)
-            pd.DataFrame(
-               data=statistic.nsmallest(10)
-            ).to_excel(writer, sheet_name, index=True, header=False, startrow=14, startcol=1)
+            pd.DataFrame(index=["Top 10"]).to_excel(
+                writer, sheet_name, index=True, startrow=3
+            )
+            pd.DataFrame(data=statistic.nlargest(10)).to_excel(
+                writer, sheet_name, index=True, header=False, startrow=4, startcol=1
+            )
+            pd.DataFrame(index=["Bottom 10"]).to_excel(
+                writer, sheet_name, index=True, startrow=13
+            )
+            pd.DataFrame(data=statistic.nsmallest(10)).to_excel(
+                writer, sheet_name, index=True, header=False, startrow=14, startcol=1
+            )
+
 
 if __name__ == "__main__":
     get_country_centric_usability()

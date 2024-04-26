@@ -1,4 +1,5 @@
 """A simple Large Language Model (LLM) module"""
+
 from llama_cpp import Llama
 from flask import Flask
 from flask import request
@@ -12,14 +13,18 @@ MAX_TOKENS = None
 llm = Llama(model_path=MODEL_PATH, n_ctx=N_CTX, n_batch=N_BATCH)
 app = Flask(__name__)
 
+
 @app.route("/healthcheck")
 def healthcheck():
     return "OK"
 
+
 @app.route("/api")
 def api():
-    """"API Function"""
+    """ "API Function"""
     model_description = "You are an assistant."
     user_prompt = request.args.get("message")
-    template = f"<|system|>\n{model_description}</s>\n<|user|>{user_prompt}</s><|assistant|>"
+    template = (
+        f"<|system|>\n{model_description}</s>\n<|user|>{user_prompt}</s><|assistant|>"
+    )
     return llm(template, temperature=TEMPERATURE, max_tokens=MAX_TOKENS)

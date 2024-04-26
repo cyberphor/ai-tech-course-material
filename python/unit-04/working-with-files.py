@@ -2,15 +2,18 @@ from datetime import datetime
 import os
 import random
 
+
 def create_dev_set(full_data_dir, dev_data_dir, ratio=10):
     os.makedirs(dev_data_dir, exist_ok=True)
     for file_name in sorted(os.listdir(full_data_dir)):
-        with open(f'{full_data_dir}/{file_name}') as file_full,\
-                open(f'{dev_data_dir}/{file_name}', 'w') as file_dev:
+        with open(f"{full_data_dir}/{file_name}") as file_full, open(
+            f"{dev_data_dir}/{file_name}", "w"
+        ) as file_dev:
             for line in file_full:
                 rand_num = random.randint(0, 100)
                 if rand_num < ratio:
                     file_dev.write(line)
+
 
 # TODO 1: Place your code here.
 def load_phone_calls_dict(data_dir: str) -> dict:
@@ -49,15 +52,20 @@ def load_phone_calls_dict(data_dir: str) -> dict:
                         # phone_calls_dict.
                         if area_code in phone_calls_dict.keys():
                             if phone_number in phone_calls_dict[area_code].keys():
-                                phone_calls_dict[area_code][phone_number].append(date_time)
+                                phone_calls_dict[area_code][phone_number].append(
+                                    date_time
+                                )
                             else:
                                 phone_calls_dict[area_code][phone_number] = list()
-                                phone_calls_dict[area_code][phone_number].append(date_time)
+                                phone_calls_dict[area_code][phone_number].append(
+                                    date_time
+                                )
                         else:
                             phone_calls_dict[area_code] = dict()
                             phone_calls_dict[area_code][phone_number] = list()
                             phone_calls_dict[area_code][phone_number].append(date_time)
     return phone_calls_dict
+
 
 # TODO 2: Place your code here.
 def generate_phone_call_counts(phone_calls_dict: dict) -> dict:
@@ -67,15 +75,21 @@ def generate_phone_call_counts(phone_calls_dict: dict) -> dict:
             call_counts[phone_number] = len(phone_calls_dict[area_code][phone_number])
     return call_counts
 
+
 # TODO 3: Place your code here.
 def most_frequently_called(phone_call_counts: dict, top_n: int) -> list:
     phone_calls = list()
     for phone_call, count in phone_call_counts.items():
         phone_calls.append((phone_call, count))
-    phone_calls_sorted_by_number = sorted(phone_calls, key = lambda phone_call: phone_call[0])
-    phone_calls_sorted = sorted(phone_calls, key = lambda phone_call: (-phone_call[1], phone_call[0]))
+    phone_calls_sorted_by_number = sorted(
+        phone_calls, key=lambda phone_call: phone_call[0]
+    )
+    phone_calls_sorted = sorted(
+        phone_calls, key=lambda phone_call: (-phone_call[1], phone_call[0])
+    )
     most_called = phone_calls_sorted[0:top_n]
     return most_called
+
 
 # TODO 4: Place your code here.
 def export_phone_call_counts(most_frequent_list: list, out_file_path: str):
@@ -86,6 +100,7 @@ def export_phone_call_counts(most_frequent_list: list, out_file_path: str):
             # In each iteration write the entry into the file (single line)
             # in the specified format.
             stream.write(f"{phone_number[0]}: {phone_number[1]}\n")
+
 
 # TODO 5: Place your code here.
 def export_redials_report(phone_calls_dict: dict, report_dir: str):
@@ -99,7 +114,7 @@ def export_redials_report(phone_calls_dict: dict, report_dir: str):
     for area_code in phone_calls_dict:
         # Write the output into the respective <area_code>.txt file. If there is
         # no output, just create an empty <area_code>.txt file.
-        file_path = report_dir + '/' + str(area_code) + ".txt"
+        file_path = report_dir + "/" + str(area_code) + ".txt"
         with open(file_path, "w") as file_stream:
             # Since ac_data is also a dict, create a nested loop over ac_data.
             # In each iteration a key is assigned to phone_number and a
@@ -114,7 +129,10 @@ def export_redials_report(phone_calls_dict: dict, report_dir: str):
                 # you to figure out. However, we also believe it would be a
                 # worthwhile effort. Hence, we do not provide any further hints
                 # on this point.
-                call_data = sorted(phone_calls_dict[area_code][phone_number], key = lambda call: str(call).split()[0])
+                call_data = sorted(
+                    phone_calls_dict[area_code][phone_number],
+                    key=lambda call: str(call).split()[0],
+                )
                 total_calls = len(call_data)
                 for call in call_data:
                     try:
@@ -134,5 +152,7 @@ def export_redials_report(phone_calls_dict: dict, report_dir: str):
                         call_time = call.split()[1]
                         next_call_time = str(next_call).split()[1]
                         minutes, seconds = divmod(time_between_calls, 60)
-                        file_stream.write(f"{phone_number}: {call_day} {call_time} -> {next_call_time} ({int(minutes):0>2}:{int(seconds):0>2})\n")
+                        file_stream.write(
+                            f"{phone_number}: {call_day} {call_time} -> {next_call_time} ({int(minutes):0>2}:{int(seconds):0>2})\n"
+                        )
                         # +1(892)532-9243: 2020-01-01 00:00:09 -> 00:01:20 (01:11)

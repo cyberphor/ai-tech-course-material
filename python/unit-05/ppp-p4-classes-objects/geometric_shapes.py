@@ -1,9 +1,12 @@
 """Module for geometric shapes"""
+
 from math import pi, sqrt
 from utils import validate_positive_number, validate_non_empty_string
 
-class GeometricShape():
+
+class GeometricShape:
     """Geometric shape class"""
+
     def __init__(self, name):
         self.set_name(name)
 
@@ -15,11 +18,11 @@ class GeometricShape():
     def get_name(self):
         """Getter method for geometric shape name"""
         return self.__name
-    
+
     def __repr__(self):
         """Representation method for GeometricShape class"""
         return f"GeometricShape(name={self.get_name()})"
-    
+
     def __eq__(self, other):
         """Equals method for GeometricShape class"""
         if isinstance(other, GeometricShape):
@@ -27,8 +30,10 @@ class GeometricShape():
                 return True
         return False
 
+
 class Rectangle(GeometricShape):
     """Rectangle class"""
+
     def __init__(self, length, width):
         super().__init__("Rectangle")
         self.set_length(length)
@@ -59,10 +64,10 @@ class Rectangle(GeometricShape):
     def get_area(self):
         """Getter method for area of rectangle"""
         return self.get_length() * self.get_width()
-    
+
     def __repr__(self):
         return f"Rectangle(a={self.get_length()}, b={self.get_width()})"
-    
+
     def __eq__(self, other):
         if isinstance(other, Rectangle):
             if other.get_length() == self.get_length():
@@ -70,8 +75,10 @@ class Rectangle(GeometricShape):
                     return True
         return False
 
+
 class Ellipse(GeometricShape):
     """Ellipse class"""
+
     def __init__(self, semi_major_axis, semi_minor_axis):
         super().__init__("Ellipse")
         self.set_semi_major_axis(semi_major_axis)
@@ -97,15 +104,23 @@ class Ellipse(GeometricShape):
 
     def get_perimeter(self):
         """Getter method for perimeter of ellipse"""
-        return pi * (3 * (self.get_semi_major_axis() + self.get_semi_minor_axis()) - sqrt((3 * self.get_semi_major_axis() + self.get_semi_minor_axis()) * (self.get_semi_major_axis() + 3 * self.get_semi_minor_axis())))
+        return pi * (
+            3 * (self.get_semi_major_axis() + self.get_semi_minor_axis())
+            - sqrt(
+                (3 * self.get_semi_major_axis() + self.get_semi_minor_axis())
+                * (self.get_semi_major_axis() + 3 * self.get_semi_minor_axis())
+            )
+        )
 
     def get_area(self):
         """Getter method for area of ellipse"""
         return self.get_semi_major_axis() * self.get_semi_minor_axis() * pi
-    
+
     def __repr__(self):
-        return f"Ellipse(r1={self.get_semi_major_axis()}, r2={self.get_semi_minor_axis()})"
-    
+        return (
+            f"Ellipse(r1={self.get_semi_major_axis()}, r2={self.get_semi_minor_axis()})"
+        )
+
     def __eq__(self, other):
         if isinstance(other, Ellipse):
             if other.get_semi_major_axis() == self.get_semi_major_axis():
@@ -113,12 +128,14 @@ class Ellipse(GeometricShape):
                     return True
         return False
 
+
 class Square(Rectangle):
     """Square class"""
+
     def __init__(self, side):
         super().__init__(side, side)
         super().set_name("Square")
-    
+
     def set_side(self, side):
         """Setter method for side of square"""
         if validate_positive_number(side) is None:
@@ -131,19 +148,23 @@ class Square(Rectangle):
 
     def __repr__(self):
         return f"Square(a={self.get_side()})"
-    
+
     def __eq__(self, other):
         if isinstance(other, Square):
             if other.get_side() == self.get_side():
                 return True
         return False
 
+
 class Circle(Ellipse):
     """Circle class"""
+
     def __init__(self, radius):
-        super().__init__(radius, radius) # use parent init method to init major/minor axis
-        super().set_name("Circle")       # use parent setter method to set name
-    
+        super().__init__(
+            radius, radius
+        )  # use parent init method to init major/minor axis
+        super().set_name("Circle")  # use parent setter method to set name
+
     def set_radius(self, radius):
         """Setter method for radius of circle"""
         if validate_positive_number(radius) is None:
@@ -153,23 +174,25 @@ class Circle(Ellipse):
     def get_radius(self):
         """Getter method for radius of circle"""
         return super().get_semi_major_axis()
-    
+
     def __repr__(self):
         return f"Circle(r={self.get_radius()})"
-    
+
     def __eq__(self, other):
         if isinstance(other, Circle):
             if other.get_radius() == self.get_radius():
                 return True
         return False
-   
+
+
 class ComplexShape(GeometricShape):
     """ComplexShape class"""
+
     def __init__(self, base, holes):
         super().__init__("ComplexShape")
         self.set_base(base)
         self.set_holes(holes)
-    
+
     def set_base(self, base: GeometricShape):
         """Setter method for base of ComplexShape"""
         self.__base = base
@@ -177,7 +200,7 @@ class ComplexShape(GeometricShape):
     def get_base(self):
         """Getter method for base of ComplexShape"""
         return self.__base
-    
+
     def set_holes(self, holes: list[GeometricShape]):
         """Setter method for holes of ComplexShape"""
         self.__holes = holes
@@ -211,6 +234,6 @@ class ComplexShape(GeometricShape):
         for hole in self.get_holes():
             hole_edge_lengths.append(hole.get_perimeter())
         return base_edge_length + sum(hole_edge_lengths)
-    
+
     def __repr__(self):
         return f"ComplexShape({self.get_base().get_name()} with {len(self.get_holes())} holes)"

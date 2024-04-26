@@ -44,13 +44,15 @@ def merge_sort_in_place(lst):
             j += 1
             k += 1
 
+
 # Lists to use for binarySearch() and mergeSort() tests
 lst1 = [1, 5, 2, 6, 2]
 lst2 = [9, 8, 7, 6.5]
 lst3 = [5, -3, 7, -3]
 lst4 = [1]
 lst5 = []
-lst6 = ['hello', 'a', 'the']
+lst6 = ["hello", "a", "the"]
+
 
 def test_merge_sort_in_place():
     """
@@ -74,4 +76,4 @@ def test_merge_sort_in_place():
     assert lst3 == [-3, -3, 5, 7]
     assert lst4 == [1]
     assert lst5 == []
-    assert lst6 == ['a', 'hello', 'the']
+    assert lst6 == ["a", "hello", "the"]
