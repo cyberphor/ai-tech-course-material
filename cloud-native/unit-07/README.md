@@ -50,6 +50,9 @@ def eat_pizza(param1, param2):
 **Tekton**  
 Tekton is a CI system designed for Kubernetes. 
 
+**Kaniko**  
+Kaniko is used to build Docker containers inside Kubernetes clusters. 
+
 ## Setup
 The steps in this tutorial assume (1) you're using a Linux-based environment (GitHub Codespaces, Azure Shell, Windows Subsystem for Linux, or a Linux virtual machine) and (2) you've installed the software required for the project (e.g., Python, the `venv` Python package, Poetry, Terraform, Docker, Kubernetes, Helm, and Azure CLI). 
 
@@ -354,89 +357,532 @@ terraform apply
 cd ../
 ```
 
-### Subtask 02: 
-**Step 1.** Download, unzip, and decompress the Tekton program (make sure to use the [correct version for your machine](https://github.com/tektoncd/cli/releases)). 
-
-**Step 2.** Download credentials from your AKS instance for kubectl to use.
+### Subtask 02: Configure Your AKS Instance
+**Step 1.** Download credentials from your AKS instance for `kubectl` to use.
 ```bash
 az aks get-credentials --name "p7cluster" --resource-group "p7aks"
 ```
 
-**Step 3.** Install the Tekton Kubernetes Operator in your AKS instance. 
+**Step 2.** Install the Tekton Kubernetes Operator in your AKS instance. 
 ```bash
 kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 ```
 
-**Step 4.** Create an SSH key pair using `tekton-access` as the filename (do not enter a passphrase). This step will generate two files in your current working directory (i.e., the root of the repository): `tekton-access` and `tekton-access.pub`. 
+**Step 3.** Create an SSH key pair using `tekton/access` as the filename (do not enter a passphrase). This step will generate two files in the `tekton` folder: `access` and `access.pub`. 
 ```bash
-ssh-keygen -t rsa -f tekton-access
+ssh-keygen -t rsa -f tekton/access
 ```
 
-**Step 5.** Add the keys you generated to the provided `.gitignore` file. The code block below also references a file you're about to create. 
+**Step 4.** Change directories to the `tekton/` folder.
 ```bash
-echo "\ntekton-access" >> .gitignore
-echo "\ntekton-access.pub" >> .gitignore
-echo "\nkubernetes/tekton-secret.yaml" >> .gitignore
+cd tekton/
 ```
 
-**Step 6.** Print the contents of the `tekton-access.pub` file to the console and then, copy it. 
+**Step 5.** Print the contents of the `access.pub` file in the `tekton/` folder to the console and then, copy it. 
 ```bash
-cat tekton-access.pub
+cat access.pub
 ```
 
-**Step 7.** Login to GitHub and go to the repository provided for Task 02.
+**Step 6.** Login to GitHub and go to the repository provided for Task 02.
 
-**Step 8.** Click the "Settings" tab. 
+**Step 7.** Click the "Settings" tab. 
 
-**Step 9.** Under "Security", click "Deploy keys."
+**Step 8.** Under "Security", click "Deploy keys."
 
-**Step 10.** Click "Add deploy key."
+**Step 9.** Click "Add deploy key."
 
-**Step 11.** In the "Title" field, enter `Tekton`.
+**Step 10.** In the "Title" field, enter `Tekton`.
 
-**Step 12.** In the "Key" field, paste the contents of the `tekton-access.pub` file.
+**Step 11.** In the "Key" field, paste the contents of the `access.pub` file.
 
-**Step 13.** Click "Add key."
+**Step 12.** Click "Add key."
 
-**Step 14.** Print the contents of the `tekton-access` file to the console, pipe it to `base64` program, and then, copy it. 
+**Step 13.** Print the contents of the `access` file in the `tekton/` folder to the console, pipe it to the `base64` program, and then, copy it. 
 ```bash
-cat tekton-access | base64
+cat access | base64
 ```
 
 You should get output similar to below.
 ```
-VF0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUJsd0FBQUFkemMyZ3RjbgpOaEFBQUFBd0VBQVFBQUFZRUF2N1VleW03LyttYzVsU0o0N05oa2xNMmE2SndYcmF6RjcvQ2oxV2xVUHFJWFcxeVpxSncrCnZLWGRaUDllcFBzUDcvallCQzEycVh0bHN5K2JrWS9vVHNDdjNOdmZyNUZXalJqSmlKNzF6NG01T2I1Rk40WTBCRHVYN0IKeGxyL1VoV0pQSnhHSkZzYUlxZGRqWXRYRWlneWRhR1RXTlFOUzhpUjViQjhWTC91dTlKT0hEN2lzRUpDNGhoTllLU05jbwpybzhsckh5bWdtZUVqb3ZoZWRFYm5JWldyZ1g5VXBRUnp3Q3V5RXN6STdLeURwK3VnUlJTdSthcFYxOWRVVmlvK1FVZUhUCk1xcHlDMUsrbGNMYU1pQllDbVQzNFpESnZvTWJLV296WmV2YUlBSTIwSms0Q0tVcndkQlZmM0tUVEVrMEhqRFlWaHlpZnQKYWNOUCtLZXR3UDRwSFlaTStQdFVrU1dSMzV1SkNQa0NDcE01TDdiQVFUTzVMSFpzZ1ZSQlNHMm9pdXY5SjVzTDEvOGUyWApJd1c5Y3NMN3k3N1pBWktINU5RSU4ybkhuUXN2b0x2cnRSZ3pxUzN1dDFsdGNnQUFTc3J3ZElNSnpWQ25TL21rejhRMzhpCmltR21BQk5xUUg2dnNrUzZES1hBOXl1OVBrYmlFb3M5WCtRSWRxcVZBQUFGaUUwZTZxUk5IdXFrQUFBQUIzTnphQzF5YzIKRUFBQUdCQUwrMUhzcHUvL3BuT1pVaWVPellaSlRObXVpY0Y2MnN4ZS93bzlWcFZENmlGMXRjbWFpY1ByeWwzV1QvWHFUNwpEKy80MkFRdGRxbDdaYk12bTVHUDZFN0FyOXpiMzYrUlZvMFl5WWllOWMrSnVUbStSVGVHTkFRN2wrd2NaYS8xSVZpVHljClJpUmJHaUtuWFkyTFZ4SW9NbldoazFqVURVdklrZVd3ZkZTLzdydlNUaHcrNHJCQ1F1SVlUV0NralhLSzZQSmF4OHBvSm4KaEk2TDRYblJHNXlHVnE0Ri9WS1VFYzhBcnNoTE15T3lzZzZmcm9FVVVydm1xVmRmWFZGWXFQa0ZIaDB6S3FjZ3RTdnBYQwoyaklnV0FwazkrR1F5YjZER3lscU0yWHIyaUFDTnRDWk9BaWxLOEhRVlg5eWsweEpOQjR3MkZZY29uN1duRFQvaW5yY0QrCktSMkdUUGo3VkpFbGtkK2JpUWo1QWdxVE9TKzJ3RUV6dVN4MmJJRlVRVWh0cUlyci9TZWJDOWYvSHRseU1GdlhMQys4dSsKMlFHU2grVFVDRGRweDUwTEw2Qzc2N1VZTTZrdDdyZFpiWElBQUVySzhIU0RDYzFRcDB2NXBNL0VOL0lvcGhwZ0FUYWtCKwpyN0pFdWd5bHdQY3J2VDVHNGhLTFBWL2tDSGFxbFFBQUFBTUJBQUVBQUFHQU9COWIva04wcU9malVhZWY0eWFPZTRtZG1nCjlvVnkzSFhMRUVKWXdLWDdPd1JzemJKeU5tc20rVVd1YnYzRGlydDhNUDZsa3M3ZnowRHZzVy9ndzFKQ2tBMHhXRGJMQ04KdUF6VG95MTJKT1hhMWU2LzhMdFhLdzRQTWM0MmJzYkNsbDNkcWFKamFOZGl1dEZhei9ObytTQmlIaE14WVJObWhuWGVqRwozVUM3TVQwbUpOcThIb0duZHUxS2FjcUNway9JVm5zQkZsNWJOTWVUYTJNYVZvQWZES0czUWhielZ0NlQzMzdTY210NEt1CjRkMFpoeXhkOUNoWTF2MVNJbWhqdkY0MW9yWlE3bHQxK1dnNmNNcHZTQllpd1BVVEdndTZDSE5ubWxYbkJyQUNnRk1hdEoKbTZJUFlvREFDSi9abUp3MENUajNFd2loTDVZcDEzbC92VVYvQjNEL01PYm5URmRMNHNxNWhnNHFla29iMmlkWm9yRUJWcwpUOVJ2cWlkWVdYcGFiclVIVVJCcWNNdTI3ai9GWjk3ZmpUL1BCeFIvVXc5VkFyNFdLS3NNbHdXb2NZbmIrdWx0Wi9VSk0vCnpWc3lhV0lvSVQ0REF6a3VDdXUxSkZvM0JTL3ExVVg5d3pTS2UyTktCMUcrMnY1anNhN29vWmhQcGxidUl5eUpmQkFBQUEKd1FEVTIzL1B0OFNuS0ZRb0xlbjNEZlM2VXByLzA3VXpsMFNROUVINmI5ZmZTK3hYWTUrR2YxSE5ja0s2SXdRWWI2R1NSUwpzdXdMRmhHSG5aRU9JbDFKS0FsVVE3SnFLMXYzV0VIWm11OW9RWW83TUQ3aGxBMUxtNytiV3ZvNS9LK2wxcHY5eWdJSU1RCmYwQlNTbEJxb1orQVZxVU1OVWhxNzkyaU95d2dOaTVZWHpLYlJ5SjZZWnBkaU15S3ZxYnFVVjdKRG1iTUJDb2tpYm1kRjgKVmFKYkh6c3AvNldvZ2JwU2FlVWlEck5tT1dQeUl0aE1rbjNPUHhYd21DTDNMQXE2d0FBQURCQVA1ek43TWVsMndmZlRxYQo0NXJVakIzdmVQMGQyN05UaG1BQUVVaCtzOUl1WjdQWkY5Qm1STUo3Vm9qZHdlVXlZdm9ZRVE4bFA0dlZmVUJmNlJiZEJHCkJNQUlibmJBNWVobERaaUJtNm9TOTlaQ2QxNmVSbDI1V0hSSERsdEZhMzI0b0I0TVVNVCtLK1pvOEFHSlZ1T2dnOU5jaEcKMmRvbjkrbWRPbWQ4dWg3ejRvMWhTenF6cXdnb2w3VUJXSUN6YktYaG5LbndhUHNxTXdETTBOSjRoRWRmZDVoZGhiUzYzWgo2NmRIT255QXBaQzhDeVg2Z0ZYTkVsR0RmdjFXei9hUUFBQU1FQXdPQVFUSjZadTZCc2JER0V3V09uUGx1djFEdWdJRGQ5CkhkMzNHQmE3YmpuMjJNNTY0UjVsK2xwdkZrblRnelZWWkdaK1lzSTdjZW1zOVVrYy90VjNFOVJBQTJSRlVQQVJTdzUwVlcKK1hCN2tPeHhjclZOeDZ3QUNERXJaVHIzRGtjRVpRY2ZQOEVtYnB2dDNpU3hQenFha1RGeEJQNEpwTFhMdHgrNWpOMmxrYgpneWVwMFFyQW1KNmpzZC9aeFRvRHJYSjljZkJ3VXdxcXYrczJzeHV1WUFLbmRudFJyS21iUld0VUZiaVlmNkk5TzZvYkNWCmJsTkZMczl2YU5YQmhOQUFBQUQzWnBZM1J2Y2tCdFlXTXRiV2x1YVFFQ0F3PT0KLS0tLS1FTkQgT1BFTlNTSCBQUklWQVRFIEtFWS0tLS0tCg==
+VF0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUJsd0FBQUFkemMyZ3RjbgpOaEFBQUFBd0VBQVFBQUFZRUFsczZDMlNjRS9EbWlQYXV4WTB6bktLVGxPUUJkc2ZsZDVDNkNnRWlSZCtCb0pwZFBNQys4CngrT2piaVRGa0s1Y2xlcXFGZmNZRjF2QnZGbXRkUnZ6WTlsTXl0Q05uS3NUMm0wZnNvbW5aOE9rZDZEcG9TT1ZZS0I3MTgKdHFwaWx2WHE4V001Nmh6b3g4Y2d5Qzh4YkdKbW5HWjJtZFFEbElVSkxiNDE2N1lheFlQMnV2bXdJOWp5eDZGNHFUOXAyYQpMdEFZVDZRSmFWRWFYdy80Qm03VExkdkF2RGhEM3dBM3ZUVmcrVkpveC8vcHNNb0o3bnF2U0UzZkFCcldVWmlBc2tKVXF0CkZ6dVJkV3V3c3BNVXZCSE1pbS9sNmdpWnRXK3pwUHE5d2VYYXFYZld2TEs4MHNwazg5b3I1Uy8zM1JJeWFZczV0aEswQXQKWG92YVFuQkg0Y3hlV210cis1YjdhK21BYlF1d3QzQ2lUQUZaT0NmYXNJZEFTOXVGNlo0cTdWTTlydW5LTVovYkpCRExLYwpDcWxiSVlMSjFSaFhUNkxhYVhEWnd6VTBIdkpHWXRBb0RVNVViaWFjb3ZXZGszcHRIdGtwQUZkUnZPcDd0SGpvTUhBcFlLCmw4bi90T3hJWnBKUllwNjhvUzRwekVVYU4zZElnM1ZhYTJVN0tKckZBQUFGaUJKbWRoSVNabllTQUFBQUIzTnphQzF5YzIKRUFBQUdCQUpiT2d0a25CUHc1b2oycnNXTk01eWlrNVRrQVhiSDVYZVF1Z29CSWtYZmdhQ2FYVHpBdnZNZmpvMjRreFpDdQpYSlhxcWhYM0dCZGJ3YnhaclhVYjgyUFpUTXJRalp5ckU5cHRIN0tKcDJmRHBIZWc2YUVqbFdDZ2U5ZkxhcVlwYjE2dkZqCk9lb2M2TWZISU1ndk1XeGlacHhtZHBuVUE1U0ZDUzIrTmV1MkdzV0Q5cnI1c0NQWThzZWhlS2svYWRtaTdRR0Ura0NXbFIKR2w4UCtBWnUweTNid0x3NFE5OEFONzAxWVBsU2FNZi82YkRLQ2U1NnIwaE4zd0FhMWxHWWdMSkNWS3JSYzdrWFZyc0xLVApGTHdSeklwdjVlb0ltYlZ2czZUNnZjSGwycWwzMXJ5eXZOTEtaUFBhSytVdjk5MFNNbW1MT2JZU3RBTFY2TDJrSndSK0hNClhscHJhL3VXKzJ2cGdHMExzTGR3b2t3QldUZ24yckNIUUV2YmhlbWVLdTFUUGE3cHlqR2YyeVFReXluQXFwV3lHQ3lkVVkKVjAraTJtbHcyY00xTkI3eVJtTFFLQTFPVkc0bW5LTDFuWk42YlI3WktRQlhVYnpxZTdSNDZEQndLV0NwZkovN1RzU0dhUwpVV0tldktFdUtjeEZHamQzU0lOMVdtdGxPeWlheFFBQUFBTUJBQUVBQUFHQWJEbVh2YTg2N0tlUHZ5SlFFeXRGV08yOWNzCkxJZXNpeWtPYXYwTkJEVlB3K3dqTWtLVGlaQ2ZwYmR0ZjgwRy9SRWVWdVdvVVJUUElVZnM3OHBHYUNyTTF0UnIrVVlUS0UKOU9RTE0xMkdQZmt4Tm9qTUlWQWdDMUFna0NUelRIdS82UHROdTQzRUlTN0F3RGdxWWJtZVNrTHVsNWc3dWJOaUtqQzZqTgptWEwrazNDNHlFWVlHaUcvV1hTUDJ5WWZHSWpML2FNbzFPRTc2WVpsQlhkb1ppRnk3MWloMzIxenFZeGJoZzk0d2tsaU1aCjJqMmtFdmtJZ2FNZ3ZqcUVROXBrcDM4Q2dWaGtZL3FCN0ZlRUhqTndjMTc1ZWR6MzBuYXI4M1RlOEQrV2tPbURCUTkxaHUKeUN2NkxZUi9lZkw1bzFSV3Rlei9oVE5RRmV5emRCRExsSTVPU3lZSFNHaGw3ZWdKYUFkaUl3ZGhReE1LVjZ5TzdFNWNEQgpIUjlTMytXbG13Nkd4VnRUNHJuQkNrZjBtTERtVTFicVFucnlpTW9rb052Z1BHVnhPOUxleEdUbm5ucTRwd3lQZ3FuaG9jCllVU1RzSTdhVW9mOWdGVXFRR3FCMFpBVVEwS3BENjI5clFFMWNZQjJ0UHMwZ3kxeUdhb0pmRmloVHZWSVlXY1ZLaEFBQUEKd0RvSWNrdFpXRUhtQUtKcWFEUVVDNEdQV1BBblBaWXNxU2VoVE1zNW5vQ2FsT3I0TFJuSVVXRkx5aE9BaEw1RHpMQnh6bQpmTFZrbUE4M0RHZXl0Q2IrSklBNUlWaWJmeWJFU3NUM1puZFBwdnhkckRqa0JCak9LaGM0aUZQZ1FTK3Urek1nZ0MvUHdICnZPb01NNDNDamdOU2NMSldyQVNlZWpTWUVoU1VCZ3VRM2c1T0s0NVlUNGNSa2ZUZFdNb1lUaEVWd3VWQ1MzbDBMOHpnRnIKU3BTTkZHeThucWZpcWpkVlFEMzNmZERhZ0liWGQ0dDcxZ1luSHhDMVlUR1kzRU5nQUFBTUVBeHZ4a09QTmVYMlFmdWl2TQpmZUFIZjg0UTBTbGk4Y3RHOUVDTVNnc1BxQlE1cmpmR3c3S0lwbHhEMGpUNTRleGg0TWRjQ1lzelo2ZnV3b3RlRnFTTS9XCmhrU29oK01GN2FDL2JDL3BjbXQ1Lzd2NGlMSmF6Mi8yaHJRTGVxVGJOKzNrNEVoTldoRyt4RmVKT2d1T0hpbEhiVlU4bXQKNlFJMEpnTjZUelE4MjRWYzlXdlg4TXRrVHc2SExDYXZNZzBYY0MxeUd2ZStDZ1R2RVFIMXFMVWVTRmdRdkhNcTR5NTF2YgpBa1dmbmRnSU5qbjdjbHVZc2w1ZU0yZlhuVUZ4MUxBQUFBd1FEQ0JDejRYSmZxNG0zSi80b0xIMXJTbGUyY0t5d3RuWGpmCklLM2krb1RCc1VGNEwrandUUm1YZjRuNTU1VnQ1cFR0ZE1URWFaby9yQ3JiemtFd2tyTUZQSWQzdEFsaXJxMG9HTFNSRHgKWlh3QkJoUFRlTDMrRzFMdEcrNUFWcWs5dDVvNkVnMWZqQ3Q4bTZQc1dzdHVaSjkyTkh3Q1d6NUw2UlBHMTVjWmxjckVWcgpBWlVhN1hGeXMrYWh5TUJvWUR0NTdFYWt3dUE3d05nZ3pCU21yL3phcDVZUEN0d1FvZ1VZTzJ5cExQUTJBUzFoQUhmbDhCCnVqWkhSQytnUjhiaThBQUFBUGRtbGpkRzl5UUcxaFl5MXRhVzVwQVFJREJBPT0KLS0tLS1FTkQgT1BFTlNTSCBQUklWQVRFIEtFWS0tLS0tCg==
 ```
 
-**Step 15.** Create a folder called `kubernetes` in the root of your repository (your local instance, not the one in GitHub) and then, change directories to it.
+**Step 14.** Change directories to the root of your repository, create a folder called `kubernetes`, and then, change directories to it.
 ```bash
+cd ../
 mkdir kubernetes
 cd kubernetes/
 ```
 
-**Step 16.** Create and open a file called `tekton-secret.yaml` in the `kubernetes` folder.
+**Step 15.** Create and open a Kubernetes manifest file called `git-credentials.yaml` in the `kubernetes/` folder.
 ```bash
-vim tekton-secret.yaml
+vim git-credentials.yaml
 ```
 
-**Step 17.** Add the content below to the `tekton-secret.yaml` file (paste the contents of your `tekton-access` file in the `id_rsa` field).
+**Step 16.** Add the content below to the `git-credentials.yaml` file (paste the contents of *your* `access` file in the `id_rsa` field).
 ```yaml
 apiVersion: v1
 kind: Secret
 metadata:
   name: git-credentials
 data:
-  id_rsa: |
-    VF0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUJsd0FBQUFkemMyZ3RjbgpOaEFBQUFBd0VBQVFBQUFZRUF2N1VleW03LyttYzVsU0o0N05oa2xNMmE2SndYcmF6RjcvQ2oxV2xVUHFJWFcxeVpxSncrCnZLWGRaUDllcFBzUDcvallCQzEycVh0bHN5K2JrWS9vVHNDdjNOdmZyNUZXalJqSmlKNzF6NG01T2I1Rk40WTBCRHVYN0IKeGxyL1VoV0pQSnhHSkZzYUlxZGRqWXRYRWlneWRhR1RXTlFOUzhpUjViQjhWTC91dTlKT0hEN2lzRUpDNGhoTllLU05jbwpybzhsckh5bWdtZUVqb3ZoZWRFYm5JWldyZ1g5VXBRUnp3Q3V5RXN6STdLeURwK3VnUlJTdSthcFYxOWRVVmlvK1FVZUhUCk1xcHlDMUsrbGNMYU1pQllDbVQzNFpESnZvTWJLV296WmV2YUlBSTIwSms0Q0tVcndkQlZmM0tUVEVrMEhqRFlWaHlpZnQKYWNOUCtLZXR3UDRwSFlaTStQdFVrU1dSMzV1SkNQa0NDcE01TDdiQVFUTzVMSFpzZ1ZSQlNHMm9pdXY5SjVzTDEvOGUyWApJd1c5Y3NMN3k3N1pBWktINU5RSU4ybkhuUXN2b0x2cnRSZ3pxUzN1dDFsdGNnQUFTc3J3ZElNSnpWQ25TL21rejhRMzhpCmltR21BQk5xUUg2dnNrUzZES1hBOXl1OVBrYmlFb3M5WCtRSWRxcVZBQUFGaUUwZTZxUk5IdXFrQUFBQUIzTnphQzF5YzIKRUFBQUdCQUwrMUhzcHUvL3BuT1pVaWVPellaSlRObXVpY0Y2MnN4ZS93bzlWcFZENmlGMXRjbWFpY1ByeWwzV1QvWHFUNwpEKy80MkFRdGRxbDdaYk12bTVHUDZFN0FyOXpiMzYrUlZvMFl5WWllOWMrSnVUbStSVGVHTkFRN2wrd2NaYS8xSVZpVHljClJpUmJHaUtuWFkyTFZ4SW9NbldoazFqVURVdklrZVd3ZkZTLzdydlNUaHcrNHJCQ1F1SVlUV0NralhLSzZQSmF4OHBvSm4KaEk2TDRYblJHNXlHVnE0Ri9WS1VFYzhBcnNoTE15T3lzZzZmcm9FVVVydm1xVmRmWFZGWXFQa0ZIaDB6S3FjZ3RTdnBYQwoyaklnV0FwazkrR1F5YjZER3lscU0yWHIyaUFDTnRDWk9BaWxLOEhRVlg5eWsweEpOQjR3MkZZY29uN1duRFQvaW5yY0QrCktSMkdUUGo3VkpFbGtkK2JpUWo1QWdxVE9TKzJ3RUV6dVN4MmJJRlVRVWh0cUlyci9TZWJDOWYvSHRseU1GdlhMQys4dSsKMlFHU2grVFVDRGRweDUwTEw2Qzc2N1VZTTZrdDdyZFpiWElBQUVySzhIU0RDYzFRcDB2NXBNL0VOL0lvcGhwZ0FUYWtCKwpyN0pFdWd5bHdQY3J2VDVHNGhLTFBWL2tDSGFxbFFBQUFBTUJBQUVBQUFHQU9COWIva04wcU9malVhZWY0eWFPZTRtZG1nCjlvVnkzSFhMRUVKWXdLWDdPd1JzemJKeU5tc20rVVd1YnYzRGlydDhNUDZsa3M3ZnowRHZzVy9ndzFKQ2tBMHhXRGJMQ04KdUF6VG95MTJKT1hhMWU2LzhMdFhLdzRQTWM0MmJzYkNsbDNkcWFKamFOZGl1dEZhei9ObytTQmlIaE14WVJObWhuWGVqRwozVUM3TVQwbUpOcThIb0duZHUxS2FjcUNway9JVm5zQkZsNWJOTWVUYTJNYVZvQWZES0czUWhielZ0NlQzMzdTY210NEt1CjRkMFpoeXhkOUNoWTF2MVNJbWhqdkY0MW9yWlE3bHQxK1dnNmNNcHZTQllpd1BVVEdndTZDSE5ubWxYbkJyQUNnRk1hdEoKbTZJUFlvREFDSi9abUp3MENUajNFd2loTDVZcDEzbC92VVYvQjNEL01PYm5URmRMNHNxNWhnNHFla29iMmlkWm9yRUJWcwpUOVJ2cWlkWVdYcGFiclVIVVJCcWNNdTI3ai9GWjk3ZmpUL1BCeFIvVXc5VkFyNFdLS3NNbHdXb2NZbmIrdWx0Wi9VSk0vCnpWc3lhV0lvSVQ0REF6a3VDdXUxSkZvM0JTL3ExVVg5d3pTS2UyTktCMUcrMnY1anNhN29vWmhQcGxidUl5eUpmQkFBQUEKd1FEVTIzL1B0OFNuS0ZRb0xlbjNEZlM2VXByLzA3VXpsMFNROUVINmI5ZmZTK3hYWTUrR2YxSE5ja0s2SXdRWWI2R1NSUwpzdXdMRmhHSG5aRU9JbDFKS0FsVVE3SnFLMXYzV0VIWm11OW9RWW83TUQ3aGxBMUxtNytiV3ZvNS9LK2wxcHY5eWdJSU1RCmYwQlNTbEJxb1orQVZxVU1OVWhxNzkyaU95d2dOaTVZWHpLYlJ5SjZZWnBkaU15S3ZxYnFVVjdKRG1iTUJDb2tpYm1kRjgKVmFKYkh6c3AvNldvZ2JwU2FlVWlEck5tT1dQeUl0aE1rbjNPUHhYd21DTDNMQXE2d0FBQURCQVA1ek43TWVsMndmZlRxYQo0NXJVakIzdmVQMGQyN05UaG1BQUVVaCtzOUl1WjdQWkY5Qm1STUo3Vm9qZHdlVXlZdm9ZRVE4bFA0dlZmVUJmNlJiZEJHCkJNQUlibmJBNWVobERaaUJtNm9TOTlaQ2QxNmVSbDI1V0hSSERsdEZhMzI0b0I0TVVNVCtLK1pvOEFHSlZ1T2dnOU5jaEcKMmRvbjkrbWRPbWQ4dWg3ejRvMWhTenF6cXdnb2w3VUJXSUN6YktYaG5LbndhUHNxTXdETTBOSjRoRWRmZDVoZGhiUzYzWgo2NmRIT255QXBaQzhDeVg2Z0ZYTkVsR0RmdjFXei9hUUFBQU1FQXdPQVFUSjZadTZCc2JER0V3V09uUGx1djFEdWdJRGQ5CkhkMzNHQmE3YmpuMjJNNTY0UjVsK2xwdkZrblRnelZWWkdaK1lzSTdjZW1zOVVrYy90VjNFOVJBQTJSRlVQQVJTdzUwVlcKK1hCN2tPeHhjclZOeDZ3QUNERXJaVHIzRGtjRVpRY2ZQOEVtYnB2dDNpU3hQenFha1RGeEJQNEpwTFhMdHgrNWpOMmxrYgpneWVwMFFyQW1KNmpzZC9aeFRvRHJYSjljZkJ3VXdxcXYrczJzeHV1WUFLbmRudFJyS21iUld0VUZiaVlmNkk5TzZvYkNWCmJsTkZMczl2YU5YQmhOQUFBQUQzWnBZM1J2Y2tCdFlXTXRiV2x1YVFFQ0F3PT0KLS0tLS1FTkQgT1BFTlNTSCBQUklWQVRFIEtFWS0tLS0tCg==
+  id_rsa: VF0tLS1CRUdJTiBPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUJsd0FBQUFkemMyZ3RjbgpOaEFBQUFBd0VBQVFBQUFZRUFsczZDMlNjRS9EbWlQYXV4WTB6bktLVGxPUUJkc2ZsZDVDNkNnRWlSZCtCb0pwZFBNQys4CngrT2piaVRGa0s1Y2xlcXFGZmNZRjF2QnZGbXRkUnZ6WTlsTXl0Q05uS3NUMm0wZnNvbW5aOE9rZDZEcG9TT1ZZS0I3MTgKdHFwaWx2WHE4V001Nmh6b3g4Y2d5Qzh4YkdKbW5HWjJtZFFEbElVSkxiNDE2N1lheFlQMnV2bXdJOWp5eDZGNHFUOXAyYQpMdEFZVDZRSmFWRWFYdy80Qm03VExkdkF2RGhEM3dBM3ZUVmcrVkpveC8vcHNNb0o3bnF2U0UzZkFCcldVWmlBc2tKVXF0CkZ6dVJkV3V3c3BNVXZCSE1pbS9sNmdpWnRXK3pwUHE5d2VYYXFYZld2TEs4MHNwazg5b3I1Uy8zM1JJeWFZczV0aEswQXQKWG92YVFuQkg0Y3hlV210cis1YjdhK21BYlF1d3QzQ2lUQUZaT0NmYXNJZEFTOXVGNlo0cTdWTTlydW5LTVovYkpCRExLYwpDcWxiSVlMSjFSaFhUNkxhYVhEWnd6VTBIdkpHWXRBb0RVNVViaWFjb3ZXZGszcHRIdGtwQUZkUnZPcDd0SGpvTUhBcFlLCmw4bi90T3hJWnBKUllwNjhvUzRwekVVYU4zZElnM1ZhYTJVN0tKckZBQUFGaUJKbWRoSVNabllTQUFBQUIzTnphQzF5YzIKRUFBQUdCQUpiT2d0a25CUHc1b2oycnNXTk01eWlrNVRrQVhiSDVYZVF1Z29CSWtYZmdhQ2FYVHpBdnZNZmpvMjRreFpDdQpYSlhxcWhYM0dCZGJ3YnhaclhVYjgyUFpUTXJRalp5ckU5cHRIN0tKcDJmRHBIZWc2YUVqbFdDZ2U5ZkxhcVlwYjE2dkZqCk9lb2M2TWZISU1ndk1XeGlacHhtZHBuVUE1U0ZDUzIrTmV1MkdzV0Q5cnI1c0NQWThzZWhlS2svYWRtaTdRR0Ura0NXbFIKR2w4UCtBWnUweTNid0x3NFE5OEFONzAxWVBsU2FNZi82YkRLQ2U1NnIwaE4zd0FhMWxHWWdMSkNWS3JSYzdrWFZyc0xLVApGTHdSeklwdjVlb0ltYlZ2czZUNnZjSGwycWwzMXJ5eXZOTEtaUFBhSytVdjk5MFNNbW1MT2JZU3RBTFY2TDJrSndSK0hNClhscHJhL3VXKzJ2cGdHMExzTGR3b2t3QldUZ24yckNIUUV2YmhlbWVLdTFUUGE3cHlqR2YyeVFReXluQXFwV3lHQ3lkVVkKVjAraTJtbHcyY00xTkI3eVJtTFFLQTFPVkc0bW5LTDFuWk42YlI3WktRQlhVYnpxZTdSNDZEQndLV0NwZkovN1RzU0dhUwpVV0tldktFdUtjeEZHamQzU0lOMVdtdGxPeWlheFFBQUFBTUJBQUVBQUFHQWJEbVh2YTg2N0tlUHZ5SlFFeXRGV08yOWNzCkxJZXNpeWtPYXYwTkJEVlB3K3dqTWtLVGlaQ2ZwYmR0ZjgwRy9SRWVWdVdvVVJUUElVZnM3OHBHYUNyTTF0UnIrVVlUS0UKOU9RTE0xMkdQZmt4Tm9qTUlWQWdDMUFna0NUelRIdS82UHROdTQzRUlTN0F3RGdxWWJtZVNrTHVsNWc3dWJOaUtqQzZqTgptWEwrazNDNHlFWVlHaUcvV1hTUDJ5WWZHSWpML2FNbzFPRTc2WVpsQlhkb1ppRnk3MWloMzIxenFZeGJoZzk0d2tsaU1aCjJqMmtFdmtJZ2FNZ3ZqcUVROXBrcDM4Q2dWaGtZL3FCN0ZlRUhqTndjMTc1ZWR6MzBuYXI4M1RlOEQrV2tPbURCUTkxaHUKeUN2NkxZUi9lZkw1bzFSV3Rlei9oVE5RRmV5emRCRExsSTVPU3lZSFNHaGw3ZWdKYUFkaUl3ZGhReE1LVjZ5TzdFNWNEQgpIUjlTMytXbG13Nkd4VnRUNHJuQkNrZjBtTERtVTFicVFucnlpTW9rb052Z1BHVnhPOUxleEdUbm5ucTRwd3lQZ3FuaG9jCllVU1RzSTdhVW9mOWdGVXFRR3FCMFpBVVEwS3BENjI5clFFMWNZQjJ0UHMwZ3kxeUdhb0pmRmloVHZWSVlXY1ZLaEFBQUEKd0RvSWNrdFpXRUhtQUtKcWFEUVVDNEdQV1BBblBaWXNxU2VoVE1zNW5vQ2FsT3I0TFJuSVVXRkx5aE9BaEw1RHpMQnh6bQpmTFZrbUE4M0RHZXl0Q2IrSklBNUlWaWJmeWJFU3NUM1puZFBwdnhkckRqa0JCak9LaGM0aUZQZ1FTK3Urek1nZ0MvUHdICnZPb01NNDNDamdOU2NMSldyQVNlZWpTWUVoU1VCZ3VRM2c1T0s0NVlUNGNSa2ZUZFdNb1lUaEVWd3VWQ1MzbDBMOHpnRnIKU3BTTkZHeThucWZpcWpkVlFEMzNmZERhZ0liWGQ0dDcxZ1luSHhDMVlUR1kzRU5nQUFBTUVBeHZ4a09QTmVYMlFmdWl2TQpmZUFIZjg0UTBTbGk4Y3RHOUVDTVNnc1BxQlE1cmpmR3c3S0lwbHhEMGpUNTRleGg0TWRjQ1lzelo2ZnV3b3RlRnFTTS9XCmhrU29oK01GN2FDL2JDL3BjbXQ1Lzd2NGlMSmF6Mi8yaHJRTGVxVGJOKzNrNEVoTldoRyt4RmVKT2d1T0hpbEhiVlU4bXQKNlFJMEpnTjZUelE4MjRWYzlXdlg4TXRrVHc2SExDYXZNZzBYY0MxeUd2ZStDZ1R2RVFIMXFMVWVTRmdRdkhNcTR5NTF2YgpBa1dmbmRnSU5qbjdjbHVZc2w1ZU0yZlhuVUZ4MUxBQUFBd1FEQ0JDejRYSmZxNG0zSi80b0xIMXJTbGUyY0t5d3RuWGpmCklLM2krb1RCc1VGNEwrandUUm1YZjRuNTU1VnQ1cFR0ZE1URWFaby9yQ3JiemtFd2tyTUZQSWQzdEFsaXJxMG9HTFNSRHgKWlh3QkJoUFRlTDMrRzFMdEcrNUFWcWs5dDVvNkVnMWZqQ3Q4bTZQc1dzdHVaSjkyTkh3Q1d6NUw2UlBHMTVjWmxjckVWcgpBWlVhN1hGeXMrYWh5TUJvWUR0NTdFYWt3dUE3d05nZ3pCU21yL3phcDVZUEN0d1FvZ1VZTzJ5cExQUTJBUzFoQUhmbDhCCnVqWkhSQytnUjhiaThBQUFBUGRtbGpkRzl5UUcxaFl5MXRhVzVwQVFJREJBPT0KLS0tLS1FTkQgT1BFTlNTSCBQUklWQVRFIEtFWS0tLS0tCg==
 ```
 
-**Step 18.** Copy, paste, and run the commands below to your shell environment (use the correct ACR name). NOTE: this script assumes `jq` is installed. Also, if you're not on a Mac, you may need to replace `base64` with `base64 -w0`.
+**Step 17.** Apply the Kubernetes manifest file you just created.
+```bash
+kubectl apply -f git-credentials.yaml
+```
+
+**Step 18.** While in the `kubernetes/` folder, copy, paste, and run the commands below to your shell environment. Use the name of *your* ACR (there's two spots where you'll need to put it). NOTE: this script assumes `jq` is installed. Also, if you're not on a Mac, you may need to replace `base64` with `base64 -w0`.
 ```bash
 ACR_NAME=p7acrcyberphor
 SERVICE_PRINCIPAL_NAME=tektonUser
 ACR_REGISTRY_ID=$(az acr show --name $ACR_NAME --query id --output tsv)
 PASSWORD=$(az ad sp create-for-rbac --name $SERVICE_PRINCIPAL_NAME --scopes $ACR_REGISTRY_ID --role acrpush --query "password" --output tsv)
 USER_NAME=$(az ad sp list --display-name $SERVICE_PRINCIPAL_NAME --query "[].appId" --output tsv)
-echo $USER_NAME:$PASSWORD | base64 | jq -R -c '{  "auths": { "p7acr.azurecr.io": { "auth" : . } } }'  > config.json
+echo $USER_NAME:$PASSWORD | base64 | jq -R -c '{  "auths": { "p7acrcyberphor.azurecr.io": { "auth" : . } } }'  > config.json
 kubectl create secret generic docker-credentials --from-file=config.json=./config.json 
+```
+
+**Step 19.** Download a Kubernetes manifest file called `git-clone.yaml` to your `kubernetes/` folder.
+```bash
+wget https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.9/git-clone.yaml
+```
+
+**Step 20.** Download a Kubernetes manifest file called `kanifko.yaml` to your `kubernetes/` folder.
+```bash
+wget  https://raw.githubusercontent.com/tektoncd/catalog/main/task/kaniko/0.6/kaniko.yaml
+```
+
+**Step 21.** Apply the Kubernetes manifest files you just downloaded to your AKS instance.
+```bash
+kubectl apply -f git-clone.yaml
+kubectl apply -f kaniko.yaml
+```
+
+### Subtask 03: Create a Tekton CI Pipeline
+**Step 1.** While in the `kubernetes/` folder, create and open a Kubernetes manifest file called `tekton-pipeline.yaml`. 
+```bash
+vim tekton-pipeline.yaml
+```
+
+**Step 2.** Add the content below to it. 
+```yaml
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: p7ci
+  namespace: default
+spec:
+  params:
+    - name: repo-url           # the SSH url for your GitHub repository
+      type: string
+    - name: image-repository   # FQDN of your ACR
+      type: string
+  workspaces:
+    - name: shared-data
+    - name: git-credentials
+    - name: docker-credentials 
+  tasks:
+    - name: fetch-source
+      taskRef:
+        name: git-clone
+      workspaces:
+      - name: output
+        workspace: shared-data
+      - name: ssh-directory
+        workspace: git-credentials
+      params:
+      - name: url
+        value: $(params.repo-url)
+    - name: build-push-llm
+      runAfter: ["fetch-source"]
+      taskRef:
+        name: kaniko
+      workspaces:
+      - name: source
+        workspace: shared-data
+      - name: dockerconfig
+        workspace: docker-credentials    
+      params:
+      - name: IMAGE
+        value: $(params.image-repository)/llm:$(tasks.fetch-source.results.committer-date)-$(tasks.fetch-source.results.commit)
+      - name: DOCKERFILE
+        value: src/fastapi-p4/docker/Dockerfile
+      - name: CONTEXT
+        value: src/fastapi-p4
+```
+
+**Step 3.** Apply the Kubernetes manifest file you just created. 
+```bash
+kubectl apply -f tekton-pipeline.yaml
+```
+
+### Subtask 04: Create a Tekton CI Pipeline Run
+**Step 1.** While in the `kubernetes/` folder, create and open a Kubernetes manifest file called `tekton-pipeline-run.yaml`. 
+```bash
+vim tekton-pipeline-run.yaml
+```
+
+**Step 2.** Add the content below to it. Make sure to use the SSH URL for *your* GitHub repository (the one for Task 2) and the fully-qualified domain name for *your* ACR.
+```yaml
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: p7ci-
+spec:
+  pipelineRef:
+    name: p7ci
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+  workspaces:
+  - name: shared-data
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 3Gi
+  - name: git-credentials
+    secret:
+      secretName: git-credentials
+  - name: docker-credentials
+    secret:
+      secretName: docker-credentials
+  params:
+  - name: repo-url
+    value: git@github.com:CloudNativeSpring2024/project-7-task-2-cloud-native-continuous-integration-cyberphor.git
+  - name: image-reference
+    value: p7acrcyberphor.azurecr.io
+```
+
+**Step 3.** Create a Tekton pipeline run using the Kubernetes manifest file you just created.
+```bash
+kubectl create -f tekton-pipeline-run.yaml
+```
+
+**Step 4.** Change directories to the root of your repository.
+```bash
+cd ../
+```
+
+**Step 5.** Download, unzip, and decompress the Tekton CLI program (make sure to use the [correct version for your machine](https://github.com/tektoncd/cli/releases)). 
+```bash
+curl -LO  https://github.com/tektoncd/cli/releases/download/v0.35.2/tektoncd-cli-0.35.2_Linux-64bit.deb
+sudo dpkg -i tektoncd-cli-0.35.2_Linux-64bit.deb
+```
+
+**Step 6.** Change the access mode for the Tekton CLI program so you can execute it.
+```bash
+chmod u+x tkn
+```
+
+**Step 7.** Verify the Tekton CI pipeline run was successful using the Tekton CLI program. It will probe your Kubernetes cluster. 
+```bash
+tkn pipeline logs -f -L
+```
+
+You should eventually get output similar to below.
+```
+INFO[0235] Taking snapshot of full filesystem...        
+INFO[0255] COPY ./fastapi_p4 /code/app                  
+INFO[0255] Taking snapshot of files...                  
+INFO[0255] CMD ["uvicorn", "app.llmserver:app", "--host", "0.0.0.0", "--port", "8080"] 
+INFO[0255] Pushing image to p7acrcyberphor.azurecr.io/llm:1714162458-23d78d58222aaeee07bc758a600f672f8b47e78f 
+INFO[0274] Pushed image to 1 destinations               
+
+p7acrcyberphor.azurecr.io/llm:1714162458-23d78d58222aaeee07bc758a600f672f8b47e78f
+```
+
+### Subtask 05: Add a Task to the Tekton CI Pipeline to Build the Login Service
+**Step 1.** Change directories to the `kubernetes/` folder.
+```bash
+cd kubernetes/
+```
+
+**Step 2.** Open the Kubernetes manifest file called `tekton-pipeline.yaml`.
+```bash
+vim tekton-pipeline.yaml
+```
+
+**Step 3.** Append the content below to it.
+```yaml
+    - name: build-push-django
+      runAfter: ["build-push-llm"]
+      taskRef:
+        name: kaniko
+      workspaces:
+      - name: source
+        workspace: shared-data
+      - name: dockerconfig
+        workspace: docker-credentials    
+      params:
+      - name: IMAGE
+        value: $(params.image-reference)/login:$(tasks.fetch-source.results.committer-date)-$(tasks.fetch-source.results.commit)
+      - name: DOCKERFILE
+        value: src/django/docker/Dockerfile
+      - name: CONTEXT
+        value: src/django
+```
+
+**Step 5.** Apply the changes you made to the Kubernetes manifest file called `tekton-pipeline.yaml`.
+```bash
+kubectl apply -f tekton-pipeline.yaml
+```
+
+**Step 6.** Create a new Tekton pipeline run.
+```bash
+kubectl create -f tekton-pipeline-run.yaml
+```
+
+**Step 7.** Change directories to the root of your repository.
+```bash
+cd ../
+```
+
+**Step 8.** Verify the new Tekton CI pipeline run was successful. 
+```bash
+tkn pipeline logs -f -L
+```
+
+You should eventually get output similar to below.
+```
+INFO[0059] Taking snapshot of full filesystem...        
+INFO[0067] COPY . code                                  
+INFO[0067] Taking snapshot of files...                  
+INFO[0067] WORKDIR /code                                
+INFO[0067] cmd: workdir                                 
+INFO[0067] Changed working directory to /code           
+INFO[0067] No files changed in this command, skipping snapshotting. 
+INFO[0067] CMD ["opentelemetry-instrument", "--service_name", "login", "--metrics_exporter", "otlp,console", "--exporter_otlp_endpoint", "http://simplest-collector:4317", "python", "manage.py", "runserver", "0.0.0.0:8080", "--noreload"] 
+INFO[0067] Pushing image to p7acrcyberphor.azurecr.io/login:1714162458-23d78d58222aaeee07bc758a600f672f8b47e78f 
+INFO[0075] Pushed image to 1 destinations               
+
+p7acrcyberphor.azurecr.io/login:1714162458-23d78d58222aaeee07bc758a600f672f8b47e78f
+```
+
+### Subtask 06: Add Tasks to the Tekton CI Pipeline to Scan the Container Images
+**Step 1.** While in the `kubernetes/` folder, create and open a Kubernetes manifest file called `grype.yaml`. 
+```bash
+vim grype.yaml
+```
+
+**Step 2.** Add the content below to it.
+```yaml
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: grype
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/categories: Security
+    tekton.dev/tags: CLI, grype
+    tekton.dev/displayName: "grype"
+    tekton.dev/platforms: "linux/amd64,linux/arm64,linux/ppc64le,linux/390x"
+spec:
+  description: >-
+    A vulnerability scanner for container images and filesystems.
+    Works with Syft, the powerful SBOM (software bill of materials) tool for container images and filesystems.
+  workspaces:
+    - name: source-dir
+      optional: true
+    - name: docker-credentials
+      mountPath: /docker
+  params:
+    - name: ARGS
+      description: The Arguments to be passed to Grype command.
+      type: array
+    - name: GRYPE_IMAGE
+      default: docker.io/anchore/grype@sha256:06d97d03bded18b392e08177a84f3436376d18b6c22fd8fde45c2f38f04fd6ed  # v0.64.2
+      description: Grype image to be used
+      type: string
+  steps:
+    - name: grype
+      image: $(params.GRYPE_IMAGE)
+      workingDir: $(workspaces.source-dir.path)
+      args:
+        - "$(params.ARGS)"
+```
+
+**Step 3.** Apply the Kubernetes manifest file you just created.
+```bash
+kubectl apply -f grype.yaml
+```
+
+**Step 4.** Open the Kubernetes manifest file called `tekton-pipeline.yaml`.
+```bash
+vim tekton-pipeline.yaml
+```
+
+**Step 5.** Insert the content below after the `build-push-llm` task. 
+```yaml
+    - name: scan-dep-llm 
+      runAfter: ["build-push-llm"]
+      taskRef:
+        name: grype
+      workspaces:
+      - name: docker-credentials  
+        workspace: docker-credentials  
+      params:
+      - name: ARGS
+        value: ["-o", "json", "$(tasks.build-push-llm.results.IMAGE_URL)"]
+```
+
+Then, insert the content below after the `build-push-django` task.
+```yaml
+    - name: scan-dep-django 
+      runAfter: ["build-push-django"]
+      taskRef:
+        name: grype
+      workspaces:
+      - name: docker-credentials  
+        workspace: docker-credentials   
+      params:
+      - name: ARGS
+        value: ["-o", "json", "$(tasks.build-push-django.results.IMAGE_URL)"]
+```
+
+**Step 6.** Apply the changes you made to the Kubernetes manifest file called `tekton-pipeline.yaml`.
+```bash
+kubectl apply -f tekton-pipeline.yaml
+```
+
+**Step 7.** Create a new Tekton pipeline run.
+```bash
+kubectl create -f tekton-pipeline-run.yaml
+```
+
+**Step 8.** Change directories to the root of your repository.
+```bash
+cd ../
+```
+
+**Step 9.** See if the new Tekton CI pipeline run was successful. 
+```bash
+tkn pipeline logs -f -L
+```
+
+### Subtask 07: Add Tasks to the Tekton CI Pipeline to Test Your Code
+**Step 1.** While in the `kubernetes/` folder, create and open a Kubernetes manifest file called `tests.yaml`. 
+```bash
+vim tests.yaml
+```
+
+**Step 2.** Add the content below to it.
+```yaml
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: run-tests
+  namespace: default
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/categories: Security
+    tekton.dev/tags: CLI, grype
+    tekton.dev/displayName: "grype"
+    tekton.dev/platforms: "linux/amd64,linux/arm64,linux/ppc64le,linux/390x"
+spec:
+  description: >-
+    A simple task that allows for easy testing of both repositories
+  workspaces:
+    - name: source
+  steps:
+    - name: run-fastapi-tests
+      image: python:3.10
+      workingDir: $(workspaces.source.path)/src/fastapi-p4
+      script: |
+        set -euxo
+        pip install poetry
+        poetry install --with dev
+        poetry run coverage run -m pytest
+        poetry run coverage report --format=text -m
+    - name: run-django-tests
+      image: python:3.10
+      workingDir: $(workspaces.source.path)/src/django
+      script: |
+        set -euxo
+        pip install -r requirements.txt
+        python3 manage.py test
+        coverage run --source='.' manage.py test task3
+        coverage report --format=text -m
+```
+
+**Step 6.** Apply the the Kubernetes manifest file you just created.
+```bash
+kubectl apply -f tests.yaml
+```
+
+**Step 7.** Open the Kubernetes manifest file called `tekton-pipeline.yaml`.
+```bash
+vim tekton-pipeline.yaml
+```
+
+**Step 8.** Add the content below after the `fetch-source` task. Also, change the `runAfter` value for the `build-push-llm` task from `fetch-source` to `run-tests`.
+```yaml
+    - name: run-tests
+      runAfter: ["fetch-source"]
+      taskRef:
+        name: run-tests
+      workspaces:
+      - name: source
+        workspace: shared-data
+```
+
+**Step 9.** Apply the changes you made to the Kubernetes manifest file called `tekton-pipeline.yaml`.
+```bash
+kubectl apply -f tekton-pipeline.yaml
+```
+
+**Step 10.** Copy the `django/` and `fastapi-p4` folders from the first GitHub Assignment repository to the `src` folder of the one you're using for this one. You are replacing the Task 2 files with the properly formatted code and corresponding tests created in Task 1. 
+
+**Step 11.** Create a new commit and push it to GitHub.
+```bash
+git add -A
+git commit -m "Added files from Task 1 repo"
+git push
+```
+
+**Step 12.** Change directories to the root of your repository.
+```bash
+cd ../
+```
+
+**Step 13.** Release the resources used in previous Tekton CI pipeline runs. 
+```bash
+tkn pipelinerun delete --all
+```
+
+**Step 14.** Create a new Tekton CI pipeline run.
+```bash
+kubectl create -f kubernetes/tekton-pipeline-run.yaml
+```
+
+**Step 15.** Monitor the Tekton CI pipeline run until it finishes.
+```bash
+tkn pipeline logs -f -L
+```
+
+**Step 16.** Verify the new Tekton CI pipeline run was successful. 
+```bash
+tkn pipelinerun describe -L
+```
+
+You should get output similar to below.
+```
+ NAME                             TASK NAME           STARTED          DURATION   STATUS
+ ∙ p7ci-rdnnm-scan-dep-django     scan-dep-django     1 minute ago     39s        Succeeded
+ ∙ p7ci-rdnnm-build-push-django   build-push-django   2 minutes ago    1m37s      Succeeded
+ ∙ p7ci-rdnnm-scan-dep-llm        scan-dep-llm        3 minutes ago    49s        Succeeded
+ ∙ p7ci-rdnnm-build-push-llm      build-push-llm      8 minutes ago    4m43s      Succeeded
+ ∙ p7ci-rdnnm-run-tests           run-tests           11 minutes ago   3m26s      Succeeded
+ ∙ p7ci-rdnnm-fetch-source        fetch-source        12 minutes ago   1m1s       Succeeded
 ```
