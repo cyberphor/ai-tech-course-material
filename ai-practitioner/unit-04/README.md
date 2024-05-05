@@ -53,8 +53,10 @@ terraform -chdir=setup/terraform apply
 wget -qc https://aipractitioner.blob.core.windows.net/ai-practitioner-cv-model-deployment/sail2/v1/ai-practitioner-cv-model-deployment.tgz -O - | tar -xz -C .
 ```
 
-**Step 12.** Copy and paste the command below into your shell environment to install the Python dependencies required for this project.
+**Step 12.** Copy and paste the commands below into your shell environment to install the Python dependencies required for this project.
 ```bash
+pip install --upgrade pip
+pip install azureml-core --upgrade
 pip install -r requirements.txt
 ```
 

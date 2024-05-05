@@ -28,7 +28,7 @@ variable "vm_size" {
   default = "Standard_NC4as_T4_v3"
 }
 
-variable "vm_authorization_type" {
+variable "admin_username" {
   type    = string
-  default = "personal"
+  default = "victor"
 }

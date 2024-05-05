@@ -46,26 +46,12 @@ resource "azurerm_machine_learning_workspace" "main" {
   }
 }
 
-resource "azurerm_virtual_network" "main" {
-  depends_on          = [ azurerm_resource_group.main ]
-  name                = random_pet.main.id
-  location            = var.location
-  resource_group_name = azurerm_resource_group.main.name
-  address_space       = ["10.0.0.0/16"]
-}
-
-resource "azurerm_subnet" "main" {
-  depends_on          = [ azurerm_resource_group.main ]
-  name                 = random_pet.main.id
-  resource_group_name  = azurerm_resource_group.main.name
-  virtual_network_name = azurerm_virtual_network.main.name
-  address_prefixes     = ["10.0.0.0/24"]
-}
-
 resource "azurerm_machine_learning_compute_instance" "main" {
   name                          = random_pet.main.id
   machine_learning_workspace_id = azurerm_machine_learning_workspace.main.id
   virtual_machine_size          = var.vm_size
-  authorization_type            = var.vm_authorization_type
-  subnet_resource_id            = azurerm_subnet.main.id
+  node_public_ip_enabled        = true
+  ssh {
+    public_key                  = file("~/.ssh/id_rsa.pub")
+  }
 }
